@@ -30,13 +30,15 @@
 
 ## Team Members and Roles
 
-| **Team Member**        | **Role**      |  
-|------------------------|---------------|  
-| Hunter McCoy           | Developer     |  
-| Quinton Gonzales       | Developer     |  
-| Jared Northrop         | Developer     |  
-| Alexander Martin       | Developer     |  
-| Thai Le                | Developer     |
+| **Team Member**  | **Role**  |  
+|------------------|-----------|  
+| Hunter McCoy     | Developer |  
+| Quinton Gonzales | Developer |  
+| Jared Northrop   | Developer |  
+| Alexander Martin | Developer |  
+| Thai Le          | Developer |
+| Reynaud Hunter   | Developer |
+| Nam Long Tran    | Developer |
 
 ## Product Description
 
