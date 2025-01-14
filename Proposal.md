@@ -2,9 +2,9 @@
 
 **GitHub Repository**: [https://github.com/mccoyh/CS-362-Project](https://github.com/mccoyh/CS-362-Project)
 
----
+## Communication
 
-**Communication Guidelines**:
+### Communication Guidelines
 1. **Professionalism**: Maintain respectful, clear, and concise communication in all interactions.
 2. **Response Time**: Respond to messages and requests within 24 hours on business days. If additional time is needed, provide an update.
 3. **Proactive Communication**:
@@ -17,20 +17,18 @@
 6. **Documentation**: Summarize key decisions and action items after discussions and post them in the shared communication channel.
 
 
-**Communication Channels**:
+### Communication Channels
 - **Discord**: For daily communication, quick updates, and team collaboration.
 - **Email**: Used for formal updates, important announcements, and sharing detailed documents.
 
-**Meeting Schedule**:
+### Meeting Schedule
 - **Weekly Team Meeting**: Fridays at 9:45 AM with the TA.
     - Purpose: Progress updates, addressing challenges, and clarifying objectives.
     - Platform: In-Person, BEXL 322 or an agreed alternative (e.g., Zoom).
 - **Stand-Ups**: Mondays and Wednesdays at 5:40 PM (immediately after class).
 - **Ad-Hoc Meetings**: Scheduled as needed for urgent issues or significant milestones.
 
----
-
-### Team Members and Roles
+## Team Members and Roles
 
 | **Team Member**        | **Role**      |  
 |------------------------|---------------|  
@@ -38,9 +36,7 @@
 | Quinton Gonzales       | Developer     |  
 | Jared Northrop         | Developer     |  
 | Alexander Martin       | Developer     |  
-| Thai Le                | Developer     |  
-
----
+| Thai Le                | Developer     |
 
 ## Product Description
 
@@ -74,8 +70,6 @@ A successful implementation will provide users with a dependable, user-friendly 
 3. **Time Management**: Balancing workload with coursework.
     - **Solution**: Create and follow a detailed timeline with milestones.
 
----
-
 ## Features
 
 ### Major Features (MVP)
@@ -88,8 +82,6 @@ A successful implementation will provide users with a dependable, user-friendly 
 1. Trim video files.
 2. Merge multiple video files.
 
----
-
 ## Development Timeline
 
 | **Week(s)** | **Focus Area**                                         |  
@@ -97,9 +89,7 @@ A successful implementation will provide users with a dependable, user-friendly 
 | **Weeks 2–3** | Research and setup                                     |  
 | **Weeks 4–6** | Implement MVP features and basic GUI                   |  
 | **Weeks 7–8** | Test MVP and begin implementing stretch goals          |  
-| **Week 9** | Finalize features, optimize performance, and prepare documentation |  
-
----  
+| **Week 9** | Finalize features, optimize performance, and prepare documentation |
 
 ## Conclusion
 This project delivers a streamlined desktop video player tailored for efficiency and usability. By maintaining a clear focus on core features and achievable goals, we aim to deliver a polished, functional product within the timeline.
