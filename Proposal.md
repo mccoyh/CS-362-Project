@@ -1,15 +1,21 @@
 Team Members:
 Hunter McCoy - Unspecified role #1
+
 Quinton Gonzales - Unspecified role #2
+
 Jared Northrop - "Leader"
+
 Alexander Martin - Unspecified role #3
+
 Thai Le - Unspecified role #4
-<br>
+
+
 Github Repo - https://github.com/mccoyh/CS-362-Project
 Communication Channels - Discord/Email
-<br>
+
+
 Product/Project:
 <h1>Non-descript mp4 player</h1>
-<br>
+
 An application that allows users to play mp4 video files.
 
