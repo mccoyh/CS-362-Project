@@ -2,6 +2,80 @@
 
 **GitHub Repository**: [https://github.com/mccoyh/CS-362-Project](https://github.com/mccoyh/CS-362-Project)
 
+# Desktop Media Player
+
+## Abstract
+The Desktop Media Player is a lightweight and efficient video playback application designed for simplicity, performance, and accessibility. It offers essential playback features, such as play, pause, and fast-forward, while integrating advanced functionalities like simple video editing, auto-generated captions, and subtitle translation. With a focus on cross-platform compatibility, this application is designed to enhance user experience through a clean interface and seamless usability. By including stretch goals like integration with video-sharing APIs, the media player aspires to be a versatile tool for both casual users and creators.
+
+## Goal
+The primary goal is to create a simple yet robust desktop video player that balances functionality and user-friendliness. By eliminating unnecessary complexities found in traditional players, the project aims to deliver a streamlined tool that focuses on playback efficiency, basic editing, and accessibility enhancements. The project also seeks to provide users with a consistent and familiar interface across platforms, further broadening its usability and appeal.
+
+## Current Practice
+Most existing video players are burdened with excessive features that overwhelm users and contribute to bloated performance. These tools often lack cross-platform consistency, requiring users to learn multiple interfaces across devices. Additionally, basic video editing is often relegated to specialized software, leaving a gap for casual users who require simple, intuitive editing tools.
+
+## Novelty
+The Desktop Media Player stands out by blending core video playback functionality with accessibility-focused features and lightweight design. Unlike traditional video players that prioritize extensive but often cumbersome feature sets, this application emphasizes simplicity while introducing essential tools for modern media use. Auto-generated captions and real-time subtitle translation enhance accessibility, making the player inclusive for users with hearing impairments or language barriers. The inclusion of basic video editing tools, such as trimming and stitching, empowers users to create and customize content without the steep learning curve of complex editing software.
+
+Additionally, the player’s stretch goals elevate its value as a versatile media hub. Cross-platform support ensures a seamless user experience across multiple devices, while integration with video-sharing APIs (e.g., YouTube, Twitch, Vimeo) offers convenient options for uploading, downloading, and streaming media. By combining these practical and creative features, the Desktop Media Player transforms from a standard playback tool into a comprehensive solution for everyday media consumption and lightweight content creation.
+
+## Effects
+A successful implementation will redefine how users interact with video playback and editing tools. By focusing on user experience and accessibility, this project aims to lower the barrier to entry for video editing and provide a seamless playback experience. Furthermore, features like subtitle translation and API integration will expand the player’s usability in global and collaborative contexts, benefiting both casual viewers and content creators.
+
+---
+
+## Non-Functional and External Requirements
+### Non-Functional Requirements:
+1. The application must have a responsive and intuitive GUI that ensures ease of navigation.
+2. The video player must operate efficiently on a wide range of hardware, including older systems, without significant performance degradation.
+3. Playback and editing processes should run smoothly with minimal latency or resource overhead.
+
+### External Requirements:
+1. The application must handle invalid inputs gracefully, such as unsupported video formats, to ensure robustness.
+2. It must be easy to install, run, and maintain, with detailed documentation for developers and end-users.
+3. Developers must be able to build the software from source, facilitating the addition of new features.
+4. Each primary feature and use case must be achievable within the project’s timeframe, adhering to available resources and skills.
+
+---
+
+## Technical Approach
+The Desktop Media Player leverages modern development tools to deliver an efficient and polished experience:
+- **Languages**: The application is built with C++ for high performance.
+- **Frameworks and Libraries**: The project employs FFmpeg for reliable video decoding and processing. It utilizes ImGui for its lightweight and responsive graphical interface.
+- **Tools**: Git and CMake streamline development and build processes. Regular code reviews and testing are integrated to ensure quality and maintainability. Github Actions will be used to have a simple CI/CD Pipeline, allowing for testing of compiling and developer-defined test cases.
+
+The technical implementation focuses on modular design, allowing flexibility for future feature additions and performance optimizations.
+
+---
+
+## Risks, Team Information, and Timeline
+### Risks and Mitigation
+1. **Library Familiarity**: Some team members are unfamiliar with FFmpeg and ImGui.
+    - **Mitigation**: Allocate time for learning resources and prototyping early in the project.
+2. **Coordination Challenges**: With a large team, maintaining consistent coding standards may be difficult.
+    - **Mitigation**: Use detailed style guides and conduct weekly code reviews.
+3. **Time Constraints**: Balancing project work with coursework may lead to delays.
+    - **Mitigation**: Set clear milestones and prioritize high-impact tasks.
+
+## Team Members and Roles
+
+| **Team Member**  | **Role**  |  
+|------------------|-----------|  
+| Hunter McCoy     | Developer |  
+| Quinton Gonzales | Developer |  
+| Jared Northrop   | Developer |  
+| Alexander Martin | Developer |  
+| Thai Le          | Developer |
+| Reynaud Hunter   | Developer |
+
+## Development Timeline
+
+| **Week(s)** | **Focus Area**                                         |  
+|------------|--------------------------------------------------------|  
+| **Weeks 2–3** | Research and setup                                     |  
+| **Weeks 4–6** | Implement MVP features and basic GUI                   |  
+| **Weeks 7–8** | Test MVP and begin implementing stretch goals          |  
+| **Week 9** | Finalize features, optimize performance, and prepare documentation |
+
 ## Communication
 
 ### Communication Guidelines
@@ -28,99 +102,149 @@
 - **Stand-Ups**: Mondays and Wednesdays at 5:40 PM (immediately after class).
 - **Ad-Hoc Meetings**: Scheduled as needed for urgent issues or significant milestones.
 
-## Team Members and Roles
-
-| **Team Member**  | **Role**  |  
-|------------------|-----------|  
-| Hunter McCoy     | Developer |  
-| Quinton Gonzales | Developer |  
-| Jared Northrop   | Developer |  
-| Alexander Martin | Developer |  
-| Thai Le          | Developer |
-| Reynaud Hunter   | Developer |
-| Nam Long Tran    | Developer |
-
-## Product Description
-
-### Title: Desktop Media Player
-
-### Abstract
-A lightweight desktop application for seamless video playback. The player includes essential playback functionality with a focus on simplicity and performance. 
-
-### Goal
-To create a simple, efficient, and reliable video player for desktop platforms, offering smooth playback and a minimalist interface. 
-
-### Current Practice
-Existing video players are often overloaded with features, making them cumbersome for straightforward use cases. A variety of video players exist with extremely similar functionality that has barely evolved over the years. Most video players have been created for a single operating system, thus creating several UI's users have to learn to use multiple devices. 
-
-### Novelty
-This player prioritizes simplicity, lightweight design, and intuitive controls. Adding basic video editing will allow the average user to create simple videos without the need to learn complex programs with UI's that overload and confuse the user. Auto closecaptions and subtitle translation will increase user accessiblity. Our strech goals to create a cross platform and act as a hub for video sharing API's allows our video player to be used reguardless of the device.
-
-### Effects
-A successful implementation will provide users with a dependable, user-friendly video playback tool that simplifies basic video interactions.
-
-### Technical Approach
-- **Languages/Frameworks**: C++ with ImGui for the GUI
-- **Libraries**: FFmpeg for video decoding
-- **Tools**: Git, CMake
-
-### Risks and Mitigation
-1. **Learning Curve**: Unfamiliarity with libraries.
-    - **Solution**: Allocate research and prototyping time early in the schedule.
-2. **Team Coordination**: Coding inconsistencies.
-    - **Solution**: Establish coding standards and conduct code reviews.
-3. **Time Management**: Balancing workload with coursework.
-    - **Solution**: Create and follow a detailed timeline with milestones.
-
 ## Features
 
 ### Major Features (MVP)
-1. Play MP4 video files.
-2. Pause and resume playback.
-3. Fast-forward and rewind.
-4. Close Caption.
-5. Simple Video Edits (trim and stitch).
-6. Custom Playback Speed. 
-7. Subtitle Translation
+
+1. **Video Playback**: Seamless playback of common video formats (e.g., MP4, MKV, AVI).
+2. **Playback Controls**: Play, pause, fast-forward, rewind, and seek functionality.
+3. **Custom Playback Speed**: Adjust video playback speed dynamically (e.g., 0.5x, 1x, 2x).
+4. **Closed Captioning**: Display synchronized captions during video playback.
+5. **Subtitle Translation**: Translate subtitles to different languages in real time.
+6. **Quick Edits**: Trim, stitch, and make basic edits to video files within the application.
+7. **Playlist Support**: Create, save, and play video playlists with customizable playback order.
+8. **Audio Transcription**: Generate text transcriptions from video or audio files.
 
 ### Stretch Goals
-1. Cross Platform.
-2. Software Hub for Video Sharing API's.
 
-## Development Timeline
-
-| **Week(s)** | **Focus Area**                                         |  
-|------------|--------------------------------------------------------|  
-| **Weeks 2–3** | Research and setup                                     |  
-| **Weeks 4–6** | Implement MVP features and basic GUI                   |  
-| **Weeks 7–8** | Test MVP and begin implementing stretch goals          |  
-| **Week 9** | Finalize features, optimize performance, and prepare documentation |
-
+1. **Cross-Platform Compatibility**: Develop the application for Windows, macOS, and Linux.
+2. **Video Sharing API Integration**: Enable uploading, downloading, and streaming via third-party services like YouTube or Vimeo.
+3. **Advanced Video Editing**: Add features such as cropping, color adjustments, and video effects.
+4. **Cloud Integration**: Allow users to sync playlists and video libraries with cloud services.
+5. **Hardware Acceleration**: Optimize video playback using GPU acceleration for improved performance.
+6. **Theme Customization**: Provide multiple themes (e.g., dark mode, high-contrast mode) for better accessibility.
 
 ## Use Cases
-1. Simple Video Edits  
-    Actor: Product user  
-    Goal: Edit a videos length and combine clips together.   
-    Preconditions: The user opens the app and has a clip or clips to edit.  
-    Postconditions: A new video clip containing the users edit.  
-    List of steps:  
 
-        a. User enters edit view and active video is imported.  
-        b. User trims the video.  
-        c. User uploads another clip.   
-        d. User trims the second clip.  
-        e. User joins the clips together.
-        f. User saves the new clip.  
+### 1. **Audio Transcribing**
+**Actor**: Product user  
+**Trigger**: User selects an audio file or a video with audio for transcription.  
+**Preconditions**: The user has imported an audio or video file into the application.  
+**Postconditions (success scenario)**: A text document containing the transcribed audio is saved or displayed.  
+**Steps (success scenario)**:
+1. User navigates to the transcription feature.
+2. User selects an audio or video file.
+3. The application processes the file and generates a transcription.
+4. User reviews and edits the transcription if needed.
+5. User saves the transcription as a text file.
 
-    Extensions: User cancels and exits editing clips.   
-    Exceptions:  User is unable to upload an another clip. User is unable to save the video. User is unable to trim or stitch clips.
+**Extensions**: User cancels the transcription process.  
+**Exceptions**:
+- The file format is unsupported.
+- The transcription process fails due to poor audio quality or missing data.
 
-## Non-functional Requirements
+---
 
-## External Requirements
-    1. The product must be robust against errors, such as invalid video formats and other invalid user inputs. 
-    2. The application must be able to download, install, and run.
-    3. The software must build from source so that developers can add new video playing and editing features. 
-    4. Each use case and main feature must not require more resources than available to be completed during the term. 
+### 2. **Closed Captioning**
+**Actor**: Product user  
+**Trigger**: User plays a video and enables the closed captioning feature.  
+**Preconditions**: The video file supports audio and is loaded into the application.  
+**Postconditions (success scenario)**: The application displays synchronized captions during playback.  
+**Steps (success scenario)**:
+1. User selects a video file to play.
+2. User enables closed captioning.
+3. The application generates or loads captions and synchronizes them with playback.
+4. User adjusts caption settings (e.g., font size, position).
+
+**Extensions**:
+- User modifies the caption file directly.
+- User disables closed captioning mid-playback.
+
+**Exceptions**:
+- Captions fail to load or generate.
+- The user cannot adjust caption settings.
+
+---
+
+### 3. **Software Hub for Various APIs**
+**Actor**: Product user  
+**Trigger**: User integrates third-party video-sharing services into the application.  
+**Preconditions**: The application supports the API of the selected service.  
+**Postconditions (success scenario)**: The user successfully uploads, downloads, or streams video content using the integrated API.  
+**Steps (success scenario)**:
+1. User navigates to the API integration menu.
+2. User selects a service to integrate.
+3. User authenticates with the third-party service.
+4. The application displays the integrated features (e.g., upload/download buttons).
+5. User interacts with the service via the application.
+
+**Extensions**: User removes or switches API integrations.  
+**Exceptions**:
+- Authentication fails.
+- API limitations or errors prevent successful interaction.
+
+---
+
+### 4. **Playlist Integration and Support**
+**Actor**: Product user  
+**Trigger**: User creates or imports a playlist.  
+**Preconditions**: The user has video files accessible for adding to a playlist.  
+**Postconditions (success scenario)**: The application plays the playlist in order, with options for customization.  
+**Steps (success scenario)**:
+1. User navigates to the playlist feature.
+2. User creates a new playlist or imports an existing one.
+3. User adds video files to the playlist.
+4. User customizes playback order or options.
+5. The playlist plays back as configured.
+
+**Extensions**:
+- User rearranges playlist order during playback.
+- User removes a file from the playlist.
+
+**Exceptions**:
+- File format of an added video is unsupported.
+- The playlist fails to save or load.
+
+---
+
+### 5. **Custom Playback Speed Adjustment**
+**Actor**: Product user  
+**Trigger**: User changes the playback speed of the current video.  
+**Preconditions**: A video file is loaded and playing.  
+**Postconditions (success scenario)**: The video plays at the adjusted speed without interruptions.  
+**Steps (success scenario)**:
+1. User opens the playback settings menu.
+2. User adjusts the speed using a slider or preset options (e.g., 0.5x, 1.0x, 2.0x).
+3. The application adjusts playback speed dynamically.
+
+**Extensions**:
+- User resets to the default playback speed.
+- User saves a custom speed for future use.
+
+**Exceptions**:
+- Playback becomes choppy due to hardware limitations.
+- Slider fails to adjust the speed accurately.
+
+---
+
+### 6. **Quick Edits**
+**Actor**: Product user  
+**Trigger**: User trims or edits a video directly within the application.  
+**Preconditions**: A video file is loaded into the application.  
+**Postconditions (success scenario)**: The edited video is saved as a new file.  
+**Steps (success scenario)**:
+1. User enters the edit view.
+2. User selects start and end points to trim.
+3. User applies the edit and previews the result.
+4. User saves the edited video to their desired location.
+
+**Extensions**:
+- User cancels the editing process.
+- User performs additional edits (e.g., cropping or adding effects).
+
+**Exceptions**:
+- Video fails to save.
+- The application crashes during editing.
+
 ## Conclusion
-This project delivers a streamlined desktop video player tailored for efficiency and usability. By maintaining a clear focus on core features and achievable goals, we aim to deliver a polished, functional product within the timeline.
+The Desktop Media Player project combines innovative features with a user-centric approach to create a streamlined, reliable video playback and editing tool. By prioritizing simplicity, accessibility, and performance, this project aims to fill the gap between complex professional tools and basic video players. With a strong focus on modularity and cross-platform capabilities, the player offers an adaptable solution for modern media consumption and creation.
