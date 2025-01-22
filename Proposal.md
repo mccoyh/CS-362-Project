@@ -2,6 +2,80 @@
 
 **GitHub Repository**: [https://github.com/mccoyh/CS-362-Project](https://github.com/mccoyh/CS-362-Project)
 
+# Desktop Media Player
+
+## Abstract
+The Desktop Media Player is a lightweight and efficient video playback application designed for simplicity, performance, and accessibility. It offers essential playback features, such as play, pause, and fast-forward, while integrating advanced functionalities like simple video editing, auto-generated captions, and subtitle translation. With a focus on cross-platform compatibility, this application is designed to enhance user experience through a clean interface and seamless usability. By including stretch goals like integration with video-sharing APIs, the media player aspires to be a versatile tool for both casual users and creators.
+
+## Goal
+The primary goal is to create a simple yet robust desktop video player that balances functionality and user-friendliness. By eliminating unnecessary complexities found in traditional players, the project aims to deliver a streamlined tool that focuses on playback efficiency, basic editing, and accessibility enhancements. The project also seeks to provide users with a consistent and familiar interface across platforms, further broadening its usability and appeal.
+
+## Current Practice
+Most existing video players are burdened with excessive features that overwhelm users and contribute to bloated performance. These tools often lack cross-platform consistency, requiring users to learn multiple interfaces across devices. Additionally, basic video editing is often relegated to specialized software, leaving a gap for casual users who require simple, intuitive editing tools.
+
+## Novelty
+The Desktop Media Player stands out by blending core video playback functionality with accessibility-focused features and lightweight design. Unlike traditional video players that prioritize extensive but often cumbersome feature sets, this application emphasizes simplicity while introducing essential tools for modern media use. Auto-generated captions and real-time subtitle translation enhance accessibility, making the player inclusive for users with hearing impairments or language barriers. The inclusion of basic video editing tools, such as trimming and stitching, empowers users to create and customize content without the steep learning curve of complex editing software.
+
+Additionally, the player’s stretch goals elevate its value as a versatile media hub. Cross-platform support ensures a seamless user experience across multiple devices, while integration with video-sharing APIs (e.g., YouTube, Twitch, Vimeo) offers convenient options for uploading, downloading, and streaming media. By combining these practical and creative features, the Desktop Media Player transforms from a standard playback tool into a comprehensive solution for everyday media consumption and lightweight content creation.
+
+## Effects
+A successful implementation will redefine how users interact with video playback and editing tools. By focusing on user experience and accessibility, this project aims to lower the barrier to entry for video editing and provide a seamless playback experience. Furthermore, features like subtitle translation and API integration will expand the player’s usability in global and collaborative contexts, benefiting both casual viewers and content creators.
+
+---
+
+## Non-Functional and External Requirements
+### Non-Functional Requirements:
+1. The application must have a responsive and intuitive GUI that ensures ease of navigation.
+2. The video player must operate efficiently on a wide range of hardware, including older systems, without significant performance degradation.
+3. Playback and editing processes should run smoothly with minimal latency or resource overhead.
+
+### External Requirements:
+1. The application must handle invalid inputs gracefully, such as unsupported video formats, to ensure robustness.
+2. It must be easy to install, run, and maintain, with detailed documentation for developers and end-users.
+3. Developers must be able to build the software from source, facilitating the addition of new features.
+4. Each primary feature and use case must be achievable within the project’s timeframe, adhering to available resources and skills.
+
+---
+
+## Technical Approach
+The Desktop Media Player leverages modern development tools to deliver an efficient and polished experience:
+- **Languages**: The application is built with C++ for high performance and ImGui for its lightweight and responsive graphical interface.
+- **Frameworks and Libraries**: The project employs FFmpeg for reliable video decoding and processing.
+- **Tools**: Git and CMake streamline development and build processes. Regular code reviews and testing are integrated to ensure quality and maintainability.
+
+The technical implementation focuses on modular design, allowing flexibility for future feature additions and performance optimizations.
+
+---
+
+## Risks, Team Information, and Timeline
+### Risks and Mitigation
+1. **Library Familiarity**: Some team members are unfamiliar with FFmpeg and ImGui.
+    - **Mitigation**: Allocate time for learning resources and prototyping early in the project.
+2. **Coordination Challenges**: With a large team, maintaining consistent coding standards may be difficult.
+    - **Mitigation**: Use detailed style guides and conduct weekly code reviews.
+3. **Time Constraints**: Balancing project work with coursework may lead to delays.
+    - **Mitigation**: Set clear milestones and prioritize high-impact tasks.
+
+## Team Members and Roles
+
+| **Team Member**  | **Role**  |  
+|------------------|-----------|  
+| Hunter McCoy     | Developer |  
+| Quinton Gonzales | Developer |  
+| Jared Northrop   | Developer |  
+| Alexander Martin | Developer |  
+| Thai Le          | Developer |
+| Reynaud Hunter   | Developer |
+
+## Development Timeline
+
+| **Week(s)** | **Focus Area**                                         |  
+|------------|--------------------------------------------------------|  
+| **Weeks 2–3** | Research and setup                                     |  
+| **Weeks 4–6** | Implement MVP features and basic GUI                   |  
+| **Weeks 7–8** | Test MVP and begin implementing stretch goals          |  
+| **Week 9** | Finalize features, optimize performance, and prepare documentation |
+
 ## Communication
 
 ### Communication Guidelines
@@ -28,73 +102,6 @@
 - **Stand-Ups**: Mondays and Wednesdays at 5:40 PM (immediately after class).
 - **Ad-Hoc Meetings**: Scheduled as needed for urgent issues or significant milestones.
 
-## Team Members and Roles
-
-| **Team Member**  | **Role**  |  
-|------------------|-----------|  
-| Hunter McCoy     | Developer |  
-| Quinton Gonzales | Developer |  
-| Jared Northrop   | Developer |  
-| Alexander Martin | Developer |  
-| Thai Le          | Developer |
-| Reynaud Hunter   | Developer |
-
-## Product Description
-
-### Title: Desktop Media Player
-
-## Abstract
-The Desktop Media Player is a lightweight and efficient video playback application designed for simplicity, performance, and accessibility. It offers essential playback features, such as play, pause, and fast-forward, while integrating advanced functionalities like simple video editing, auto-generated captions, and subtitle translation. With a focus on cross-platform compatibility, this application is designed to enhance user experience through a clean interface and seamless usability. By including stretch goals like integration with video-sharing APIs, the media player aspires to be a versatile tool for both casual users and creators.
-
-## Goal
-The primary goal is to create a simple yet robust desktop video player that balances functionality and user-friendliness. By eliminating unnecessary complexities found in traditional players, the project aims to deliver a streamlined tool that focuses on playback efficiency, basic editing, and accessibility enhancements. The project also seeks to provide users with a consistent and familiar interface across platforms, further broadening its usability and appeal.
-
-## Current Practice
-Most existing video players are burdened with excessive features that overwhelm users and contribute to bloated performance. These tools often lack cross-platform consistency, requiring users to learn multiple interfaces across devices. Additionally, basic video editing is often relegated to specialized software, leaving a gap for casual users who require simple, intuitive editing tools.
-
-## Novelty
-The Desktop Media Player stands out by blending core video playback functionality with accessibility-focused features and lightweight design. Unlike traditional video players that prioritize extensive but often cumbersome feature sets, this application emphasizes simplicity while introducing essential tools for modern media use. Auto-generated captions and real-time subtitle translation enhance accessibility, making the player inclusive for users with hearing impairments or language barriers. The inclusion of basic video editing tools, such as trimming and stitching, empowers users to create and customize content without the steep learning curve of complex editing software.
-
-Additionally, the player’s stretch goals elevate its value as a versatile media hub. Cross-platform support ensures a seamless user experience across multiple devices, while integration with video-sharing APIs (e.g., YouTube, Twitch, Vimeo) offers convenient options for uploading, downloading, and streaming media. By combining these practical and creative features, the Desktop Media Player transforms from a standard playback tool into a comprehensive solution for everyday media consumption and lightweight content creation.
-
-## Effects
-A successful implementation will redefine how users interact with video playback and editing tools. By focusing on user experience and accessibility, this project aims to lower the barrier to entry for video editing and provide a seamless playback experience. Furthermore, features like subtitle translation and API integration will expand the player’s usability in global and collaborative contexts, benefiting both casual viewers and content creators.
-
----
-
-## Technical Approach
-The Desktop Media Player leverages modern development tools to deliver an efficient and polished experience:
-- **Languages**: The application is built with C++ for high performance and ImGui for its lightweight and responsive graphical interface.
-- **Frameworks and Libraries**: The project employs FFmpeg for reliable video decoding and processing.
-- **Tools**: Git and CMake streamline development and build processes. Regular code reviews and testing are integrated to ensure quality and maintainability.
-
-The technical implementation focuses on modular design, allowing flexibility for future feature additions and performance optimizations.
-
----
-
-## Non-Functional and External Requirements
-### Non-Functional Requirements:
-1. The application must have a responsive and intuitive GUI that ensures ease of navigation.
-2. The video player must operate efficiently on a wide range of hardware, including older systems, without significant performance degradation.
-3. Playback and editing processes should run smoothly with minimal latency or resource overhead.
-
-### External Requirements:
-1. The application must handle invalid inputs gracefully, such as unsupported video formats, to ensure robustness.
-2. It must be easy to install, run, and maintain, with detailed documentation for developers and end-users.
-3. Developers must be able to build the software from source, facilitating the addition of new features.
-4. Each primary feature and use case must be achievable within the project’s timeframe, adhering to available resources and skills.
-
----
-
-## Risks, Team Information, and Timeline
-### Risks and Mitigation
-1. **Library Familiarity**: Some team members are unfamiliar with FFmpeg and ImGui.
-    - **Mitigation**: Allocate time for learning resources and prototyping early in the project.
-2. **Coordination Challenges**: With a large team, maintaining consistent coding standards may be difficult.
-    - **Mitigation**: Use detailed style guides and conduct weekly code reviews.
-3. **Time Constraints**: Balancing project work with coursework may lead to delays.
-    - **Mitigation**: Set clear milestones and prioritize high-impact tasks.
-
 ## Features
 
 ### Major Features (MVP)
@@ -116,17 +123,6 @@ The technical implementation focuses on modular design, allowing flexibility for
 4. **Cloud Integration**: Allow users to sync playlists and video libraries with cloud services.
 5. **Hardware Acceleration**: Optimize video playback using GPU acceleration for improved performance.
 6. **Theme Customization**: Provide multiple themes (e.g., dark mode, high-contrast mode) for better accessibility.
-
-
-## Development Timeline
-
-| **Week(s)** | **Focus Area**                                         |  
-|------------|--------------------------------------------------------|  
-| **Weeks 2–3** | Research and setup                                     |  
-| **Weeks 4–6** | Implement MVP features and basic GUI                   |  
-| **Weeks 7–8** | Test MVP and begin implementing stretch goals          |  
-| **Week 9** | Finalize features, optimize performance, and prepare documentation |
-
 
 ## Use Cases
 
