@@ -156,6 +156,9 @@ The roles were carefully assigned based on the individual team members’ expert
     - **Milestone 11**: Ensure all project requirements are met, including usability, stability, and cross-platform compatibility.
 
 
+### Soliciting Feedback
+External feedback will be most useful during weeks 5-6 when the MVP is completed. At this stage, we will have implemented the core features of the app, such as video playback, subtitle integration, and basic UI functionality. Soliciting feedback from peers, friends, and potential users will allow us to identify usability issues, improve user experience, and ensure the app meets the expectations of a diverse user base. We will gather feedback through structured user testing sessions, surveys, and informal reviews to assess how well the app performs in real-world scenarios. This feedback will be invaluable for refining the app's design, identifying any overlooked bugs, and ensuring that the final product aligns with user needs before moving into final development and optimization stages.
+
 ## Communication
 
 ### Communication Guidelines
