@@ -39,9 +39,9 @@ A successful implementation will redefine how users interact with video playback
 
 ## Technical Approach
 The Desktop Media Player leverages modern development tools to deliver an efficient and polished experience:
-- **Languages**: The application is built with C++ for high performance and ImGui for its lightweight and responsive graphical interface.
-- **Frameworks and Libraries**: The project employs FFmpeg for reliable video decoding and processing.
-- **Tools**: Git and CMake streamline development and build processes. Regular code reviews and testing are integrated to ensure quality and maintainability.
+- **Languages**: The application is built with C++ for high performance.
+- **Frameworks and Libraries**: The project employs FFmpeg for reliable video decoding and processing. It utilizes ImGui for its lightweight and responsive graphical interface.
+- **Tools**: Git and CMake streamline development and build processes. Regular code reviews and testing are integrated to ensure quality and maintainability. Github Actions will be used to have a simple CI/CD Pipeline, allowing for testing of compiling and developer-defined test cases.
 
 The technical implementation focuses on modular design, allowing flexibility for future feature additions and performance optimizations.
 
