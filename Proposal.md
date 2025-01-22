@@ -58,14 +58,29 @@ The technical implementation focuses on modular design, allowing flexibility for
 
 ## Team Members and Roles
 
-| **Team Member**  | **Role**  |  
-|------------------|-----------|  
-| Hunter McCoy     | Developer |  
-| Quinton Gonzales | Developer |  
-| Jared Northrop   | Developer |  
-| Alexander Martin | Developer |  
-| Thai Le          | Developer |
-| Reynaud Hunter   | Developer |
+| **Team Member**  | **Role**           |  
+|------------------|--------------------|  
+| Hunter McCoy     | Backend Developer  |  
+| Quinton Gonzales | Tester             |  
+| Jared Northrop   | Backend Developer  |  
+| Alexander Martin | Backend Developer  |  
+| Thai Le          | Tester             |
+| Reynaud Hunter   | Frontend Developer |
+
+### Reasoning for Roles
+
+The project’s structure is designed to maximize efficiency and ensure high-quality development, given the scope and complexity of the desktop media player application.
+
+- **Backend Developers (3)**: The decision to have three backend developers is essential for creating a solid and performant application. Since the core functionality of the media player (such as video decoding, playback control, and subtitle processing) is handled in the backend, it’s crucial to have sufficient resources dedicated to these complex tasks. The backend team will ensure that the application’s foundation is reliable, scalable, and optimized. Their work will include integrating libraries like FFmpeg and handling multithreading, file management, and performance optimizations.
+
+- **Frontend Developer (1)**: With one dedicated frontend developer, we ensure a unified and cohesive user interface (UI) design. This role focuses on translating the backend functionality into an intuitive and aesthetically pleasing UI, making the player accessible and easy to use. The frontend developer will collaborate closely with backend developers to ensure that the user interface interacts seamlessly with the application’s core features. Having one frontend developer ensures a consistent design vision while minimizing the back-and-forth between team members, promoting efficiency and clarity in UI decisions.
+
+- **Testers (2)**: Testing is critical for ensuring the reliability and usability of the application. The two testers will work collaboratively to conduct thorough testing of the player’s features, including unit, integration, performance, and user acceptance testing. They will be responsible for identifying bugs and ensuring that the project requirements are met at every stage of development. With a dedicated testing team, feedback loops are shortened, and both frontend and backend developers can quickly address issues as they arise. Testers will also ensure that the application meets cross-platform expectations and that the user experience is smooth and intuitive.
+
+This structure balances the need for robust backend development with a focused frontend vision and comprehensive testing, ensuring that the application’s performance, usability, and functionality are all top-notch.
+
+### Fit to Expertise
+The roles were carefully assigned based on the individual team members’ expertise and prior experience to ensure that each member is contributing in an area they excel in. Backend developers were selected for their strong understanding of performance optimization, API integration, and media processing, while the frontend developer was chosen for their proficiency in designing intuitive user interfaces that align with the app’s simplicity goals. The testers bring a keen eye for detail and a deep understanding of quality assurance practices, ensuring that the app is both stable and user-friendly. This approach leverages the team’s strengths, allowing each member to contribute effectively to the project’s success.
 
 ## Development Timeline
 
@@ -75,6 +90,74 @@ The technical implementation focuses on modular design, allowing flexibility for
 | **Weeks 4–6** | Implement MVP features and basic GUI                   |  
 | **Weeks 7–8** | Test MVP and begin implementing stretch goals          |  
 | **Week 9** | Finalize features, optimize performance, and prepare documentation |
+
+## Sub-group Development Timeline
+
+### Backend Developers
+- **Weeks 2–3**:
+    - **Milestone 1**: Set up development environment and integrate FFmpeg library for video decoding.
+    - **Milestone 2**: Define backend architecture and modular design (e.g., separate modules for playback, subtitle processing, and video file management).
+    - **Milestone 3**: Complete initial implementation of basic video decoding and playback functionality.
+
+- **Weeks 4–6**:
+    - **Milestone 4**: Implement core features, such as video decoding, playback control, and subtitle support.
+    - **Milestone 5**: Ensure video playback synchronizes properly with subtitles (including auto-generated captions).
+    - **Milestone 6**: Test basic video playback functionality on at least two different file types.
+
+- **Weeks 7–8**:
+    - **Milestone 7**: Implement stretch goals, such as video editing or transcoding features (e.g., trim, rotate, etc.).
+    - **Milestone 8**: Optimize multithreading for video decoding and performance enhancements (e.g., load time improvements).
+    - **Milestone 9**: Complete integration of backend components with frontend for seamless UI interaction.
+
+- **Week 9**:
+    - **Milestone 10**: Finalize backend features and optimize for performance.
+    - **Milestone 11**: Complete backend testing (unit tests and performance testing), ensuring all components are error-free and stable.
+    - **Milestone 12**: Provide final integration support for the frontend team.
+
+### Frontend Developer
+- **Weeks 2–3**:
+    - **Milestone 1**: Set up ImGui for UI development and create initial wireframes and UI mockups.
+    - **Milestone 2**: Implement basic layout of the user interface, including video display and control buttons (play, pause, stop, etc.).
+    - **Milestone 3**: Collaborate with backend developers to ensure seamless video rendering from the backend.
+
+- **Weeks 4–6**:
+    - **Milestone 4**: Develop core UI components for video playback controls, including pause, resume, volume control, and timeline.
+    - **Milestone 5**: Implement a video file explorer and ensure that it integrates with the backend for file loading.
+    - **Milestone 6**: Complete basic styling and responsive design for desktop and mobile layouts.
+
+- **Weeks 7–8**:
+    - **Milestone 7**: Integrate additional features such as video quality settings, subtitle toggle, and playback speed control.
+    - **Milestone 8**: Implement accessibility features such as color contrast adjustments, and user preference storage.
+    - **Milestone 9**: Begin testing with real user data, ensuring the UI is intuitive and responsive on various screen sizes.
+
+- **Week 9**:
+    - **Milestone 10**: Finalize UI design and fix any UI-related bugs.
+    - **Milestone 11**: Ensure full integration with the backend (e.g., ensure video playback controls and subtitle syncing are functioning properly).
+    - **Milestone 12**: Conduct user acceptance testing (UAT) to ensure the UI meets end-user expectations.
+
+### Testers
+- **Weeks 2–3**:
+    - **Milestone 1**: Set up test environments on multiple platforms (Windows, Mac, Linux) and configure CI/CD pipelines for automated testing.
+    - **Milestone 2**: Define test cases and scenarios based on project requirements, such as video playback, subtitle synchronization, and basic UI interactions.
+
+- **Weeks 4–6**:
+    - **Milestone 3**: Perform initial testing of the video decoding, playback control, and subtitle features.
+    - **Milestone 4**: Execute integration testing between frontend and backend, ensuring seamless interaction between UI and video playback functions.
+    - **Milestone 5**: Document and report bugs, ensuring each issue is tracked and prioritized for resolution.
+
+- **Weeks 7–8**:
+    - **Milestone 6**: Conduct performance and load testing (e.g., video file size handling, multiple subtitle formats, various video resolutions).
+    - **Milestone 7**: Test cross-platform compatibility, ensuring the app functions properly across all targeted operating systems.
+    - **Milestone 8**: Verify all stretch goals are functioning correctly (e.g., video editing features, subtitle translation).
+
+- **Week 9**:
+    - **Milestone 9**: Perform final regression testing to ensure no new issues have been introduced.
+    - **Milestone 10**: Finalize test documentation, provide feedback to frontend and backend teams on any last-minute issues.
+    - **Milestone 11**: Ensure all project requirements are met, including usability, stability, and cross-platform compatibility.
+
+
+### Soliciting Feedback
+External feedback will be most useful during weeks 5-6 when the MVP is completed. At this stage, we will have implemented the core features of the app, such as video playback, subtitle integration, and basic UI functionality. Soliciting feedback from peers, friends, and potential users will allow us to identify usability issues, improve user experience, and ensure the app meets the expectations of a diverse user base. We will gather feedback through structured user testing sessions, surveys, and informal reviews to assess how well the app performs in real-world scenarios. This feedback will be invaluable for refining the app's design, identifying any overlooked bugs, and ensuring that the final product aligns with user needs before moving into final development and optimization stages.
 
 ## Communication
 
