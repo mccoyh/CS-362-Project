@@ -38,7 +38,6 @@
 | Alexander Martin | Developer |  
 | Thai Le          | Developer |
 | Reynaud Hunter   | Developer |
-| Nam Long Tran    | Developer |
 
 ## Product Description
 
