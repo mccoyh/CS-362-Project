@@ -96,17 +96,25 @@ The technical implementation focuses on modular design, allowing flexibility for
 ## Features
 
 ### Major Features (MVP)
-1. Play MP4 video files.
-2. Pause and resume playback.
-3. Fast-forward and rewind.
-4. Close Caption.
-5. Simple Video Edits (trim and stitch).
-6. Custom Playback Speed. 
-7. Subtitle Translation
+
+1. **Video Playback**: Seamless playback of common video formats (e.g., MP4, MKV, AVI).
+2. **Playback Controls**: Play, pause, fast-forward, rewind, and seek functionality.
+3. **Custom Playback Speed**: Adjust video playback speed dynamically (e.g., 0.5x, 1x, 2x).
+4. **Closed Captioning**: Display synchronized captions during video playback.
+5. **Subtitle Translation**: Translate subtitles to different languages in real time.
+6. **Quick Edits**: Trim, stitch, and make basic edits to video files within the application.
+7. **Playlist Support**: Create, save, and play video playlists with customizable playback order.
+8. **Audio Transcription**: Generate text transcriptions from video or audio files.
 
 ### Stretch Goals
-1. Cross Platform.
-2. Software Hub for Video Sharing API's.
+
+1. **Cross-Platform Compatibility**: Develop the application for Windows, macOS, and Linux.
+2. **Video Sharing API Integration**: Enable uploading, downloading, and streaming via third-party services like YouTube or Vimeo.
+3. **Advanced Video Editing**: Add features such as cropping, color adjustments, and video effects.
+4. **Cloud Integration**: Allow users to sync playlists and video libraries with cloud services.
+5. **Hardware Acceleration**: Optimize video playback using GPU acceleration for improved performance.
+6. **Theme Customization**: Provide multiple themes (e.g., dark mode, high-contrast mode) for better accessibility.
+
 
 ## Development Timeline
 
