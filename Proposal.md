@@ -79,6 +79,9 @@ The project’s structure is designed to maximize efficiency and ensure high-qua
 
 This structure balances the need for robust backend development with a focused frontend vision and comprehensive testing, ensuring that the application’s performance, usability, and functionality are all top-notch.
 
+### Fit to Expertise
+The roles were carefully assigned based on the individual team members’ expertise and prior experience to ensure that each member is contributing in an area they excel in. Backend developers were selected for their strong understanding of performance optimization, API integration, and media processing, while the frontend developer was chosen for their proficiency in designing intuitive user interfaces that align with the app’s simplicity goals. The testers bring a keen eye for detail and a deep understanding of quality assurance practices, ensuring that the app is both stable and user-friendly. This approach leverages the team’s strengths, allowing each member to contribute effectively to the project’s success.
+
 ## Development Timeline
 
 | **Week(s)** | **Focus Area**                                         |  
