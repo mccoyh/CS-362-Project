@@ -91,6 +91,60 @@ The roles were carefully assigned based on the individual team members’ expert
 | **Weeks 7–8** | Test MVP and begin implementing stretch goals          |  
 | **Week 9** | Finalize features, optimize performance, and prepare documentation |
 
+### Backend Developers
+- **Weeks 2–3**:
+    - Research and setup environment, including FFmpeg integration and multithreading libraries.
+    - Begin planning and structuring core backend functionalities such as video decoding, subtitle support, and file management.
+
+- **Weeks 4–6**:
+    - Implement the primary backend components, focusing on video playback, decoding, and storage handling.
+    - Integrate subtitle and caption support, ensuring synchronization with video playback.
+    - Begin creating modular and reusable backend code, focusing on performance optimization.
+
+- **Weeks 7–8**:
+    - Continue refining backend features by implementing stretch goals like video editing or transcoding features.
+    - Optimize performance, handling edge cases, memory management, and multithreading improvements.
+
+- **Week 9**:
+    - Finalize backend components, ensuring full integration with the frontend.
+    - Perform extensive testing on backend functionalities, including API stability and error handling.
+    - Optimize performance further and assist in final integration.
+
+### Frontend Developer
+- **Weeks 2–3**:
+    - Research and set up UI frameworks, focusing on ImGui and integrating it with the backend.
+    - Design a wireframe or mock-up of the initial user interface, ensuring alignment with the overall vision of simplicity and accessibility.
+
+- **Weeks 4–6**:
+    - Begin implementing the user interface (UI) components, focusing on basic layout and core functionality like video playback controls.
+    - Work closely with backend developers to ensure seamless communication between UI and backend, particularly for video rendering and subtitle synchronization.
+
+- **Weeks 7–8**:
+    - Enhance UI with additional features like playback settings, advanced controls, and media browsing.
+    - Implement stretch goals related to the UI, such as integrating accessibility features or extending support for various video formats.
+
+- **Week 9**:
+    - Finalize and polish the UI, ensuring responsiveness and user experience is smooth.
+    - Assist backend developers in integration and testing to ensure a seamless user experience from frontend to backend.
+
+### Testers
+- **Weeks 2–3**:
+    - Plan the testing strategy, including unit tests, integration tests, and cross-platform compatibility tests.
+    - Set up test environments and ensure all tools are in place for continuous integration (CI) testing.
+
+- **Weeks 4–6**:
+    - Begin testing core features as the backend and frontend teams implement the MVP.
+    - Focus on testing video decoding, playback functionality, subtitle integration, and the basic user interface.
+
+- **Weeks 7–8**:
+    - Conduct stress tests, performance tests, and test edge cases (e.g., handling large video files, compatibility with different operating systems).
+    - Begin verifying and validating the stretch goals as they are implemented, ensuring the features work as expected.
+
+- **Week 9**:
+    - Finalize testing of all features, verifying the stability and performance of the application.
+    - Provide detailed feedback for final adjustments before release, focusing on bug fixes, usability improvements, and cross-platform consistency.
+
+
 ## Communication
 
 ### Communication Guidelines
