@@ -91,58 +91,69 @@ The roles were carefully assigned based on the individual team members’ expert
 | **Weeks 7–8** | Test MVP and begin implementing stretch goals          |  
 | **Week 9** | Finalize features, optimize performance, and prepare documentation |
 
+## Sub-group Development Timeline
+
 ### Backend Developers
 - **Weeks 2–3**:
-    - Research and setup environment, including FFmpeg integration and multithreading libraries.
-    - Begin planning and structuring core backend functionalities such as video decoding, subtitle support, and file management.
+    - **Milestone 1**: Set up development environment and integrate FFmpeg library for video decoding.
+    - **Milestone 2**: Define backend architecture and modular design (e.g., separate modules for playback, subtitle processing, and video file management).
+    - **Milestone 3**: Complete initial implementation of basic video decoding and playback functionality.
 
 - **Weeks 4–6**:
-    - Implement the primary backend components, focusing on video playback, decoding, and storage handling.
-    - Integrate subtitle and caption support, ensuring synchronization with video playback.
-    - Begin creating modular and reusable backend code, focusing on performance optimization.
+    - **Milestone 4**: Implement core features, such as video decoding, playback control, and subtitle support.
+    - **Milestone 5**: Ensure video playback synchronizes properly with subtitles (including auto-generated captions).
+    - **Milestone 6**: Test basic video playback functionality on at least two different file types.
 
 - **Weeks 7–8**:
-    - Continue refining backend features by implementing stretch goals like video editing or transcoding features.
-    - Optimize performance, handling edge cases, memory management, and multithreading improvements.
+    - **Milestone 7**: Implement stretch goals, such as video editing or transcoding features (e.g., trim, rotate, etc.).
+    - **Milestone 8**: Optimize multithreading for video decoding and performance enhancements (e.g., load time improvements).
+    - **Milestone 9**: Complete integration of backend components with frontend for seamless UI interaction.
 
 - **Week 9**:
-    - Finalize backend components, ensuring full integration with the frontend.
-    - Perform extensive testing on backend functionalities, including API stability and error handling.
-    - Optimize performance further and assist in final integration.
+    - **Milestone 10**: Finalize backend features and optimize for performance.
+    - **Milestone 11**: Complete backend testing (unit tests and performance testing), ensuring all components are error-free and stable.
+    - **Milestone 12**: Provide final integration support for the frontend team.
 
 ### Frontend Developer
 - **Weeks 2–3**:
-    - Research and set up UI frameworks, focusing on ImGui and integrating it with the backend.
-    - Design a wireframe or mock-up of the initial user interface, ensuring alignment with the overall vision of simplicity and accessibility.
+    - **Milestone 1**: Set up ImGui for UI development and create initial wireframes and UI mockups.
+    - **Milestone 2**: Implement basic layout of the user interface, including video display and control buttons (play, pause, stop, etc.).
+    - **Milestone 3**: Collaborate with backend developers to ensure seamless video rendering from the backend.
 
 - **Weeks 4–6**:
-    - Begin implementing the user interface (UI) components, focusing on basic layout and core functionality like video playback controls.
-    - Work closely with backend developers to ensure seamless communication between UI and backend, particularly for video rendering and subtitle synchronization.
+    - **Milestone 4**: Develop core UI components for video playback controls, including pause, resume, volume control, and timeline.
+    - **Milestone 5**: Implement a video file explorer and ensure that it integrates with the backend for file loading.
+    - **Milestone 6**: Complete basic styling and responsive design for desktop and mobile layouts.
 
 - **Weeks 7–8**:
-    - Enhance UI with additional features like playback settings, advanced controls, and media browsing.
-    - Implement stretch goals related to the UI, such as integrating accessibility features or extending support for various video formats.
+    - **Milestone 7**: Integrate additional features such as video quality settings, subtitle toggle, and playback speed control.
+    - **Milestone 8**: Implement accessibility features such as color contrast adjustments, and user preference storage.
+    - **Milestone 9**: Begin testing with real user data, ensuring the UI is intuitive and responsive on various screen sizes.
 
 - **Week 9**:
-    - Finalize and polish the UI, ensuring responsiveness and user experience is smooth.
-    - Assist backend developers in integration and testing to ensure a seamless user experience from frontend to backend.
+    - **Milestone 10**: Finalize UI design and fix any UI-related bugs.
+    - **Milestone 11**: Ensure full integration with the backend (e.g., ensure video playback controls and subtitle syncing are functioning properly).
+    - **Milestone 12**: Conduct user acceptance testing (UAT) to ensure the UI meets end-user expectations.
 
 ### Testers
 - **Weeks 2–3**:
-    - Plan the testing strategy, including unit tests, integration tests, and cross-platform compatibility tests.
-    - Set up test environments and ensure all tools are in place for continuous integration (CI) testing.
+    - **Milestone 1**: Set up test environments on multiple platforms (Windows, Mac, Linux) and configure CI/CD pipelines for automated testing.
+    - **Milestone 2**: Define test cases and scenarios based on project requirements, such as video playback, subtitle synchronization, and basic UI interactions.
 
 - **Weeks 4–6**:
-    - Begin testing core features as the backend and frontend teams implement the MVP.
-    - Focus on testing video decoding, playback functionality, subtitle integration, and the basic user interface.
+    - **Milestone 3**: Perform initial testing of the video decoding, playback control, and subtitle features.
+    - **Milestone 4**: Execute integration testing between frontend and backend, ensuring seamless interaction between UI and video playback functions.
+    - **Milestone 5**: Document and report bugs, ensuring each issue is tracked and prioritized for resolution.
 
 - **Weeks 7–8**:
-    - Conduct stress tests, performance tests, and test edge cases (e.g., handling large video files, compatibility with different operating systems).
-    - Begin verifying and validating the stretch goals as they are implemented, ensuring the features work as expected.
+    - **Milestone 6**: Conduct performance and load testing (e.g., video file size handling, multiple subtitle formats, various video resolutions).
+    - **Milestone 7**: Test cross-platform compatibility, ensuring the app functions properly across all targeted operating systems.
+    - **Milestone 8**: Verify all stretch goals are functioning correctly (e.g., video editing features, subtitle translation).
 
 - **Week 9**:
-    - Finalize testing of all features, verifying the stability and performance of the application.
-    - Provide detailed feedback for final adjustments before release, focusing on bug fixes, usability improvements, and cross-platform consistency.
+    - **Milestone 9**: Perform final regression testing to ensure no new issues have been introduced.
+    - **Milestone 10**: Finalize test documentation, provide feedback to frontend and backend teams on any last-minute issues.
+    - **Milestone 11**: Ensure all project requirements are met, including usability, stability, and cross-platform compatibility.
 
 
 ## Communication
