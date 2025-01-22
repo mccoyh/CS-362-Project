@@ -115,5 +115,12 @@ A successful implementation will provide users with a dependable, user-friendly 
     Extensions: User cancels and exits editing clips.   
     Exceptions:  User is unable to upload an another clip. User is unable to save the video. User is unable to trim or stitch clips.
 
+## Non-functional Requirements
+
+## External Requirements
+    1. The product must be robust against errors, such as invalid video formats and other invalid user inputs. 
+    2. The application must be able to download, install, and run.
+    3. The software must build from source so that developers can add new video playing and editing features. 
+    4. Each use case and main feature must not require more resources than available to be completed during the term. 
 ## Conclusion
 This project delivers a streamlined desktop video player tailored for efficiency and usability. By maintaining a clear focus on core features and achievable goals, we aim to deliver a polished, functional product within the timeline.
