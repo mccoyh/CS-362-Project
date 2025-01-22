@@ -58,14 +58,26 @@ The technical implementation focuses on modular design, allowing flexibility for
 
 ## Team Members and Roles
 
-| **Team Member**  | **Role**  |  
-|------------------|-----------|  
-| Hunter McCoy     | Developer |  
-| Quinton Gonzales | Developer |  
-| Jared Northrop   | Developer |  
-| Alexander Martin | Developer |  
-| Thai Le          | Developer |
-| Reynaud Hunter   | Developer |
+| **Team Member**  | **Role**           |  
+|------------------|--------------------|  
+| Hunter McCoy     | Backend Developer  |  
+| Quinton Gonzales | Tester             |  
+| Jared Northrop   | Backend Developer  |  
+| Alexander Martin | Backend Developer  |  
+| Thai Le          | Tester             |
+| Reynaud Hunter   | Frontend Developer |
+
+### Reasoning for Roles
+
+The project’s structure is designed to maximize efficiency and ensure high-quality development, given the scope and complexity of the desktop media player application.
+
+- **Backend Developers (3)**: The decision to have three backend developers is essential for creating a solid and performant application. Since the core functionality of the media player (such as video decoding, playback control, and subtitle processing) is handled in the backend, it’s crucial to have sufficient resources dedicated to these complex tasks. The backend team will ensure that the application’s foundation is reliable, scalable, and optimized. Their work will include integrating libraries like FFmpeg and handling multithreading, file management, and performance optimizations.
+
+- **Frontend Developer (1)**: With one dedicated frontend developer, we ensure a unified and cohesive user interface (UI) design. This role focuses on translating the backend functionality into an intuitive and aesthetically pleasing UI, making the player accessible and easy to use. The frontend developer will collaborate closely with backend developers to ensure that the user interface interacts seamlessly with the application’s core features. Having one frontend developer ensures a consistent design vision while minimizing the back-and-forth between team members, promoting efficiency and clarity in UI decisions.
+
+- **Testers (2)**: Testing is critical for ensuring the reliability and usability of the application. The two testers will work collaboratively to conduct thorough testing of the player’s features, including unit, integration, performance, and user acceptance testing. They will be responsible for identifying bugs and ensuring that the project requirements are met at every stage of development. With a dedicated testing team, feedback loops are shortened, and both frontend and backend developers can quickly address issues as they arise. Testers will also ensure that the application meets cross-platform expectations and that the user experience is smooth and intuitive.
+
+This structure balances the need for robust backend development with a focused frontend vision and comprehensive testing, ensuring that the application’s performance, usability, and functionality are all top-notch.
 
 ## Development Timeline
 
