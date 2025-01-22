@@ -98,22 +98,126 @@ A successful implementation will provide users with a dependable, user-friendly 
 
 
 ## Use Cases
-1. Simple Video Edits  
-    Actor: Product user  
-    Goal: Edit a videos length and combine clips together.   
-    Preconditions: The user opens the app and has a clip or clips to edit.  
-    Postconditions: A new video clip containing the users edit.  
-    List of steps:  
 
-        a. User enters edit view and active video is imported.  
-        b. User trims the video.  
-        c. User uploads another clip.   
-        d. User trims the second clip.  
-        e. User joins the clips together.
-        f. User saves the new clip.  
+### 1. **Audio Transcribing**
+**Actor**: Product user  
+**Trigger**: User selects an audio file or a video with audio for transcription.  
+**Preconditions**: The user has imported an audio or video file into the application.  
+**Postconditions (success scenario)**: A text document containing the transcribed audio is saved or displayed.  
+**Steps (success scenario)**:
+1. User navigates to the transcription feature.
+2. User selects an audio or video file.
+3. The application processes the file and generates a transcription.
+4. User reviews and edits the transcription if needed.
+5. User saves the transcription as a text file.
 
-    Extensions: User cancels and exits editing clips.   
-    Exceptions:  User is unable to upload an another clip. User is unable to save the video. User is unable to trim or stitch clips.
+**Extensions**: User cancels the transcription process.  
+**Exceptions**:
+- The file format is unsupported.
+- The transcription process fails due to poor audio quality or missing data.
+
+---
+
+### 2. **Closed Captioning**
+**Actor**: Product user  
+**Trigger**: User plays a video and enables the closed captioning feature.  
+**Preconditions**: The video file supports audio and is loaded into the application.  
+**Postconditions (success scenario)**: The application displays synchronized captions during playback.  
+**Steps (success scenario)**:
+1. User selects a video file to play.
+2. User enables closed captioning.
+3. The application generates or loads captions and synchronizes them with playback.
+4. User adjusts caption settings (e.g., font size, position).
+
+**Extensions**:
+- User modifies the caption file directly.
+- User disables closed captioning mid-playback.
+
+**Exceptions**:
+- Captions fail to load or generate.
+- The user cannot adjust caption settings.
+
+---
+
+### 3. **Software Hub for Various APIs**
+**Actor**: Product user  
+**Trigger**: User integrates third-party video-sharing services into the application.  
+**Preconditions**: The application supports the API of the selected service.  
+**Postconditions (success scenario)**: The user successfully uploads, downloads, or streams video content using the integrated API.  
+**Steps (success scenario)**:
+1. User navigates to the API integration menu.
+2. User selects a service to integrate.
+3. User authenticates with the third-party service.
+4. The application displays the integrated features (e.g., upload/download buttons).
+5. User interacts with the service via the application.
+
+**Extensions**: User removes or switches API integrations.  
+**Exceptions**:
+- Authentication fails.
+- API limitations or errors prevent successful interaction.
+
+---
+
+### 4. **Playlist Integration and Support**
+**Actor**: Product user  
+**Trigger**: User creates or imports a playlist.  
+**Preconditions**: The user has video files accessible for adding to a playlist.  
+**Postconditions (success scenario)**: The application plays the playlist in order, with options for customization.  
+**Steps (success scenario)**:
+1. User navigates to the playlist feature.
+2. User creates a new playlist or imports an existing one.
+3. User adds video files to the playlist.
+4. User customizes playback order or options.
+5. The playlist plays back as configured.
+
+**Extensions**:
+- User rearranges playlist order during playback.
+- User removes a file from the playlist.
+
+**Exceptions**:
+- File format of an added video is unsupported.
+- The playlist fails to save or load.
+
+---
+
+### 5. **Custom Playback Speed Adjustment**
+**Actor**: Product user  
+**Trigger**: User changes the playback speed of the current video.  
+**Preconditions**: A video file is loaded and playing.  
+**Postconditions (success scenario)**: The video plays at the adjusted speed without interruptions.  
+**Steps (success scenario)**:
+1. User opens the playback settings menu.
+2. User adjusts the speed using a slider or preset options (e.g., 0.5x, 1.0x, 2.0x).
+3. The application adjusts playback speed dynamically.
+
+**Extensions**:
+- User resets to the default playback speed.
+- User saves a custom speed for future use.
+
+**Exceptions**:
+- Playback becomes choppy due to hardware limitations.
+- Slider fails to adjust the speed accurately.
+
+---
+
+### 6. **Quick Edits**
+**Actor**: Product user  
+**Trigger**: User trims or edits a video directly within the application.  
+**Preconditions**: A video file is loaded into the application.  
+**Postconditions (success scenario)**: The edited video is saved as a new file.  
+**Steps (success scenario)**:
+1. User enters the edit view.
+2. User selects start and end points to trim.
+3. User applies the edit and previews the result.
+4. User saves the edited video to their desired location.
+
+**Extensions**:
+- User cancels the editing process.
+- User performs additional edits (e.g., cropping or adding effects).
+
+**Exceptions**:
+- Video fails to save.
+- The application crashes during editing.
 
 ## Non-functional Requirements
 
