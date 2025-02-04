@@ -1,4 +1,4 @@
 #include "Window.h"
 
-namespace vkEngine {
-} // vkEngine
+namespace VkEngine {
+} // VkEngine

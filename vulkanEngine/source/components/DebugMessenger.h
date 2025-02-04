@@ -3,7 +3,7 @@
 
 #include <vulkan/vulkan.h>
 
-namespace vkEngine {
+namespace VkEngine {
 
 class DebugMessenger {
 public:
@@ -24,6 +24,6 @@ private:
   VkInstance& instance;
 };
 
-} // vkEngine
+} // VkEngine
 
 #endif //DEBUGMESSENGER_H

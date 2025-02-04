@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <iostream>
 
-namespace vkEngine {
+namespace VkEngine {
   DebugMessenger::DebugMessenger(VkInstance& instance)
     : instance(instance)
   {
@@ -68,4 +68,4 @@ namespace vkEngine {
       default: return "unknown";
     }
   }
-} // vkEngine
+} // VkEngine

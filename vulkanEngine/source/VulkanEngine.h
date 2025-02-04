@@ -1,12 +1,12 @@
 #ifndef VULKANENGINE_H
 #define VULKANENGINE_H
 
-namespace vkEngine {
+namespace VkEngine {
 
 class VulkanEngine {
 
 };
 
-} // vkEngine
+} // VkEngine
 
 #endif //VULKANENGINE_H

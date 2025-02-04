@@ -1,4 +1,4 @@
 #include "VulkanEngine.h"
 
-namespace vkEngine {
-} // vkEngine
+namespace VkEngine {
+} // VkEngine

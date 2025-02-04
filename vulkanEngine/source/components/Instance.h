@@ -5,7 +5,7 @@
 #include <vector>
 #include <array>
 
-namespace vkEngine {
+namespace VkEngine {
 
 constexpr std::array<const char*, 1> validationLayers {
   "VK_LAYER_KHRONOS_validation"
@@ -26,6 +26,6 @@ private:
   static std::vector<const char*> getRequiredExtensions();
 };
 
-} // vkEngine
+} // VkEngine
 
 #endif //INSTANCE_H

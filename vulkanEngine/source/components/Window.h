@@ -1,12 +1,12 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-namespace vkEngine {
+namespace VkEngine {
 
 class Window {
 
 };
 
-} // vkEngine
+} // VkEngine
 
 #endif //WINDOW_H

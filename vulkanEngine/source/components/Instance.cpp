@@ -10,7 +10,7 @@ constexpr bool enableValidationLayers = false;
 constexpr bool enableValidationLayers = true;
 #endif
 
-namespace vkEngine {
+namespace VkEngine {
   Instance::Instance()
   {
     if (enableValidationLayers && !checkValidationLayerSupport())
@@ -101,4 +101,4 @@ namespace vkEngine {
 
     return extensions;
   }
-} // vkEngine
+} // VkEngine
