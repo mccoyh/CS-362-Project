@@ -1,6 +1,7 @@
 #include "Instance.h"
-#include <stdexcept>
 #include "DebugMessenger.h"
+#include <stdexcept>
+#include <unordered_set>
 #include <GLFW/glfw3.h>
 
 #ifdef NDEBUG
@@ -68,20 +69,16 @@ namespace vkEngine {
     std::vector<VkLayerProperties> availableLayers(layerCount);
     vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
 
+    // Use a hash set for quick lookups
+    std::unordered_set<std::string> availableLayerNames;
+    for (const auto& layer : availableLayers)
+    {
+      availableLayerNames.insert(layer.layerName);
+    }
+
     for (const char* layerName : validationLayers)
     {
-      bool layerFound = false;
-
-      for (const auto& layerProperties : availableLayers)
-      {
-        if (strcmp(layerName, layerProperties.layerName) == 0)
-        {
-          layerFound = true;
-          break;
-        }
-      }
-
-      if (!layerFound)
+      if (!availableLayerNames.contains(layerName))
       {
         return false;
       }
