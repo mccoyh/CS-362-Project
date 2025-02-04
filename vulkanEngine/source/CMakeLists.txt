@@ -12,6 +12,7 @@ add_library(${PROJECT_NAME}
   components/DebugMessenger.h
   components/Window.cpp
   components/Window.h
+  ../tests/window/main.cpp
 )
 
 # Vulkan
@@ -66,3 +67,14 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   glfw
   imgui
 )
+
+# Create Include Headers
+if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL ${CMAKE_SOURCE_DIR}/source)
+  file(COPY
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+    DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include/VulkanEngine
+    FILES_MATCHING
+    PATTERN "*.h"
+    PATTERN "include/*" EXCLUDE
+  )
+endif()
