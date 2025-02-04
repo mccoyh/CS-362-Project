@@ -6,6 +6,10 @@ set(BUILD_SHARED_LIBS ON)
 add_library(${PROJECT_NAME}
   source/VulkanEngine.h
   source/VulkanEngine.cpp
+  source/components/Instance.cpp
+  source/components/Instance.h
+  source/components/DebugMessenger.cpp
+  source/components/DebugMessenger.h
 )
 
 # Vulkan
