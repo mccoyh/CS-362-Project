@@ -10,6 +10,8 @@ add_library(${PROJECT_NAME}
   source/components/Instance.h
   source/components/DebugMessenger.cpp
   source/components/DebugMessenger.h
+  source/components/Window.cpp
+  source/components/Window.h
 )
 
 # Vulkan
