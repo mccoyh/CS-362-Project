@@ -1,12 +1,24 @@
 #ifndef VULKANENGINE_H
 #define VULKANENGINE_H
 
-namespace VkEngine {
+#include <memory>
 
-class VulkanEngine {
+namespace VkEngine {
+  class Instance;
+  class Window;
+
+  class VulkanEngine {
 public:
   VulkanEngine();
   ~VulkanEngine();
+
+  [[nodiscard]] bool isActive() const;
+
+  void render();
+
+private:
+  std::unique_ptr<Instance> instance;
+  std::shared_ptr<Window> window;
 };
 
 } // VkEngine
