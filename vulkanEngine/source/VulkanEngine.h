@@ -4,10 +4,11 @@
 #include <memory>
 
 namespace VkEngine {
-  class Instance;
-  class Window;
 
-  class VulkanEngine {
+class Instance;
+class Window;
+
+class VulkanEngine {
 public:
   VulkanEngine();
   ~VulkanEngine();
