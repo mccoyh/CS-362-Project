@@ -14,7 +14,7 @@ public:
   explicit LogicalDevice(const std::shared_ptr<PhysicalDevice>& physicalDevice);
   ~LogicalDevice();
 
-  VkDevice& getDevice();
+  [[nodiscard]] VkDevice& getDevice();
   void waitIdle() const;
 
   [[nodiscard]] const VkQueue& getGraphicsQueue() const;
@@ -42,6 +42,8 @@ private:
   void createDevice(const std::shared_ptr<PhysicalDevice>& physicalDevice);
 
   void createSyncObjects();
+
+  void destroySyncObjects() const;
 };
 
 } // VkEngine

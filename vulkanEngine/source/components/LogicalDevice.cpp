@@ -24,12 +24,7 @@ namespace VkEngine {
 
   LogicalDevice::~LogicalDevice()
   {
-    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-    {
-      vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
-      vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
-      vkDestroyFence(device, inFlightFences[i], nullptr);
-    }
+    destroySyncObjects();
 
     vkDestroyDevice(device, nullptr);
   }
@@ -185,6 +180,16 @@ namespace VkEngine {
       {
         throw std::runtime_error("failed to create graphics sync objects!");
       }
+    }
+  }
+
+  void LogicalDevice::destroySyncObjects() const
+  {
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+    {
+      vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
+      vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
+      vkDestroyFence(device, inFlightFences[i], nullptr);
     }
   }
 } // VkEngine
