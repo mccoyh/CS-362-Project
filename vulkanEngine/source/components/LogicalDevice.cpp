@@ -34,7 +34,7 @@ namespace VkEngine {
     vkDestroyDevice(device, nullptr);
   }
 
-  VkDevice LogicalDevice::getDevice() const
+  VkDevice& LogicalDevice::getDevice()
   {
     return device;
   }
