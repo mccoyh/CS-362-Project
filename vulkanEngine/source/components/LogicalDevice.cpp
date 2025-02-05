@@ -44,12 +44,12 @@ namespace VkEngine {
     vkDeviceWaitIdle(device);
   }
 
-  VkQueue& LogicalDevice::getGraphicsQueue()
+  const VkQueue& LogicalDevice::getGraphicsQueue() const
   {
     return graphicsQueue;
   }
 
-  VkQueue& LogicalDevice::getPresentQueue()
+  const VkQueue& LogicalDevice::getPresentQueue() const
   {
     return presentQueue;
   }

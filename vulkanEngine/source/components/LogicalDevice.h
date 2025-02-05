@@ -17,8 +17,8 @@ public:
   VkDevice& getDevice();
   void waitIdle() const;
 
-  VkQueue& getGraphicsQueue();
-  VkQueue& getPresentQueue();
+  [[nodiscard]] const VkQueue& getGraphicsQueue() const;
+  [[nodiscard]] const VkQueue& getPresentQueue() const;
 
   void submitGraphicsQueue(uint32_t currentFrame, const VkCommandBuffer* commandBuffer) const;
 
