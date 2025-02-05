@@ -13,6 +13,8 @@ add_library(${PROJECT_NAME}
   components/Window.cpp
   components/Window.h
   ../tests/window/main.cpp
+  components/PhysicalDevice.cpp
+  components/PhysicalDevice.h
 )
 
 # Vulkan
@@ -69,7 +71,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 )
 
 # Create Include Headers
-if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL ${CMAKE_SOURCE_DIR}/source)
+if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL ${CMAKE_SOURCE_DIR}/vulkanEngine/source)
   file(COPY
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
     DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include/VulkanEngine
