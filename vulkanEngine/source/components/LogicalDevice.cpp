@@ -54,7 +54,7 @@ namespace VkEngine {
     return presentQueue;
   }
 
-  void LogicalDevice::submitGraphicsQueue(uint32_t currentFrame, const VkCommandBuffer *commandBuffer) const
+  void LogicalDevice::submitGraphicsQueue(const uint32_t currentFrame, const VkCommandBuffer* commandBuffer) const
   {
     const std::array waitSemaphores = {
       imageAvailableSemaphores[currentFrame]
@@ -91,10 +91,10 @@ namespace VkEngine {
     vkResetFences(device, 1, &inFlightFences[currentFrame]);
   }
 
-  VkResult LogicalDevice::queuePresent(uint32_t currentFrame, const VkSwapchainKHR& swapchain,
+  VkResult LogicalDevice::queuePresent(const uint32_t currentFrame, const VkSwapchainKHR& swapchain,
                                        const uint32_t* imageIndex) const
   {
-    const std::array<VkSemaphore, 1> waitSemaphores = {
+    const std::array waitSemaphores = {
       renderFinishedSemaphores[currentFrame]
     };
 
@@ -111,14 +111,14 @@ namespace VkEngine {
     return vkQueuePresentKHR(presentQueue, &presentInfo);
   }
 
-  VkResult LogicalDevice::acquireNextImage(uint32_t currentFrame, const VkSwapchainKHR& swapchain,
+  VkResult LogicalDevice::acquireNextImage(const uint32_t currentFrame, const VkSwapchainKHR& swapchain,
                                            uint32_t* imageIndex) const
   {
     return vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, imageAvailableSemaphores[currentFrame],
                                  VK_NULL_HANDLE, imageIndex);
   }
 
-  void LogicalDevice::createDevice(const std::shared_ptr<PhysicalDevice> &physicalDevice)
+  void LogicalDevice::createDevice(const std::shared_ptr<PhysicalDevice>& physicalDevice)
   {
     auto [graphicsFamily, presentFamily] = physicalDevice->getQueueFamilies();
 
