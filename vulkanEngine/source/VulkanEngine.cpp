@@ -4,6 +4,12 @@
 #include "components/DebugMessenger.h"
 #include "components/PhysicalDevice.h"
 
+#ifdef NDEBUG
+constexpr bool enableValidationLayers = false;
+#else
+constexpr bool enableValidationLayers = true;
+#endif
+
 namespace VkEngine {
   VulkanEngine::VulkanEngine()
   {
@@ -11,7 +17,10 @@ namespace VkEngine {
 
     instance = std::make_unique<Instance>();
 
-    debugMessenger = std::make_unique<DebugMessenger>(instance->getInstance());
+    if (enableValidationLayers)
+    {
+      debugMessenger = std::make_unique<DebugMessenger>(instance->getInstance());
+    }
 
     window = std::make_shared<Window>(600, 400, "Vulkan Engine", instance->getInstance(), false);
 
