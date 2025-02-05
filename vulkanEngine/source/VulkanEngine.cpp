@@ -2,6 +2,7 @@
 #include "components/Instance.h"
 #include "components/Window.h"
 #include "components/DebugMessenger.h"
+#include "components/LogicalDevice.h"
 #include "components/PhysicalDevice.h"
 
 #ifdef NDEBUG
@@ -25,6 +26,8 @@ namespace VkEngine {
     window = std::make_shared<Window>(600, 400, "Vulkan Engine", instance->getInstance(), false);
 
     physicalDevice = std::make_shared<PhysicalDevice>(instance->getInstance(), window->getSurface());
+
+    logicalDevice = std::make_shared<LogicalDevice>(physicalDevice);
   }
 
   VulkanEngine::~VulkanEngine()

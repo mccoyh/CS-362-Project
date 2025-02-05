@@ -8,6 +8,7 @@ class Instance;
 class DebugMessenger;
 class Window;
 class PhysicalDevice;
+class LogicalDevice;
 
 class VulkanEngine {
 public:
@@ -23,6 +24,7 @@ private:
   std::unique_ptr<DebugMessenger> debugMessenger;
   std::shared_ptr<Window> window;
   std::shared_ptr<PhysicalDevice> physicalDevice;
+  std::shared_ptr<LogicalDevice> logicalDevice;
 };
 
 } // VkEngine

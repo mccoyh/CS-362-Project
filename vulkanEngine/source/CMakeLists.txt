@@ -15,6 +15,8 @@ add_library(${PROJECT_NAME}
   ../tests/window/main.cpp
   components/PhysicalDevice.cpp
   components/PhysicalDevice.h
+  components/LogicalDevice.cpp
+  components/LogicalDevice.h
 )
 
 # Vulkan
