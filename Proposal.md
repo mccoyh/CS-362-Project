@@ -50,11 +50,20 @@ The technical implementation focuses on modular design, allowing flexibility for
 ## Risks, Team Information, and Timeline
 ### Risks and Mitigation
 1. **Library Familiarity**: Some team members are unfamiliar with FFmpeg and ImGui.
+    - **Likelyhood**: High
     - **Mitigation**: Allocate time for learning resources and prototyping early in the project.
 2. **Coordination Challenges**: With a large team, maintaining consistent coding standards may be difficult.
+    - **Likelyhood**: Medium
     - **Mitigation**: Use detailed style guides and conduct weekly code reviews.
 3. **Time Constraints**: Balancing project work with coursework may lead to delays.
+    - **Likelyhood**: High
     - **Mitigation**: Set clear milestones and prioritize high-impact tasks.
+4. **Familiarity with Build System**: Some members are unfamiliar with Cmake. 
+    - **Likelyhood**: Medium
+    - **Mitigation**: Members with Cmake expirience will provide examples of Cmake structure and assistance.
+5. **Delayed task completion due to workload or unforseen complications**: Tasks may not completed on time due to unforseen problems. Due to the time constraint above this needs to be handled quickly. 
+    - **Likelyhood**: Medium
+    - **Mitigation**: Establish consistent communication through meeting to ensure members can complete on time. Redistribute work when problems arise. 
 
 ## Team Members and Roles
 
@@ -328,6 +337,25 @@ External feedback will be most useful during weeks 5-6 when the MVP is completed
 **Exceptions**:
 - Video fails to save.
 - The application crashes during editing.
+
+## Software Architecture
+**User Interface**:
+The UI needs to provide simple and clear options to the user to interact with the media player. Videos need to render and playback smoothly. 
+- The UI links user actions with the libraries used perform all the features and specifications of the application. 
+
+**Backend Libraries**:
+Libraries are used to facilitate the core functionalities of application. Each implemented library focuses on a single functionality of the application, creating a modular design. 
+- The libraries are called by the UI to implement their functionalities. Libraries also link to third party or standard libraries to optimally perform complex operations. 
+
+## Software Design
+**User Interface**:
+The UI wil be implemented through a the IMGUI library. This component is responsible for collecting the users actions and displaying the results to the user. 
+
+**Backend Libraries**:
+The backend libaries provide the functionality of the applicaiton. They integrate functions provided by third party and standard libraries to fit the needs of the media player as well as create the workflow between operations. Each backend library is defined by a core feature of the media player creating a modular design where each feature works independently. The third party libraries include IMGUI, FFMPeg, Whisper ASR CPP, and Vulkan SDK.
+
+## Coding guidlines
+The C++ Core Guidlines will be used to create a constistent coding style between project members. These are common guidelines widely used and adopted in the world. The guidelines specify ways to enforce their rules through several options: static analysis, compiler, run-time checks, and human review. All pull request to the main branch require approval from another member, ensuring multiple sets of eyes have looked over the code for consistent style and best practices. 
 
 ## Conclusion
 The Desktop Media Player project combines innovative features with a user-centric approach to create a streamlined, reliable video playback and editing tool. By prioritizing simplicity, accessibility, and performance, this project aims to fill the gap between complex professional tools and basic video players. With a strong focus on modularity and cross-platform capabilities, the player offers an adaptable solution for modern media consumption and creation.
