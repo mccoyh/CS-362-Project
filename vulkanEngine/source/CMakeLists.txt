@@ -12,7 +12,6 @@ add_library(${PROJECT_NAME}
   components/DebugMessenger.h
   components/Window.cpp
   components/Window.h
-  ../tests/window/main.cpp
   components/PhysicalDevice.cpp
   components/PhysicalDevice.h
   components/LogicalDevice.cpp
