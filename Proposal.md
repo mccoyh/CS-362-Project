@@ -47,10 +47,7 @@ A successful implementation will redefine how users interact with video playback
   - **SDL3** for cross-platform audio output.  
 - **Tools**:  
   - **Git & CMake** streamline development and build processes.  
-  - **GitHub Actions** enables a simple **CI/CD pipeline** for automated builds and testing.  
-  - **Unit & Integration Testing** ensures stability, with a focus on audio/video sync and performance.  
-  - **Profiling Tools (e.g., Valgrind, RenderDoc, Perf)** optimize memory usage and rendering performance.  
-
+  - **GitHub Actions** enables a simple **CI/CD pipeline** for automated builds and testing.
 
 The technical implementation focuses on modular design, allowing flexibility for future feature additions and performance optimizations.
 
