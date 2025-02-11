@@ -13,7 +13,7 @@ extern "C" {
 #include <libavutil/avutil.h>
 #include <libswscale/swscale.h>
 }
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 
 //checks if file exists
 inline bool exists (const std::string& name);

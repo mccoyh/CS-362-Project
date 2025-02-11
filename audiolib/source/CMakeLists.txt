@@ -8,11 +8,11 @@ add_library(${PROJECT_NAME}
   audio.h
 )
 
-find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS})
+find_package(SDL3 REQUIRED)
+include_directories(${SDL3_INCLUDE_DIRS})
 
-add_executable(SDL2Test Main.cpp)
-target_link_libraries(SDL2Test ${SDL2_LIBRARIES})
+add_executable(SDL3Test Main.cpp)
+target_link_libraries(SDL3Test ${SDL3_LIBRARIES})
 
 # Specify the components FFmpeg should have available
 set(FFMPEG_COMPONENTS avcodec avformat swscale avutil)
