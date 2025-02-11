@@ -61,16 +61,26 @@ jobs:
           sudo apt-get install -y libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev libvulkan-dev libgl1-mesa-dev glslang-tools
           sudo apt-get install -y ffmpeg libavcodec-dev libavformat-dev libswscale-dev libavutil-dev
 
-      - name: Install FFmpeg (Windows)
+      - name: Download FFmpeg (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-          choco install ffmpeg
+          Invoke-WebRequest -Uri "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl-shared.zip" -OutFile "ffmpeg.zip"
 
-      - name: Set FFmpeg paths (Windows)
+      - name: Extract FFmpeg (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-          set FFmpeg_INCLUDE_DIR=C:\ProgramData\chocolatey\lib\ffmpeg\tools\ffmpeg\include
-          set FFmpeg_LIBRARY_DIR=C:\ProgramData\chocolatey\lib\ffmpeg\tools\ffmpeg\lib
+          Expand-Archive -Path "ffmpeg.zip" -DestinationPath "C:\ffmpeg"
+
+      - name: Add FFmpeg to PATH (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          $env:Path = "C:\ffmpeg\ffmpeg-master-latest-win64-gpl-shared\bin" + ";" + $env:Path
+          echo "FFmpeg added to PATH"
+
+      - name: Verify FFmpeg version (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          ffmpeg -version
 
       - name: Prepare Vulkan SDK (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
