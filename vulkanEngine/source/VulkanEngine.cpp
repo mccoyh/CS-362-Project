@@ -20,12 +20,12 @@ namespace VkEngine {
 
     if (enableValidationLayers)
     {
-      debugMessenger = std::make_unique<DebugMessenger>(instance->getInstance());
+      debugMessenger = std::make_unique<DebugMessenger>(instance);
     }
 
-    window = std::make_shared<Window>(600, 400, "Vulkan Engine", instance->getInstance(), false);
+    window = std::make_shared<Window>(600, 400, "Vulkan Engine", instance, false);
 
-    physicalDevice = std::make_shared<PhysicalDevice>(instance->getInstance(), window->getSurface());
+    physicalDevice = std::make_shared<PhysicalDevice>(instance, window->getSurface());
 
     logicalDevice = std::make_shared<LogicalDevice>(physicalDevice);
   }

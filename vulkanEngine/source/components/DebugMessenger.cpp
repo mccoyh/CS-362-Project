@@ -1,18 +1,19 @@
 #include "DebugMessenger.h"
+#include "Instance.h"
 #include <stdexcept>
 #include <iostream>
 
 namespace VkEngine {
-  DebugMessenger::DebugMessenger(VkInstance& instance)
+  DebugMessenger::DebugMessenger(const std::shared_ptr<Instance>& instance)
     : instance(instance)
   {
     VkResult result;
     VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
     populateCreateInfo(debugCreateInfo);
 
-    if (const auto func = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT")); func != nullptr)
+    if (const auto func = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance->getInstance(), "vkCreateDebugUtilsMessengerEXT")); func != nullptr)
     {
-      result = func(instance, &debugCreateInfo, nullptr, &debugMessenger);
+      result = func(instance->getInstance(), &debugCreateInfo, nullptr, &debugMessenger);
     }
     else
     {
@@ -27,9 +28,9 @@ namespace VkEngine {
 
   DebugMessenger::~DebugMessenger()
   {
-    if (const auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT")); func != nullptr)
+    if (const auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance->getInstance(), "vkDestroyDebugUtilsMessengerEXT")); func != nullptr)
     {
-      func(instance, debugMessenger, nullptr);
+      func(instance->getInstance(), debugMessenger, nullptr);
     }
   }
 

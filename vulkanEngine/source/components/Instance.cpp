@@ -56,7 +56,7 @@ namespace VkEngine {
     vkDestroyInstance(instance, nullptr);
   }
 
-  VkInstance& Instance::getInstance()
+  VkInstance Instance::getInstance() const
   {
     return instance;
   }

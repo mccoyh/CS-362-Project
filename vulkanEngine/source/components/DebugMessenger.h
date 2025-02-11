@@ -2,12 +2,15 @@
 #define DEBUGMESSENGER_H
 
 #include <vulkan/vulkan.h>
+#include <memory>
 
 namespace VkEngine {
 
+class Instance;
+
 class DebugMessenger {
 public:
-  explicit DebugMessenger(VkInstance& instance);
+  explicit DebugMessenger(const std::shared_ptr<Instance>& instance);
   ~DebugMessenger();
 
   static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -21,7 +24,7 @@ public:
 
 private:
   VkDebugUtilsMessengerEXT debugMessenger = VK_NULL_HANDLE;
-  VkInstance& instance;
+  std::shared_ptr<Instance> instance;
 };
 
 } // VkEngine

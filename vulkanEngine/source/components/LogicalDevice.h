@@ -14,11 +14,11 @@ public:
   explicit LogicalDevice(const std::shared_ptr<PhysicalDevice>& physicalDevice);
   ~LogicalDevice();
 
-  [[nodiscard]] VkDevice& getDevice();
+  [[nodiscard]] VkDevice getDevice() const;
   void waitIdle() const;
 
-  [[nodiscard]] const VkQueue& getGraphicsQueue() const;
-  [[nodiscard]] const VkQueue& getPresentQueue() const;
+  [[nodiscard]] VkQueue getGraphicsQueue() const;
+  [[nodiscard]] VkQueue getPresentQueue() const;
 
   void submitGraphicsQueue(uint32_t currentFrame, const VkCommandBuffer* commandBuffer) const;
 

@@ -1,33 +1,32 @@
 #include "PhysicalDevice.h"
+#include "Instance.h"
 #include <stdexcept>
 #include <array>
 #include <set>
 
 namespace VkEngine {
-  PhysicalDevice::PhysicalDevice(VkInstance& instance, VkSurfaceKHR& surface)
-    : instance(instance), surface(surface), msaaSamples(VK_SAMPLE_COUNT_1_BIT)
+  PhysicalDevice::PhysicalDevice(const std::shared_ptr<Instance>& instance, VkSurfaceKHR& surface)
+    : surface(surface), msaaSamples(VK_SAMPLE_COUNT_1_BIT)
   {
-    pickPhysicalDevice();
+    pickPhysicalDevice(instance);
 
     queueFamilyIndices = findQueueFamilies(physicalDevice);
 
     swapChainSupportDetails = querySwapChainSupport(physicalDevice);
   }
 
-  VkPhysicalDevice& PhysicalDevice::getPhysicalDevice()
+  VkPhysicalDevice PhysicalDevice::getPhysicalDevice() const
   {
     return physicalDevice;
   }
 
-  QueueFamilyIndices& PhysicalDevice::getQueueFamilies()
+  QueueFamilyIndices PhysicalDevice::getQueueFamilies() const
   {
     return queueFamilyIndices;
   }
 
-  SwapChainSupportDetails& PhysicalDevice::getSwapChainSupport()
+  SwapChainSupportDetails PhysicalDevice::getSwapChainSupport() const
   {
-    swapChainSupportDetails = querySwapChainSupport(physicalDevice);
-
     return swapChainSupportDetails;
   }
 
@@ -36,10 +35,15 @@ namespace VkEngine {
     return msaaSamples;
   }
 
-  void PhysicalDevice::pickPhysicalDevice()
+  void PhysicalDevice::updateSwapChainSupportDetails()
+  {
+    swapChainSupportDetails = querySwapChainSupport(physicalDevice);
+  }
+
+  void PhysicalDevice::pickPhysicalDevice(const std::shared_ptr<Instance>& instance)
   {
     uint32_t deviceCount = 0;
-    vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+    vkEnumeratePhysicalDevices(instance->getInstance(), &deviceCount, nullptr);
 
     if (deviceCount == 0)
     {
@@ -47,7 +51,7 @@ namespace VkEngine {
     }
 
     std::vector<VkPhysicalDevice> devices(deviceCount);
-    vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
+    vkEnumeratePhysicalDevices(instance->getInstance(), &deviceCount, devices.data());
 
     for (const auto& device : devices)
     {

@@ -28,7 +28,7 @@ namespace VkEngine {
     vkDestroyDevice(device, nullptr);
   }
 
-  VkDevice& LogicalDevice::getDevice()
+  VkDevice LogicalDevice::getDevice() const
   {
     return device;
   }
@@ -38,12 +38,12 @@ namespace VkEngine {
     vkDeviceWaitIdle(device);
   }
 
-  const VkQueue& LogicalDevice::getGraphicsQueue() const
+  VkQueue LogicalDevice::getGraphicsQueue() const
   {
     return graphicsQueue;
   }
 
-  const VkQueue& LogicalDevice::getPresentQueue() const
+  VkQueue LogicalDevice::getPresentQueue() const
   {
     return presentQueue;
   }

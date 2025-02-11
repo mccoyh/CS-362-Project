@@ -16,7 +16,7 @@ public:
   Instance();
   ~Instance();
 
-  VkInstance& getInstance();
+  [[nodiscard]] VkInstance getInstance() const;
 
 private:
   VkInstance instance = VK_NULL_HANDLE;

@@ -1,8 +1,10 @@
 #include "Window.h"
+#include "Instance.h"
 #include <stdexcept>
 
 namespace VkEngine {
-  Window::Window(const int width, const int height, const char* title, VkInstance& instance, const bool fullscreen)
+  Window::Window(const int width, const int height, const char* title, const std::shared_ptr<Instance>& instance,
+                 const bool fullscreen)
     : instance(instance), mouseX(0), mouseY(0), scroll(0)
   {
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -44,7 +46,7 @@ namespace VkEngine {
 
   Window::~Window()
   {
-    vkDestroySurfaceKHR(instance, surface, nullptr);
+    vkDestroySurfaceKHR(instance->getInstance(), surface, nullptr);
 
     glfwDestroyWindow(window);
   }
@@ -130,7 +132,7 @@ namespace VkEngine {
 
   void Window::createSurface()
   {
-    if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS)
+    if (glfwCreateWindowSurface(instance->getInstance(), window, nullptr, &surface) != VK_SUCCESS)
     {
       throw std::runtime_error("failed to create window surface!");
     }
