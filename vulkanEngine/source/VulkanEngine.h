@@ -31,6 +31,9 @@ private:
   std::shared_ptr<SwapChain> swapChain;
   std::shared_ptr<RenderPass> renderPass;
 
+  uint32_t currentFrame;
+  bool framebufferResized;
+
   void doRendering();
 };
 

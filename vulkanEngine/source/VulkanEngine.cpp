@@ -6,6 +6,7 @@
 #include "components/PhysicalDevice.h"
 #include "components/SwapChain.h"
 #include "pipelines/RenderPass.h"
+#include <stdexcept>
 
 #ifdef NDEBUG
 constexpr bool enableValidationLayers = false;
@@ -14,7 +15,11 @@ constexpr bool enableValidationLayers = true;
 #endif
 
 namespace VkEngine {
+
+  constexpr int MAX_FRAMES_IN_FLIGHT = 2;
+
   VulkanEngine::VulkanEngine()
+    : currentFrame(0), framebufferResized(false)
   {
     glfwInit();
 
@@ -56,5 +61,6 @@ namespace VkEngine {
 
   void VulkanEngine::doRendering()
   {
+    currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
   }
 } // VkEngine
