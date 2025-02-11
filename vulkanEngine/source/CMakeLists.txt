@@ -18,6 +18,8 @@ add_library(${PROJECT_NAME}
   components/LogicalDevice.h
   utilities/Buffers.cpp
   utilities/Buffers.h
+  utilities/Images.cpp
+  utilities/Images.h
 )
 
 # Vulkan
