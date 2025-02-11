@@ -61,13 +61,23 @@ jobs:
           sudo apt-get install -y libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev libvulkan-dev libgl1-mesa-dev glslang-tools
           sudo apt-get install -y ffmpeg libavcodec-dev libavformat-dev libswscale-dev libavutil-dev
 
-      - name: Install FFmpeg (Windows)
+      - name: Download and Extract FFmpeg (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
-        run: choco install ffmpeg --confirm
+        shell: pwsh
+        run: |
+          # Download FFmpeg with development libraries (Headers and Static Libraries)
+          Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full.7z -OutFile ffmpeg.7z
+          # Extract the files
+          7z x ffmpeg.7z -oFFmpeg
+          # Set environment variables for CMake to locate the dev libraries
+          echo "FFMPEG_DIR=${{ github.workspace }}\FFmpeg\ffmpeg-release" >> $env:GITHUB_ENV
+          echo "CMAKE_PREFIX_PATH=${{ github.workspace }}\FFmpeg\ffmpeg-release;$env:CMAKE_PREFIX_PATH" >> $env:GITHUB_ENV
+          echo "CMAKE_INCLUDE_PATH=${{ github.workspace }}\FFmpeg\ffmpeg-release\include" >> $env:GITHUB_ENV
+          echo "CMAKE_LIBRARY_PATH=${{ github.workspace }}\FFmpeg\ffmpeg-release\lib" >> $env:GITHUB_ENV
 
-      - name: Verify FFmpeg Installation (Windows)
+      - name: Verify FFmpeg Libraries (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
-        run: ffmpeg -version
+        run: dir ${{ env.FFMPEG_DIR }}
 
       - name: Prepare Vulkan SDK (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
