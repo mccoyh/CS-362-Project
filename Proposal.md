@@ -44,7 +44,7 @@ A successful implementation will redefine how users interact with video playback
   - **ImGui** for a lightweight and responsive graphical interface.  
   - **Vulkan API** for high-performance video and GUI rendering.  
   - **Whisper ASR Library** for real-time automatic speech recognition and translations.  
-  - **SDL2** or **OpenAL** for cross-platform audio output.  
+  - **SDL3** for cross-platform audio output.  
 - **Tools**:  
   - **Git & CMake** streamline development and build processes.  
   - **GitHub Actions** enables a simple **CI/CD pipeline** for automated builds and testing.  
