@@ -1,6 +1,7 @@
 #ifndef VULKANENGINE_H
 #define VULKANENGINE_H
 
+#include "components/Window.h"
 #include <vulkan/vulkan.h>
 #include <memory>
 #include <vector>
@@ -53,6 +54,10 @@ private:
   void recordSwapchainCommandBuffer(const VkCommandBuffer& commandBuffer, uint32_t imageIndex) const;
 
   void doRendering();
+
+  void recreateSwapChain();
+
+  friend void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height);
 };
 
 } // VkEngine

@@ -145,4 +145,26 @@ namespace VkEngine {
   {
     currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
   }
+
+  void VulkanEngine::recreateSwapChain()
+  {
+    int width = 0, height = 0;
+    window->getFramebufferSize(&width, &height);
+    while (width == 0 || height == 0)
+    {
+      window->getFramebufferSize(&width, &height);
+      glfwWaitEvents();
+    }
+
+    logicalDevice->waitIdle();
+
+    framebuffer.reset();
+    swapChain.reset();
+
+    physicalDevice->updateSwapChainSupportDetails();
+
+    swapChain = std::make_shared<SwapChain>(physicalDevice, logicalDevice, window);
+    framebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, swapChain, commandPool, renderPass,
+                                                swapChain->getExtent());
+  }
 } // VkEngine

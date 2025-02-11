@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "Instance.h"
+#include "../VulkanEngine.h"
 #include <stdexcept>
 
 namespace VkEngine {
@@ -127,7 +128,8 @@ namespace VkEngine {
 
   void Window::framebufferResizeCallback(GLFWwindow* window, [[maybe_unused]] int width, [[maybe_unused]] int height)
   {
-    // TODO
+    const auto app = static_cast<VulkanEngine*>(glfwGetWindowUserPointer(window));
+    app->framebufferResized = true;
   }
 
   void Window::createSurface()
