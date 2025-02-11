@@ -1,6 +1,7 @@
 #ifndef VULKANENGINE_H
 #define VULKANENGINE_H
 
+#include "VulkanEngineOptions.h"
 #include "components/Window.h"
 #include <vulkan/vulkan.h>
 #include <memory>
@@ -19,7 +20,7 @@ class Framebuffer;
 
 class VulkanEngine {
 public:
-  VulkanEngine();
+  explicit VulkanEngine(const VulkanEngineOptions& vulkanEngineOptions);
   ~VulkanEngine();
 
   [[nodiscard]] bool isActive() const;
@@ -27,6 +28,8 @@ public:
   void render();
 
 private:
+  VulkanEngineOptions vulkanEngineOptions;
+
   std::shared_ptr<Instance> instance;
   std::unique_ptr<DebugMessenger> debugMessenger;
   std::shared_ptr<Window> window;

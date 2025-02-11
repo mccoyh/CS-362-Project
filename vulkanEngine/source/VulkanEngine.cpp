@@ -19,8 +19,8 @@ namespace VkEngine {
 
   constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-  VulkanEngine::VulkanEngine()
-    : currentFrame(0), framebufferResized(false)
+  VulkanEngine::VulkanEngine(const VulkanEngineOptions& vulkanEngineOptions)
+    : vulkanEngineOptions(vulkanEngineOptions), currentFrame(0), framebufferResized(false)
   {
     glfwInit();
 
@@ -57,7 +57,8 @@ namespace VkEngine {
       debugMessenger = std::make_unique<DebugMessenger>(instance);
     }
 
-    window = std::make_shared<Window>(600, 400, "Vulkan Engine", instance, false);
+    window = std::make_shared<Window>(vulkanEngineOptions.WINDOW_WIDTH, vulkanEngineOptions.WINDOW_HEIGHT,
+                                      vulkanEngineOptions.WINDOW_TITLE, instance, vulkanEngineOptions.FULLSCREEN);
 
     physicalDevice = std::make_shared<PhysicalDevice>(instance, window->getSurface());
 
