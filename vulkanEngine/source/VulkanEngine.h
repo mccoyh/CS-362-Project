@@ -30,6 +30,8 @@ private:
 
   std::shared_ptr<SwapChain> swapChain;
   std::shared_ptr<RenderPass> renderPass;
+
+  void doRendering();
 };
 
 } // VkEngine

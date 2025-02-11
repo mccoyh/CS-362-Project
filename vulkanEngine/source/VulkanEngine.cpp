@@ -50,5 +50,11 @@ namespace VkEngine {
   void VulkanEngine::render()
   {
     window->update();
+
+    doRendering();
+  }
+
+  void VulkanEngine::doRendering()
+  {
   }
 } // VkEngine
