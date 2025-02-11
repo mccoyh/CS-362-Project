@@ -74,8 +74,12 @@ jobs:
       - name: Add FFmpeg to PATH (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-          $env:Path = "C:\ffmpeg\ffmpeg-master-latest-win64-gpl-shared\bin" + ";" + $env:Path
+          $env:Path = "C:\ffmpeg\ffmpeg-master-latest-win64-gpl-shared" + ";" + $env:Path
           echo "FFmpeg added to PATH"
+
+      - name: Install FFmpeg (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: choco install ffmpeg --confirm
 
       - name: Verify FFmpeg version (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
