@@ -61,23 +61,31 @@ jobs:
           sudo apt-get install -y libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev libvulkan-dev libgl1-mesa-dev glslang-tools
           sudo apt-get install -y ffmpeg libavcodec-dev libavformat-dev libswscale-dev libavutil-dev
 
-      - name: Download and Extract FFmpeg (Windows)
+      - name: Install FFmpeg via vcpkg (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
-        shell: pwsh
         run: |
-          # Download FFmpeg with development libraries (Headers and Static Libraries)
-          Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full.7z -OutFile ffmpeg.7z
-          # Extract the files
-          7z x ffmpeg.7z -oFFmpeg
-          # Set environment variables for CMake to locate the dev libraries
-          echo "FFMPEG_DIR=${{ github.workspace }}\FFmpeg\ffmpeg-release" >> $env:GITHUB_ENV
-          echo "CMAKE_PREFIX_PATH=${{ github.workspace }}\FFmpeg\ffmpeg-release;$env:CMAKE_PREFIX_PATH" >> $env:GITHUB_ENV
-          echo "CMAKE_INCLUDE_PATH=${{ github.workspace }}\FFmpeg\ffmpeg-release\include" >> $env:GITHUB_ENV
-          echo "CMAKE_LIBRARY_PATH=${{ github.workspace }}\FFmpeg\ffmpeg-release\lib" >> $env:GITHUB_ENV
+          # Clone vcpkg and bootstrap it
+          git clone https://github.com/microsoft/vcpkg.git
+          cd vcpkg
+          .\bootstrap-vcpkg.bat
 
-      - name: Verify FFmpeg Libraries (Windows)
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: dir ${{ env.FFMPEG_DIR }}
+          # Install FFmpeg with development libraries
+          .\vcpkg install ffmpeg:x64-windows
+
+          # Set the CMake toolchain file to use vcpkg
+          echo "CMAKE_TOOLCHAIN_FILE=${{ github.workspace }}\vcpkg\scripts\buildsystems\vcpkg.cmake" >> $env:GITHUB_ENV
+
+          # Verify FFmpeg installation via vcpkg
+          .\vcpkg list | findstr "ffmpeg"
+          if ($?) {
+            Write-Host "FFmpeg installation verified"
+          } else {
+            Write-Error "FFmpeg installation not found"
+          }
+
+          # List files in the FFmpeg install directory for further confirmation
+          echo "FFmpeg Libraries installed at: ${{ github.workspace }}\\vcpkg\\installed\\x64-windows\\lib"  
+          dir ${{ github.workspace }}\vcpkg\installed\x64-windows\lib\ffmpeg*
 
       - name: Prepare Vulkan SDK (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
