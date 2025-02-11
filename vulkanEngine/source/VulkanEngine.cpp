@@ -109,7 +109,7 @@ namespace VkEngine {
     }
   }
 
-  void VulkanEngine::recordCommandBuffer(const VkCommandBuffer& commandBuffer, uint32_t imageIndex,
+  void VulkanEngine::recordCommandBuffer(const VkCommandBuffer& commandBuffer, const uint32_t imageIndex,
                                          const std::function<void(const VkCommandBuffer& cmdBuffer, uint32_t imgIndex)>& renderFunction)
   {
     constexpr VkCommandBufferBeginInfo beginInfo {

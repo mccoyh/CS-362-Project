@@ -120,7 +120,7 @@ namespace VkEngine {
     return scroll;
   }
 
-  void Window::scrollCallback(GLFWwindow* window, [[maybe_unused]] double xoffset, double yoffset)
+  void Window::scrollCallback(GLFWwindow* window, [[maybe_unused]] double xoffset, const double yoffset)
   {
     const auto app = static_cast<Window*>(glfwGetWindowUserPointer(window));
     app->scroll = yoffset;

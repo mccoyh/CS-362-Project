@@ -58,7 +58,7 @@ namespace VkEngine {
     };
   }
 
-  const char * DebugMessenger::readMessageSeverity(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity)
+  const char * DebugMessenger::readMessageSeverity(const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity)
   {
     switch (messageSeverity)
     {

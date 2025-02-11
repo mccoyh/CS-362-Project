@@ -6,8 +6,8 @@
 
 namespace VkEngine {
   RenderPass::RenderPass(const std::shared_ptr<LogicalDevice>& logicalDevice,
-                         const std::shared_ptr<PhysicalDevice>& physicalDevice, VkFormat imageFormat,
-                         VkSampleCountFlagBits msaaSamples, VkImageLayout finalLayout)
+                         const std::shared_ptr<PhysicalDevice>& physicalDevice, const VkFormat imageFormat,
+                         const VkSampleCountFlagBits msaaSamples, const VkImageLayout finalLayout)
     : logicalDevice(logicalDevice), physicalDevice(physicalDevice)
   {
     createRenderPass(imageFormat, msaaSamples, finalLayout);
@@ -60,7 +60,8 @@ namespace VkEngine {
     vkCmdEndRenderPass(commandBuffer);
   }
 
-  void RenderPass::createRenderPass(VkFormat imageFormat, VkSampleCountFlagBits msaaSamples, VkImageLayout finalLayout)
+  void RenderPass::createRenderPass(const VkFormat imageFormat, const VkSampleCountFlagBits msaaSamples,
+                                    const VkImageLayout finalLayout)
   {
     const VkAttachmentDescription colorAttachment {
       .format = imageFormat,
