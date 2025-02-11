@@ -11,7 +11,7 @@ add_library(${PROJECT_NAME}
 #Whisper ASR CPP
 FetchContent_Declare(
     whisper_cpp
-    GIT_REPOSITORY https://github.com/ggerganov/whisper.cpp.git'
+    GIT_REPOSITORY https://github.com/ggerganov/whisper.cpp.git
     GIT_TAG v1.7.4
 )
 
@@ -23,8 +23,6 @@ option(GGML_VULKAN "Enable Vulkan Support" ON)
 
 #Vulkan
 find_package(Vulkan REQUIRED)
-
-
 
 #FFmpeg
 set(FFMPEG_COMPONENTS avcodec, avformat, avutil)
