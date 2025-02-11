@@ -133,7 +133,11 @@ namespace VkEngine {
     recordCommandBuffer(commandBuffer, imageIndex, [this](const VkCommandBuffer& cmdBuffer,
                         const uint32_t imgIndex)
     {
-      // TODO
+      renderPass->begin(framebuffer->getFramebuffer(imgIndex), swapChain->getExtent(), cmdBuffer);
+
+      // TODO: Render pipelines
+
+      RenderPass::end(cmdBuffer);
     });
   }
 
