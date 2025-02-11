@@ -20,7 +20,7 @@ public:
   void render();
 
 private:
-  std::unique_ptr<Instance> instance;
+  std::shared_ptr<Instance> instance;
   std::unique_ptr<DebugMessenger> debugMessenger;
   std::shared_ptr<Window> window;
   std::shared_ptr<PhysicalDevice> physicalDevice;

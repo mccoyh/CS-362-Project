@@ -16,7 +16,7 @@ namespace VkEngine {
   {
     glfwInit();
 
-    instance = std::make_unique<Instance>();
+    instance = std::make_shared<Instance>();
 
     if (enableValidationLayers)
     {
