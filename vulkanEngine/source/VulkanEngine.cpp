@@ -143,6 +143,41 @@ namespace VkEngine {
 
   void VulkanEngine::doRendering()
   {
+    logicalDevice->waitForGraphicsFences(currentFrame);
+
+    uint32_t imageIndex;
+    auto result = logicalDevice->acquireNextImage(currentFrame, swapChain->getSwapChain(), &imageIndex);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR)
+    {
+      framebufferResized = false;
+      recreateSwapChain();
+      return;
+    }
+
+    if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+    {
+      throw std::runtime_error("failed to acquire swap chain image!");
+    }
+
+    logicalDevice->resetGraphicsFences(currentFrame);
+
+    vkResetCommandBuffer(swapchainCommandBuffers[currentFrame], 0);
+    recordSwapchainCommandBuffer(swapchainCommandBuffers[currentFrame], imageIndex);
+    logicalDevice->submitGraphicsQueue(currentFrame, &swapchainCommandBuffers[currentFrame]);
+
+    result = logicalDevice->queuePresent(currentFrame, swapChain->getSwapChain(), &imageIndex);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || framebufferResized)
+    {
+      framebufferResized = false;
+      recreateSwapChain();
+    }
+    else if (result != VK_SUCCESS)
+    {
+      throw std::runtime_error("failed to present swap chain image!");
+    }
+
     currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
   }
 
