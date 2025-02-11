@@ -61,31 +61,26 @@ jobs:
           sudo apt-get install -y libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev libvulkan-dev libgl1-mesa-dev glslang-tools
           sudo apt-get install -y ffmpeg libavcodec-dev libavformat-dev libswscale-dev libavutil-dev
 
-      - name: Install FFmpeg via vcpkg (Windows)
+      - name: Install FFmpeg (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          # Clone vcpkg and bootstrap it
-          git clone https://github.com/microsoft/vcpkg.git
-          cd vcpkg
-          .\bootstrap-vcpkg.bat
-
-          # Install FFmpeg with development libraries
-          .\vcpkg install ffmpeg:x64-windows
-
-          # Set the CMake toolchain file to use vcpkg
-          echo "CMAKE_TOOLCHAIN_FILE=${{ github.workspace }}\vcpkg\scripts\buildsystems\vcpkg.cmake" >> $env:GITHUB_ENV
-
-          # Verify FFmpeg installation via vcpkg
-          .\vcpkg list | findstr "ffmpeg"
-          if ($?) {
-            Write-Host "FFmpeg installation verified"
-          } else {
-            Write-Error "FFmpeg installation not found"
-          }
-
-          # List files in the FFmpeg install directory for further confirmation
-          echo "FFmpeg Libraries installed at: ${{ github.workspace }}\\vcpkg\\installed\\x64-windows\\lib"  
-          dir ${{ github.workspace }}\vcpkg\installed\x64-windows\lib\ffmpeg*
+        uses: FedericoCarboni/setup-ffmpeg@v3
+        id: setup-ffmpeg
+        with:
+          # A specific version to download, may also be "release" or a specific version
+          # like "6.1.0". At the moment semver specifiers (i.e. >=6.1.0) are supported
+          # only on Windows, on other platforms they are allowed but version is matched
+          # exactly regardless.
+          ffmpeg-version: release
+          # Target architecture of the ffmpeg executable to install. Defaults to the
+          # system architecture. Only x64 and arm64 are supported (arm64 only on Linux).
+          architecture: ''
+          # Linking type of the binaries. Use "shared" to download shared binaries and
+          # "static" for statically linked ones. Shared builds are currently only available
+          # for windows releases. Defaults to "static"
+          linking-type: shared
+          # As of version 3 of this action, builds are no longer downloaded from GitHub
+          # except on Windows: https://github.com/GyanD/codexffmpeg/releases.
+          github-token: ${{ github.server_url == 'https://github.com' && github.token || '' }}
 
       - name: Prepare Vulkan SDK (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
