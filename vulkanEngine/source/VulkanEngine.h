@@ -4,6 +4,7 @@
 #include <vulkan/vulkan.h>
 #include <memory>
 #include <vector>
+#include <functional>
 
 namespace VkEngine {
 class Instance;
@@ -42,6 +43,11 @@ private:
   void initVulkan();
   void createCommandPool();
   void allocateCommandBuffers(std::vector<VkCommandBuffer>& commandBuffers) const;
+
+  static void recordCommandBuffer(const VkCommandBuffer& commandBuffer, uint32_t imageIndex,
+                                  const std::function<void(const VkCommandBuffer& cmdBuffer, uint32_t imgIndex)>& renderFunction);
+
+  void recordSwapchainCommandBuffer(const VkCommandBuffer& commandBuffer, uint32_t imageIndex) const;
 
   void doRendering();
 };

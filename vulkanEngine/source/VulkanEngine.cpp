@@ -104,6 +104,35 @@ namespace VkEngine {
     }
   }
 
+  void VulkanEngine::recordCommandBuffer(const VkCommandBuffer& commandBuffer, uint32_t imageIndex,
+                                         const std::function<void(const VkCommandBuffer& cmdBuffer, uint32_t imgIndex)>& renderFunction)
+  {
+    constexpr VkCommandBufferBeginInfo beginInfo {
+      .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO
+    };
+
+    if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
+    {
+      throw std::runtime_error("failed to begin recording command buffer!");
+    }
+
+    renderFunction(commandBuffer, imageIndex);
+
+    if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
+    {
+      throw std::runtime_error("failed to record command buffer!");
+    }
+  }
+
+  void VulkanEngine::recordSwapchainCommandBuffer(const VkCommandBuffer& commandBuffer, const uint32_t imageIndex) const
+  {
+    recordCommandBuffer(commandBuffer, imageIndex, [this](const VkCommandBuffer& cmdBuffer,
+                        const uint32_t imgIndex)
+    {
+      // TODO
+    });
+  }
+
   void VulkanEngine::doRendering()
   {
     currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
