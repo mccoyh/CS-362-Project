@@ -172,7 +172,7 @@ namespace VkEngine {
 
     for (size_t i = 0; i < imageViews.size(); i++)
     {
-      std::array<VkImageView, 3> attachments {
+      std::array attachments {
         colorImageView,
         depthImageView,
         imageViews.at(i)

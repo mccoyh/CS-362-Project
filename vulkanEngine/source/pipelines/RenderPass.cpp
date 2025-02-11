@@ -127,7 +127,7 @@ namespace VkEngine {
       .dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT
     };
 
-    const std::array<VkAttachmentDescription, 3> attachments {
+    const std::array attachments {
       colorAttachment,
       depthAttachment,
       colorAttachmentResolve
