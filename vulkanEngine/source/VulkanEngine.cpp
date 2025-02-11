@@ -23,27 +23,15 @@ namespace VkEngine {
   {
     glfwInit();
 
-    instance = std::make_shared<Instance>();
-
-    if (enableValidationLayers)
-    {
-      debugMessenger = std::make_unique<DebugMessenger>(instance);
-    }
-
-    window = std::make_shared<Window>(600, 400, "Vulkan Engine", instance, false);
-
-    physicalDevice = std::make_shared<PhysicalDevice>(instance, window->getSurface());
-
-    logicalDevice = std::make_shared<LogicalDevice>(physicalDevice);
-
-    swapChain = std::make_shared<SwapChain>(physicalDevice, logicalDevice, window);
-
-    renderPass = std::make_shared<RenderPass>(logicalDevice, physicalDevice, swapChain->getImageFormat(),
-                                              physicalDevice->getMsaaSamples(), VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+    initVulkan();
   }
 
   VulkanEngine::~VulkanEngine()
   {
+    logicalDevice->waitIdle();
+
+    vkDestroyCommandPool(logicalDevice->getDevice(), commandPool, nullptr);
+
     glfwTerminate();
   }
 
@@ -57,6 +45,63 @@ namespace VkEngine {
     window->update();
 
     doRendering();
+  }
+
+  void VulkanEngine::initVulkan()
+  {
+    instance = std::make_shared<Instance>();
+
+    if (enableValidationLayers)
+    {
+      debugMessenger = std::make_unique<DebugMessenger>(instance);
+    }
+
+    window = std::make_shared<Window>(600, 400, "Vulkan Engine", instance, false);
+
+    physicalDevice = std::make_shared<PhysicalDevice>(instance, window->getSurface());
+
+    logicalDevice = std::make_shared<LogicalDevice>(physicalDevice);
+
+    createCommandPool();
+    allocateCommandBuffers(swapchainCommandBuffers);
+
+    swapChain = std::make_shared<SwapChain>(physicalDevice, logicalDevice, window);
+
+    renderPass = std::make_shared<RenderPass>(logicalDevice, physicalDevice, swapChain->getImageFormat(),
+                                              physicalDevice->getMsaaSamples(), VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+  }
+
+  void VulkanEngine::createCommandPool()
+  {
+    const auto queueFamilyIndices = physicalDevice->getQueueFamilies();
+
+    const VkCommandPoolCreateInfo poolInfo {
+      .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+      .flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+      .queueFamilyIndex = queueFamilyIndices.graphicsFamily.value()
+    };
+
+    if (vkCreateCommandPool(logicalDevice->getDevice(), &poolInfo, nullptr, &commandPool) != VK_SUCCESS)
+    {
+      throw std::runtime_error("failed to create command pool!");
+    }
+  }
+
+  void VulkanEngine::allocateCommandBuffers(std::vector<VkCommandBuffer>& commandBuffers) const
+  {
+    commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+
+    const VkCommandBufferAllocateInfo allocInfo {
+      .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+      .commandPool = commandPool,
+      .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+      .commandBufferCount = static_cast<uint32_t>(commandBuffers.size())
+    };
+
+    if (vkAllocateCommandBuffers(logicalDevice->getDevice(), &allocInfo, commandBuffers.data()) != VK_SUCCESS)
+    {
+      throw std::runtime_error("failed to allocate command buffers!");
+    }
   }
 
   void VulkanEngine::doRendering()
