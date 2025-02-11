@@ -9,6 +9,8 @@ class DebugMessenger;
 class Window;
 class PhysicalDevice;
 class LogicalDevice;
+class SwapChain;
+class RenderPass;
 
 class VulkanEngine {
 public:
@@ -25,6 +27,9 @@ private:
   std::shared_ptr<Window> window;
   std::shared_ptr<PhysicalDevice> physicalDevice;
   std::shared_ptr<LogicalDevice> logicalDevice;
+
+  std::shared_ptr<SwapChain> swapChain;
+  std::shared_ptr<RenderPass> renderPass;
 };
 
 } // VkEngine

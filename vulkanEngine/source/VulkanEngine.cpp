@@ -4,6 +4,8 @@
 #include "components/DebugMessenger.h"
 #include "components/LogicalDevice.h"
 #include "components/PhysicalDevice.h"
+#include "components/SwapChain.h"
+#include "pipelines/RenderPass.h"
 
 #ifdef NDEBUG
 constexpr bool enableValidationLayers = false;
@@ -28,6 +30,11 @@ namespace VkEngine {
     physicalDevice = std::make_shared<PhysicalDevice>(instance, window->getSurface());
 
     logicalDevice = std::make_shared<LogicalDevice>(physicalDevice);
+
+    swapChain = std::make_shared<SwapChain>(physicalDevice, logicalDevice, window);
+
+    renderPass = std::make_shared<RenderPass>(logicalDevice, physicalDevice, swapChain->getImageFormat(),
+                                              physicalDevice->getMsaaSamples(), VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
   }
 
   VulkanEngine::~VulkanEngine()

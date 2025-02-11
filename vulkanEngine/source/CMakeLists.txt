@@ -20,6 +20,10 @@ add_library(${PROJECT_NAME}
   utilities/Buffers.h
   utilities/Images.cpp
   utilities/Images.h
+  pipelines/RenderPass.cpp
+  pipelines/RenderPass.h
+  components/SwapChain.cpp
+  components/SwapChain.h
 )
 
 # Vulkan
