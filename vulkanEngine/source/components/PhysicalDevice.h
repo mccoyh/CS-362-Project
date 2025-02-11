@@ -42,6 +42,8 @@ public:
 
   [[nodiscard]] VkSampleCountFlagBits getMsaaSamples() const;
 
+  [[nodiscard]] uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const;
+
   void updateSwapChainSupportDetails();
 
 private:
