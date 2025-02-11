@@ -40,7 +40,7 @@ public:
   [[nodiscard]] VkSampleCountFlagBits getMsaaSamples() const;
 
 private:
-  VkPhysicalDevice physicalDevice;
+  VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
   VkInstance& instance;
   VkSurfaceKHR& surface;

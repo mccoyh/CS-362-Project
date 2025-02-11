@@ -40,7 +40,7 @@ private:
   GLFWwindow* window;
 
   VkInstance& instance;
-  VkSurfaceKHR surface{};
+  VkSurfaceKHR surface = VK_NULL_HANDLE;
 
   double previousMouseX;
   double previousMouseY;

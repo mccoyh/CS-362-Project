@@ -5,7 +5,7 @@
 
 namespace VkEngine {
   PhysicalDevice::PhysicalDevice(VkInstance& instance, VkSurfaceKHR& surface)
-    : physicalDevice(VK_NULL_HANDLE), instance(instance), surface(surface), msaaSamples(VK_SAMPLE_COUNT_1_BIT)
+    : instance(instance), surface(surface), msaaSamples(VK_SAMPLE_COUNT_1_BIT)
   {
     pickPhysicalDevice();
 

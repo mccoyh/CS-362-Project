@@ -15,7 +15,6 @@ constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
 namespace VkEngine {
   LogicalDevice::LogicalDevice(const std::shared_ptr<PhysicalDevice>& physicalDevice)
-    : device(VK_NULL_HANDLE), graphicsQueue(VK_NULL_HANDLE), presentQueue(VK_NULL_HANDLE)
   {
     createDevice(physicalDevice);
 

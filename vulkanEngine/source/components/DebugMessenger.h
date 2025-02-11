@@ -20,7 +20,7 @@ public:
   static const char* readMessageSeverity(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity);
 
 private:
-  VkDebugUtilsMessengerEXT debugMessenger{};
+  VkDebugUtilsMessengerEXT debugMessenger = VK_NULL_HANDLE;
   VkInstance& instance;
 };
 

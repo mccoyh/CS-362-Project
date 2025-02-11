@@ -19,7 +19,7 @@ public:
   VkInstance& getInstance();
 
 private:
-  VkInstance instance{};
+  VkInstance instance = VK_NULL_HANDLE;
 
   static bool checkValidationLayerSupport();
 
