@@ -14,6 +14,7 @@ class PhysicalDevice;
 class LogicalDevice;
 class SwapChain;
 class RenderPass;
+class Framebuffer;
 
 class VulkanEngine {
 public:
@@ -36,6 +37,8 @@ private:
 
   VkCommandPool commandPool = VK_NULL_HANDLE;
   std::vector<VkCommandBuffer> swapchainCommandBuffers;
+
+  std::shared_ptr<Framebuffer> framebuffer;
 
   uint32_t currentFrame;
   bool framebufferResized;

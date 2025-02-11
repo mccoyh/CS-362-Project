@@ -5,6 +5,7 @@
 #include "components/LogicalDevice.h"
 #include "components/PhysicalDevice.h"
 #include "components/SwapChain.h"
+#include "components/Framebuffer.h"
 #include "pipelines/RenderPass.h"
 #include <stdexcept>
 
@@ -69,6 +70,9 @@ namespace VkEngine {
 
     renderPass = std::make_shared<RenderPass>(logicalDevice, physicalDevice, swapChain->getImageFormat(),
                                               physicalDevice->getMsaaSamples(), VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+
+    framebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, swapChain, commandPool, renderPass,
+                                              swapChain->getExtent());
   }
 
   void VulkanEngine::createCommandPool()
