@@ -63,11 +63,14 @@ jobs:
 
       - name: Install FFmpeg (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
-        uses: FedericoCarboni/setup-ffmpeg@v3
-        id: setup-ffmpeg
-        with:
-          ffmpeg-version: 'release'
-          linking-type: shared
+        run: |
+          choco install ffmpeg
+
+      - name: Set FFmpeg paths (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          set FFmpeg_INCLUDE_DIR=C:\ProgramData\chocolatey\lib\ffmpeg\tools\ffmpeg\include
+          set FFmpeg_LIBRARY_DIR=C:\ProgramData\chocolatey\lib\ffmpeg\tools\ffmpeg\lib
 
       - name: Prepare Vulkan SDK (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
