@@ -67,12 +67,10 @@ jobs:
 
       - name: Prepare Vulkan SDK (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
-        uses: FedericoCarboni/setup-ffmpeg@v3
-        id: setup-ffmpeg
+        uses: humbletim/install-vulkan-sdk@v1.1.1
         with:
-          ffmpeg-version: release
-          architecture: 'x64'
-          linking-type: static
+          version: 1.3.283.0
+          cache: true
 
       - name: Configure CMake
         run: >
