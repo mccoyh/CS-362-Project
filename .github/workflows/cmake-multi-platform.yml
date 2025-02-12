@@ -63,7 +63,7 @@ jobs:
 
       - name: Prepare FFmpeg (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
-        uses: AnimMouse/setup-ffmpeg@v1
+        run: choco install ffmpeg-full -y
 
       - name: Prepare Vulkan SDK (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
