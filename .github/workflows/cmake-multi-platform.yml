@@ -63,10 +63,7 @@ jobs:
 
       - name: Prepare FFmpeg (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          Invoke-WebRequest -Uri https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip -OutFile ffmpeg.zip
-          Expand-Archive -Path ffmpeg.zip -DestinationPath $env:RUNNER_TEMP\ffmpeg
-          echo "$env:RUNNER_TEMP\ffmpeg\ffmpeg-6.0-essentials_build\bin" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH
+        uses: AnimMouse/setup-ffmpeg@v1
 
       - name: Prepare Vulkan SDK (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
@@ -81,7 +78,6 @@ jobs:
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          -DCMAKE_PREFIX_PATH="$env:RUNNER_TEMP\ffmpeg\ffmpeg-6.0-essentials_build"
           -S ${{ github.workspace }}
 
       - name: Build
