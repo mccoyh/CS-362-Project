@@ -65,13 +65,13 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           # Download FFmpeg for Windows
-          Invoke-WebRequest -Uri "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-i686-static.7z" -OutFile "ffmpeg.7z"
-          
+          Invoke-WebRequest -Uri "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl-shared.zip" -OutFile "ffmpeg.zip"
+
           # Extract the archive
-          Expand-Archive -Path "ffmpeg.7z" -DestinationPath "ffmpeg"
-          
+          Expand-Archive -Path "ffmpeg.zip" -DestinationPath "ffmpeg"
+
           # Add FFmpeg to system PATH
-          $env:PATH = "$env:PATH;$(pwd)\ffmpeg\ffmpeg-release-x64-static\bin"
+          $env:PATH = "$env:PATH;$(pwd)\ffmpeg\ffmpeg-master-latest-win64-gpl-shared\bin;$(pwd)\ffmpeg\ffmpeg-master-latest-win64-gpl-shared"
 
       - name: Verify FFmpeg Installation
         run: ffmpeg -version
