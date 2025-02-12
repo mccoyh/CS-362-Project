@@ -62,7 +62,7 @@ jobs:
           sudo apt-get install -y ffmpeg libavcodec-dev libavformat-dev libswscale-dev libavutil-dev
 
       - name: Prepare FFmpeg (Windows)
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: ${{ matrix.os == 'windows-latest' }}
         run: |
           # Download FFmpeg for Windows
           Invoke-WebRequest -Uri "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-i686-static.7z" -OutFile "ffmpeg.7z"
