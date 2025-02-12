@@ -61,30 +61,12 @@ jobs:
           sudo apt-get install -y libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev libvulkan-dev libgl1-mesa-dev glslang-tools
           sudo apt-get install -y ffmpeg libavcodec-dev libavformat-dev libswscale-dev libavutil-dev
 
-      - name: Download FFmpeg (Windows)
+      - name: Prepare FFmpeg (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl-shared.zip" -OutFile "ffmpeg.zip"
-
-      - name: Extract FFmpeg (Windows)
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          Expand-Archive -Path "ffmpeg.zip" -DestinationPath "C:\ffmpeg"
-
-      - name: Add FFmpeg to PATH (Windows)
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          $env:Path = "C:\ffmpeg\ffmpeg-master-latest-win64-gpl-shared" + ";" + $env:Path
-          echo "FFmpeg added to PATH"
-
-      - name: Install FFmpeg (Windows)
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: choco install ffmpeg --confirm
-
-      - name: Verify FFmpeg version (Windows)
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          ffmpeg -version
+        uses: FedericoCarboni/setup-ffmpeg@v3
+        with:
+          architecture: x64
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Prepare Vulkan SDK (Windows)
         if: ${{ matrix.os == 'windows-latest' }}
