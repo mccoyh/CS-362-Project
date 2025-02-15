@@ -15,7 +15,7 @@ bool exists (const std::string& name) {
 }
 
 //converts mp4 to mp3, pulls audio from video
-void convert_mp4_mp3(std::string input_mp4){
+void convert_mp4_mp3(const std::string& input_mp4){
     if(exists(input_mp4)){
         //checks for any existing output.mp3 files that already exist
         int num = 0;
@@ -26,7 +26,7 @@ void convert_mp4_mp3(std::string input_mp4){
     }
 }
 
-void play_audio(std::string input_mp3){
+void play_audio(const std::string& input_mp3){
     AVFormatContext *formatContext = avformat_alloc_context();
     if (avformat_open_input(&formatContext, input_mp3.c_str(), NULL, NULL) != 0) {
         throw std::runtime_error("failed to open input file");
