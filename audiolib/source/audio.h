@@ -4,7 +4,7 @@
 #include <string>
 
 //checks if file exists
-bool exists (const std::string& name);
+bool exists(const std::string& name);
 
 //converts mp4 to mp3, pulls audio from video
 void convert_mp4_mp3(const std::string& input_mp4);
