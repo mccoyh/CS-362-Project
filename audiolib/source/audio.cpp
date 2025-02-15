@@ -12,7 +12,7 @@ extern "C" {
 bool exists (const std::string& name)
 {
     struct stat buffer;
-    return (stat (name.c_str(), &buffer) == 0);
+    return stat (name.c_str(), &buffer) == 0;
 }
 
 //converts mp4 to mp3, pulls audio from video
