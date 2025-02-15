@@ -8,14 +8,14 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
-//checks if file exists
+// Checks if file exists
 bool exists (const std::string& name)
 {
     struct stat buffer;
     return stat (name.c_str(), &buffer) == 0;
 }
 
-//converts mp4 to mp3, pulls audio from video
+// Converts mp4 to mp3, pulls audio from video
 void convert_mp4_mp3(const std::string& input_mp4)
 {
     if(exists(input_mp4))
