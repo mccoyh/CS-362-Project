@@ -1,5 +1,6 @@
 #include "audio.h"
 #include <stdexcept>
+#include <filesystem>
 #include <SDL3/SDL_audio.h>
 
 extern "C" {
@@ -11,8 +12,7 @@ extern "C" {
 // Checks if file exists
 bool exists (const std::string& name)
 {
-    struct stat buffer;
-    return stat (name.c_str(), &buffer) == 0;
+    return std::filesystem::exists(name);
 }
 
 // Converts mp4 to mp3, pulls audio from video
