@@ -33,6 +33,4 @@ add_subdirectory(vulkanEngine)
 
 add_subdirectory(source)
 
-add_subdirectory(vulkanEngine)
-
 add_subdirectory(audiolib)
