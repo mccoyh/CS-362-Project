@@ -33,7 +33,7 @@ void convert_mp4_mp3(const std::string& input_mp4)
 void play_audio(const std::string& input_mp3)
 {
     AVFormatContext *formatContext = avformat_alloc_context();
-    if (avformat_open_input(&formatContext, input_mp3.c_str(), NULL, NULL) != 0)
+    if (avformat_open_input(&formatContext, input_mp3.c_str(), nullptr, nullptr) != 0)
     {
         throw std::runtime_error("failed to open input file");
     }
@@ -48,10 +48,10 @@ void play_audio(const std::string& input_mp3)
         }
     }
 
-    AVCodecContext *codecContext = avcodec_alloc_context3(NULL);
+    AVCodecContext *codecContext = avcodec_alloc_context3(nullptr);
     avcodec_parameters_to_context(codecContext, formatContext->streams[audioStreamIndex]->codecpar);
     const AVCodec *codec = avcodec_find_decoder(codecContext->codec_id);
-    avcodec_open2(codecContext, codec, NULL);
+    avcodec_open2(codecContext, codec, nullptr);
 
     SDL_AudioSpec desiredSpec;
     desiredSpec.freq = codecContext->sample_rate;
