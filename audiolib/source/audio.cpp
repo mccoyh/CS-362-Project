@@ -9,32 +9,40 @@ extern "C" {
 }
 
 //checks if file exists
-bool exists (const std::string& name) {
+bool exists (const std::string& name)
+{
     struct stat buffer;
     return (stat (name.c_str(), &buffer) == 0);
 }
 
 //converts mp4 to mp3, pulls audio from video
-void convert_mp4_mp3(const std::string& input_mp4){
-    if(exists(input_mp4)){
+void convert_mp4_mp3(const std::string& input_mp4)
+{
+    if(exists(input_mp4))
+    {
         //checks for any existing output.mp3 files that already exist
         int num = 0;
-        while(exists("output" + std::to_string(num) + ".mp3")){
+        while(exists("output" + std::to_string(num) + ".mp3"))
+        {
             num++;
         }
         system(("ffmpeg -i " + input_mp4 + " output" + std::to_string(num) + ".mp3").c_str());
     }
 }
 
-void play_audio(const std::string& input_mp3){
+void play_audio(const std::string& input_mp3)
+{
     AVFormatContext *formatContext = avformat_alloc_context();
-    if (avformat_open_input(&formatContext, input_mp3.c_str(), NULL, NULL) != 0) {
+    if (avformat_open_input(&formatContext, input_mp3.c_str(), NULL, NULL) != 0)
+    {
         throw std::runtime_error("failed to open input file");
     }
 
     int audioStreamIndex = -1;
-    for (unsigned int i = 0; i < formatContext->nb_streams; i++) {
-        if (formatContext->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
+    for (unsigned int i = 0; i < formatContext->nb_streams; i++)
+    {
+        if (formatContext->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
+        {
             audioStreamIndex = static_cast<int>(i);
             break;
         }
