@@ -1,4 +1,12 @@
 #include "AudioToTxt.h"
+#include <iostream>
+#include <fstream>
+extern "C"{
+    #include <libavformat/avformat.h>
+    #include <libavcodec/avcodec.h>
+    #include <libswscale/swscale.h>
+}
+
 
 // Function to extract audio from an MP4 file using FFmpeg libraries
 void extractAudio(const std::string& mp4File, const std::string& audioFile) {
@@ -27,7 +35,7 @@ void extractAudio(const std::string& mp4File, const std::string& audioFile) {
     }
 
     AVCodecParameters* codecParams = formatContext->streams[audioStreamIndex]->codecpar;
-    AVCodec* codec = avcodec_find_decoder(codecParams->codec_id);
+    const AVCodec* codec = avcodec_find_decoder(codecParams->codec_id);
     if (!codec) {
         std::cerr << "Error: Codec not found" << std::endl;
         exit(1);

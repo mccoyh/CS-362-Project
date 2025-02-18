@@ -1,1 +1,1 @@
-add_subdirectory(audioToText)
+add_subdirectory(test_whisper)
