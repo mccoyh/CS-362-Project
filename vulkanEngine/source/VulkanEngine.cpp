@@ -7,6 +7,7 @@
 #include "components/SwapChain.h"
 #include "components/Framebuffer.h"
 #include "pipelines/RenderPass.h"
+#include "pipelines/custom/GuiPipeline.h"
 #include <stdexcept>
 
 #ifdef NDEBUG
@@ -14,6 +15,8 @@ constexpr bool enableValidationLayers = false;
 #else
 constexpr bool enableValidationLayers = true;
 #endif
+
+constexpr int MAX_GUI_TEXTURES = 1000;
 
 namespace VkEngine {
 
@@ -74,6 +77,8 @@ namespace VkEngine {
 
     framebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, swapChain, commandPool, renderPass,
                                               swapChain->getExtent());
+
+    guiPipeline = std::make_unique<GuiPipeline>(physicalDevice, logicalDevice, renderPass, MAX_GUI_TEXTURES);
   }
 
   void VulkanEngine::createCommandPool()

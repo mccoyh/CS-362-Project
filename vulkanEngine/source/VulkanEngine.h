@@ -17,6 +17,7 @@ class LogicalDevice;
 class SwapChain;
 class RenderPass;
 class Framebuffer;
+class GuiPipeline;
 
 class VulkanEngine {
 public:
@@ -38,6 +39,8 @@ private:
 
   std::shared_ptr<SwapChain> swapChain;
   std::shared_ptr<RenderPass> renderPass;
+
+  std::unique_ptr<GuiPipeline> guiPipeline;
 
   VkCommandPool commandPool = VK_NULL_HANDLE;
   std::vector<VkCommandBuffer> swapchainCommandBuffers;
