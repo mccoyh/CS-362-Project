@@ -18,6 +18,7 @@ class SwapChain;
 class RenderPass;
 class Framebuffer;
 class GuiPipeline;
+class ImGuiInstance;
 
 class VulkanEngine {
 public:
@@ -27,6 +28,8 @@ public:
   [[nodiscard]] bool isActive() const;
 
   void render();
+
+  [[nodiscard]] std::shared_ptr<ImGuiInstance> getImGuiInstance() const;
 
 private:
   VulkanEngineOptions vulkanEngineOptions;
@@ -41,6 +44,8 @@ private:
   std::shared_ptr<RenderPass> renderPass;
 
   std::unique_ptr<GuiPipeline> guiPipeline;
+
+  std::shared_ptr<ImGuiInstance> imGuiInstance;
 
   VkCommandPool commandPool = VK_NULL_HANDLE;
   std::vector<VkCommandBuffer> swapchainCommandBuffers;
@@ -62,6 +67,8 @@ private:
   void doRendering();
 
   void recreateSwapChain();
+
+  void createNewFrame() const;
 
   friend void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height);
 };

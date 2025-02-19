@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "Instance.h"
 #include "../VulkanEngine.h"
+#include <backends/imgui_impl_glfw.h>
 #include <stdexcept>
 
 namespace VkEngine {
@@ -112,7 +113,13 @@ namespace VkEngine {
 
   void Window::initImGui() const
   {
-    // TODO
+    ImGui_ImplGlfw_InitForVulkan(window, true);
+
+    float xscale, yscale;
+    glfwGetWindowContentScale(window, &xscale, &yscale);
+
+    ImGui::GetStyle().ScaleAllSizes(xscale);
+    ImGui::GetIO().FontGlobalScale = xscale;
   }
 
   double Window::getScroll() const
