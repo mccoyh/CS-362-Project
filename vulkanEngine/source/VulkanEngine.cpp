@@ -6,7 +6,9 @@
 #include "components/PhysicalDevice.h"
 #include "components/SwapChain.h"
 #include "components/Framebuffer.h"
+#include "components/ImGuiInstance.h"
 #include "pipelines/RenderPass.h"
+#include "pipelines/custom/GuiPipeline.h"
 #include <stdexcept>
 
 #ifdef NDEBUG
@@ -14,6 +16,8 @@ constexpr bool enableValidationLayers = false;
 #else
 constexpr bool enableValidationLayers = true;
 #endif
+
+constexpr int MAX_GUI_TEXTURES = 1000;
 
 namespace VkEngine {
 
@@ -46,6 +50,18 @@ namespace VkEngine {
     window->update();
 
     doRendering();
+
+    createNewFrame();
+  }
+
+  std::shared_ptr<ImGuiInstance> VulkanEngine::getImGuiInstance() const
+  {
+    return imGuiInstance;
+  }
+
+  ImGuiContext* VulkanEngine::getImGuiContext()
+  {
+    return ImGui::GetCurrentContext();
   }
 
   void VulkanEngine::initVulkan()
@@ -74,6 +90,11 @@ namespace VkEngine {
 
     framebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, swapChain, commandPool, renderPass,
                                               swapChain->getExtent());
+
+    guiPipeline = std::make_unique<GuiPipeline>(physicalDevice, logicalDevice, renderPass, MAX_GUI_TEXTURES);
+
+    imGuiInstance = std::make_shared<ImGuiInstance>(commandPool, window, instance, physicalDevice, logicalDevice,
+                                                    renderPass, guiPipeline, true);
   }
 
   void VulkanEngine::createCommandPool()
@@ -136,7 +157,7 @@ namespace VkEngine {
     {
       renderPass->begin(framebuffer->getFramebuffer(imgIndex), swapChain->getExtent(), cmdBuffer);
 
-      // TODO: Render pipelines
+      guiPipeline->render(cmdBuffer, swapChain->getExtent());
 
       RenderPass::end(cmdBuffer);
     });
@@ -202,5 +223,10 @@ namespace VkEngine {
     swapChain = std::make_shared<SwapChain>(physicalDevice, logicalDevice, window);
     framebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, swapChain, commandPool, renderPass,
                                                 swapChain->getExtent());
+  }
+
+  void VulkanEngine::createNewFrame() const
+  {
+    imGuiInstance->createNewFrame();
   }
 } // VkEngine
