@@ -3,6 +3,7 @@
 
 #include "VulkanEngineOptions.h"
 #include "components/Window.h"
+#include <imgui_internal.h>
 #include <vulkan/vulkan.h>
 #include <memory>
 #include <vector>
@@ -30,6 +31,8 @@ public:
   void render();
 
   [[nodiscard]] std::shared_ptr<ImGuiInstance> getImGuiInstance() const;
+
+  static ImGuiContext* getImGuiContext();
 
 private:
   VulkanEngineOptions vulkanEngineOptions;

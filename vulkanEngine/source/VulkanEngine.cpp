@@ -59,6 +59,11 @@ namespace VkEngine {
     return imGuiInstance;
   }
 
+  ImGuiContext* VulkanEngine::getImGuiContext()
+  {
+    return ImGui::GetCurrentContext();
+  }
+
   void VulkanEngine::initVulkan()
   {
     instance = std::make_shared<Instance>();

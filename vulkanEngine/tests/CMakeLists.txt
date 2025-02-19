@@ -1,1 +1,2 @@
+add_subdirectory(guiWidget)
 add_subdirectory(window)
