@@ -33,6 +33,10 @@ add_library(${PROJECT_NAME}
   pipelines/Pipeline.h
   pipelines/GraphicsPipeline.cpp
   pipelines/GraphicsPipeline.h
+  pipelines/custom/GuiPipeline.cpp
+  pipelines/custom/GuiPipeline.h
+  pipelines/custom/GraphicsPipelineStates.h
+  pipelines/Vertex.h
 )
 
 # Shaders
@@ -90,6 +94,13 @@ FetchContent_Declare(
   GIT_TAG 3.4
 )
 
+# GLM
+FetchContent_Declare(
+  glm
+  GIT_REPOSITORY https://github.com/g-truc/glm.git
+  GIT_TAG 1.0.1
+)
+
 # imgui
 FetchContent_Declare(
   imgui
@@ -122,12 +133,17 @@ target_include_directories(imgui PUBLIC
 # Include
 FetchContent_MakeAvailable(
   glfw
+  glm
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
   Vulkan::Vulkan
   glfw
   imgui
+)
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+  ${glm_SOURCE_DIR}
 )
 
 # Create Include Headers
