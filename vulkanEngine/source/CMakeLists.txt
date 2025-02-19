@@ -37,6 +37,8 @@ add_library(${PROJECT_NAME}
   pipelines/custom/GuiPipeline.h
   pipelines/custom/GraphicsPipelineStates.h
   pipelines/Vertex.h
+  components/ImGuiInstance.cpp
+  components/ImGuiInstance.h
 )
 
 # Shaders
