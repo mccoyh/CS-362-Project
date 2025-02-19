@@ -29,6 +29,8 @@ add_library(${PROJECT_NAME}
   VulkanEngineOptions.h
   pipelines/ShaderModule.cpp
   pipelines/ShaderModule.h
+  pipelines/Pipeline.cpp
+  pipelines/Pipeline.h
 )
 
 # Vulkan
