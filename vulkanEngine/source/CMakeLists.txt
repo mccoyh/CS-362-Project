@@ -27,6 +27,8 @@ add_library(${PROJECT_NAME}
   components/Framebuffer.cpp
   components/Framebuffer.h
   VulkanEngineOptions.h
+  pipelines/ShaderModule.cpp
+  pipelines/ShaderModule.h
 )
 
 # Vulkan
