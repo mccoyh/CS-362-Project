@@ -8,6 +8,15 @@ add_library(${PROJECT_NAME}
     AudioToTxt.cpp
 )
 
+set(MODEL_URL "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo-q5_0.bin?download=true")
+set(MODEL_PATH "${CMAKE_BINARY_DIR}/models/ggml-large-v3-turbo-q5_0.bin")
+
+# Download model if it doesn't exist
+if(NOT EXISTS ${MODEL_PATH})
+    message(STATUS "Downloading Whisper model...")
+    file(DOWNLOAD ${MODEL_URL} ${MODEL_PATH} SHOW_PROGRESS)
+endif()
+
 #Whisper ASR CPP
 FetchContent_Declare(
     whisper
@@ -25,7 +34,7 @@ option(GGML_VULKAN "Enable Vulkan Support" ON)
 find_package(Vulkan REQUIRED)
 
 #FFmpeg
-set(FFMPEG_COMPONENTS avcodec avformat avutil)
+set(FFMPEG_COMPONENTS avcodec avformat avutil swscale)
 
 find_package(FFmpeg REQUIRED COMPONENTS ${FFMPEG_COMPONENTS})
 
