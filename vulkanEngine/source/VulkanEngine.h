@@ -58,6 +58,10 @@ private:
   uint32_t currentFrame;
   bool framebufferResized;
 
+  std::shared_ptr<Framebuffer> videoFramebuffer;
+  std::vector<VkCommandBuffer> videoCommandBuffers;
+  VkExtent2D videoExtent{};
+
   void initVulkan();
   void createCommandPool();
   void allocateCommandBuffers(std::vector<VkCommandBuffer>& commandBuffers) const;
@@ -67,11 +71,15 @@ private:
 
   void recordSwapchainCommandBuffer(const VkCommandBuffer& commandBuffer, uint32_t imageIndex) const;
 
+  void recordVideoCommandBuffer(const VkCommandBuffer& commandBuffer, uint32_t imageIndex) const;
+
   void doRendering();
 
   void recreateSwapChain();
 
   void createNewFrame() const;
+
+  void renderVideoWidget(uint32_t imageIndex);
 
   friend void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height);
 };

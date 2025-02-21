@@ -82,6 +82,7 @@ namespace VkEngine {
 
     createCommandPool();
     allocateCommandBuffers(swapchainCommandBuffers);
+    allocateCommandBuffers(videoCommandBuffers);
 
     swapChain = std::make_shared<SwapChain>(physicalDevice, logicalDevice, window);
 
@@ -95,6 +96,9 @@ namespace VkEngine {
 
     imGuiInstance = std::make_shared<ImGuiInstance>(commandPool, window, instance, physicalDevice, logicalDevice,
                                                     renderPass, guiPipeline, true);
+
+    videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
+                                                     renderPass, swapChain->getExtent());
   }
 
   void VulkanEngine::createCommandPool()
@@ -163,6 +167,20 @@ namespace VkEngine {
     });
   }
 
+  void VulkanEngine::recordVideoCommandBuffer(const VkCommandBuffer& commandBuffer, const uint32_t imageIndex) const
+  {
+    recordCommandBuffer(commandBuffer, imageIndex, [this](const VkCommandBuffer& cmdBuffer,
+                      const uint32_t imgIndex)
+  {
+    if (videoExtent.width == 0 || videoExtent.height == 0)
+    {
+      return;
+    }
+
+
+  });
+  }
+
   void VulkanEngine::doRendering()
   {
     logicalDevice->waitForGraphicsFences(currentFrame);
@@ -182,7 +200,13 @@ namespace VkEngine {
       throw std::runtime_error("failed to acquire swap chain image!");
     }
 
+    renderVideoWidget(imageIndex);
+
     logicalDevice->resetGraphicsFences(currentFrame);
+
+    vkResetCommandBuffer(videoCommandBuffers[currentFrame], 0);
+    recordVideoCommandBuffer(videoCommandBuffers[currentFrame], imageIndex);
+    logicalDevice->submitVideoGraphicsQueue(currentFrame, &videoCommandBuffers[currentFrame]);
 
     vkResetCommandBuffer(swapchainCommandBuffers[currentFrame], 0);
     recordSwapchainCommandBuffer(swapchainCommandBuffers[currentFrame], imageIndex);
@@ -223,10 +247,57 @@ namespace VkEngine {
     swapChain = std::make_shared<SwapChain>(physicalDevice, logicalDevice, window);
     framebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, swapChain, commandPool, renderPass,
                                                 swapChain->getExtent());
+
+    if (videoExtent.width != 0 && videoExtent.height != 0)
+    {
+      videoFramebuffer.reset();
+
+      videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
+                                                       renderPass, videoExtent);
+    }
   }
 
   void VulkanEngine::createNewFrame() const
   {
     imGuiInstance->createNewFrame();
+  }
+
+  void VulkanEngine::renderVideoWidget(const uint32_t imageIndex)
+  {
+    const auto widgetName = "Video Output";
+
+    imGuiInstance->dockCenter(widgetName);
+
+    ImGui::Begin(widgetName);
+
+    const auto contentRegionAvailable = ImGui::GetContentRegionAvail();
+
+    const VkExtent2D currentOffscreenViewportExtent {
+      .width = static_cast<uint32_t>(std::max(0.0f, contentRegionAvailable.x)),
+      .height = static_cast<uint32_t>(std::max(0.0f, contentRegionAvailable.y))
+    };
+
+    if (currentOffscreenViewportExtent.width == 0 || currentOffscreenViewportExtent.height == 0)
+    {
+      videoExtent = currentOffscreenViewportExtent;
+      ImGui::End();
+      return;
+    }
+
+    if (videoExtent.width != currentOffscreenViewportExtent.width ||
+        videoExtent.height != currentOffscreenViewportExtent.height)
+    {
+      videoExtent = currentOffscreenViewportExtent;
+
+      logicalDevice->waitIdle();
+      videoFramebuffer.reset();
+      videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
+                                                       renderPass, videoExtent);
+    }
+
+    ImGui::Image(reinterpret_cast<ImTextureID>(videoFramebuffer->getFramebufferImageDescriptorSet(imageIndex)),
+                contentRegionAvailable);
+
+    ImGui::End();
   }
 } // VkEngine

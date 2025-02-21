@@ -21,6 +21,7 @@ public:
   [[nodiscard]] VkQueue getPresentQueue() const;
 
   void submitGraphicsQueue(uint32_t currentFrame, const VkCommandBuffer* commandBuffer) const;
+  void submitVideoGraphicsQueue(uint32_t currentFrame, const VkCommandBuffer* commandBuffer) const;
 
   void waitForGraphicsFences(uint32_t currentFrame) const;
   void resetGraphicsFences(uint32_t currentFrame) const;
@@ -38,6 +39,10 @@ private:
   std::vector<VkSemaphore> imageAvailableSemaphores;
   std::vector<VkSemaphore> renderFinishedSemaphores;
   std::vector<VkFence> inFlightFences;
+
+  std::vector<VkSemaphore> videoImageAvailableSemaphores;
+  std::vector<VkSemaphore> videoRenderFinishedSemaphores;
+  std::vector<VkFence> videoInFlightFences;
 
   void createDevice(const std::shared_ptr<PhysicalDevice>& physicalDevice);
 
