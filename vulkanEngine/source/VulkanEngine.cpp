@@ -11,7 +11,6 @@
 #include "pipelines/custom/GuiPipeline.h"
 #include <stdexcept>
 
-
 #include "utilities/Buffers.h"
 #include "utilities/Images.h"
 extern "C" {
@@ -19,7 +18,6 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libswscale/swscale.h>
 }
-#include <iostream>
 
 
 #ifdef NDEBUG
@@ -248,12 +246,11 @@ bool extractFrame(const char* filename, int time, uint8_t** outData, int& outWid
     return *outData != nullptr;
 }
 
-
 void loadFrameToImage(const VkCommandPool& commandPool, const char* videoPath, int frameIndex, int framebufferIndex,
                       const std::shared_ptr<LogicalDevice>& logicalDevice,
                       const std::shared_ptr<PhysicalDevice>& physicalDevice,
                       std::vector<VkImage>& framebufferImages,
-                      std::vector<VkDeviceMemory>& framebufferImageMemory, double frameRate)
+                      std::vector<VkDeviceMemory>& framebufferImageMemory, double frameRate, VkExtent2D clipExtent)
 {
     int frameWidth, frameHeight;
     uint8_t* frameData = nullptr;
@@ -287,8 +284,8 @@ void loadFrameToImage(const VkCommandPool& commandPool, const char* videoPath, i
 
     // Get image dimensions
     VkExtent3D imageExtent;
-    imageExtent.width = frameWidth;
-    imageExtent.height = frameHeight;
+    imageExtent.width = std::min(frameWidth, static_cast<int>(clipExtent.width));
+    imageExtent.height = std::min(frameHeight, static_cast<int>(clipExtent.height));;
     imageExtent.depth = 1;
 
     // Ensure framebuffer image is correctly sized
@@ -349,7 +346,7 @@ void loadFrameToImage(const VkCommandPool& commandPool, const char* videoPath, i
     }
 
     loadFrameToImage(commandPool, "assets/sample.mp4", 0, imgIndex, logicalDevice, physicalDevice,
-                     videoFramebuffer->framebufferImages, videoFramebuffer->framebufferImageMemory, 30);
+                     videoFramebuffer->framebufferImages, videoFramebuffer->framebufferImageMemory, 30, videoExtent);
   });
   }
 
