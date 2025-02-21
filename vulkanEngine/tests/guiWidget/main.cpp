@@ -20,7 +20,7 @@ int main()
     while (vulkanEngine.isActive())
     {
       gui->dockBottom("Test Widget");
-      
+
       gui->setBottomDockPercent(0.2);
 
       ImGui::Begin("Test Widget");

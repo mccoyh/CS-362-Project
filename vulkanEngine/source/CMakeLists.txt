@@ -132,6 +132,12 @@ target_include_directories(imgui PUBLIC
   ${imgui_SOURCE_DIR}
 )
 
+# Specify the components FFmpeg should have available
+set(FFMPEG_COMPONENTS avcodec avformat swscale avutil)
+
+# Find FFmpeg package
+find_package(FFmpeg REQUIRED COMPONENTS ${FFMPEG_COMPONENTS})
+
 # Include
 FetchContent_MakeAvailable(
   glfw
@@ -142,10 +148,12 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   Vulkan::Vulkan
   glfw
   imgui
+  ${FFMPEG_LIBRARIES}
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
   ${glm_SOURCE_DIR}
+  ${FFMPEG_INCLUDE_DIRS}
 )
 
 # Create Include Headers

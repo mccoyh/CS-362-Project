@@ -124,7 +124,7 @@ namespace VkEngine {
     {
       Images::createImage(logicalDevice, physicalDevice, extent.width, extent.height, 1,
                           1, VK_SAMPLE_COUNT_1_BIT, framebufferImageFormat, VK_IMAGE_TILING_OPTIMAL,
-                          VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                          VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                           framebufferImages[i], framebufferImageMemory[i], VK_IMAGE_TYPE_2D);
 
       framebufferImageViews[i] = Images::createImageView(logicalDevice, framebufferImages[i],

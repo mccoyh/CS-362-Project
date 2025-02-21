@@ -26,7 +26,7 @@ public:
 
   [[nodiscard]] VkDescriptorSet getFramebufferImageDescriptorSet(uint32_t imageIndex) const;
 
-private:
+public:
   std::shared_ptr<PhysicalDevice> physicalDevice;
   std::shared_ptr<LogicalDevice> logicalDevice;
   std::shared_ptr<SwapChain> swapChain;
