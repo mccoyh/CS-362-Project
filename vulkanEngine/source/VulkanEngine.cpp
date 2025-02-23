@@ -10,6 +10,7 @@
 #include "pipelines/RenderPass.h"
 #include "pipelines/custom/GuiPipeline.h"
 #include <stdexcept>
+#include <utility>
 
 #ifdef NDEBUG
 constexpr bool enableValidationLayers = false;
@@ -62,6 +63,13 @@ namespace VkEngine {
   ImGuiContext* VulkanEngine::getImGuiContext()
   {
     return ImGui::GetCurrentContext();
+  }
+
+  void VulkanEngine::loadVideoFrame(std::shared_ptr<std::vector<uint8_t>> frameData, const int width, const int height)
+  {
+    videoFrameData = std::move(frameData);
+    videoWidth = width;
+    videoHeight = height;
   }
 
   void VulkanEngine::initVulkan()
@@ -171,14 +179,13 @@ namespace VkEngine {
   {
     recordCommandBuffer(commandBuffer, imageIndex, [this](const VkCommandBuffer& cmdBuffer,
                       const uint32_t imgIndex)
-  {
-    if (videoExtent.width == 0 || videoExtent.height == 0)
     {
-      return;
-    }
+      if (videoExtent.width == 0 || videoExtent.height == 0)
+      {
+        return;
+      }
 
-
-  });
+    });
   }
 
   void VulkanEngine::doRendering()

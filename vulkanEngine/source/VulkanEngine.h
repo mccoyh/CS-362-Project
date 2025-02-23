@@ -34,6 +34,8 @@ public:
 
   static ImGuiContext* getImGuiContext();
 
+  void loadVideoFrame(std::shared_ptr<std::vector<uint8_t>> frameData, int width, int height);
+
 private:
   VulkanEngineOptions vulkanEngineOptions;
 
@@ -61,6 +63,10 @@ private:
   std::shared_ptr<Framebuffer> videoFramebuffer;
   std::vector<VkCommandBuffer> videoCommandBuffers;
   VkExtent2D videoExtent{};
+
+  std::shared_ptr<std::vector<uint8_t>> videoFrameData;
+  int videoWidth;
+  int videoHeight;
 
   void initVulkan();
   void createCommandPool();
