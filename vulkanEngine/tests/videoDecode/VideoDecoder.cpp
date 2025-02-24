@@ -84,5 +84,17 @@ bool VideoDecoder::getNextFrame(std::vector<uint8_t> &outData, int &outWidth, in
     av_packet_unref(packet);
   }
 
-  return false; // No more frames
+  return false;
+}
+
+double VideoDecoder::getFrameRate() const
+{
+  if (videoStream == -1)
+  {
+    throw std::runtime_error("No video stream available!");
+  }
+
+  const AVRational fps = fmtCtx->streams[videoStream]->r_frame_rate;
+
+  return av_q2d(fps);
 }

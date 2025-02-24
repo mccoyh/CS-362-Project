@@ -21,7 +21,7 @@ int main()
     int frameWidth, frameHeight;
 
     std::chrono::time_point<std::chrono::steady_clock> previousTime = std::chrono::steady_clock::now();
-    constexpr float fixedUpdateDt = 1.0f / 30.0f;
+    const float fixedUpdateDt = 1.0f / static_cast<float>(decoder.getFrameRate());
     float timeAccumulator = 0;
 
     while (vulkanEngine.isActive())

@@ -16,6 +16,8 @@ public:
 
   bool getNextFrame(std::vector<uint8_t>& outData, int& outWidth, int& outHeight) const;
 
+  double getFrameRate() const;
+
 private:
   AVFormatContext* fmtCtx = nullptr;
   AVCodecContext* codecCtx = nullptr;
