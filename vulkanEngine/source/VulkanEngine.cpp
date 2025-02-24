@@ -178,7 +178,7 @@ namespace VkEngine {
   void VulkanEngine::recordVideoCommandBuffer(const VkCommandBuffer& commandBuffer, const uint32_t imageIndex) const
   {
     recordCommandBuffer(commandBuffer, imageIndex, [this](const VkCommandBuffer& cmdBuffer,
-                      const uint32_t imgIndex)
+                        const uint32_t imgIndex)
     {
       if (videoExtent.width == 0 || videoExtent.height == 0)
       {
