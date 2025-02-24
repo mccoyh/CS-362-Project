@@ -98,3 +98,23 @@ double VideoDecoder::getFrameRate() const
 
   return av_q2d(fps);
 }
+
+int VideoDecoder::getWidth() const
+{
+  if (!codecCtx)
+  {
+    throw std::runtime_error("Codec context not initialized!");
+  }
+
+  return codecCtx->width;
+}
+
+int VideoDecoder::getHeight() const
+{
+  if (!codecCtx)
+  {
+    throw std::runtime_error("Codec context not initialized!");
+  }
+
+  return codecCtx->height;
+}

@@ -7,18 +7,17 @@ int main()
 {
   try
   {
-    constexpr VkEngine::VulkanEngineOptions vulkanEngineOptions {
-      .WINDOW_WIDTH = 1280,
-      .WINDOW_HEIGHT = 720 + 70,
+    const VideoDecoder decoder("assets/sample_1080.mp4");
+    const auto frameData = std::make_shared<std::vector<uint8_t>>();
+    int frameWidth, frameHeight;
+
+    const VkEngine::VulkanEngineOptions vulkanEngineOptions {
+      .WINDOW_WIDTH = static_cast<uint32_t>(decoder.getWidth()),
+      .WINDOW_HEIGHT = static_cast<uint32_t>(decoder.getHeight() + 70),
       .WINDOW_TITLE = "Video Decoding"
     };
 
     auto vulkanEngine = VkEngine::VulkanEngine(vulkanEngineOptions);
-
-    const VideoDecoder decoder("assets/sample.mp4");
-
-    const auto frameData = std::make_shared<std::vector<uint8_t>>();
-    int frameWidth, frameHeight;
 
     std::chrono::time_point<std::chrono::steady_clock> previousTime = std::chrono::steady_clock::now();
     const float fixedUpdateDt = 1.0f / static_cast<float>(decoder.getFrameRate());
