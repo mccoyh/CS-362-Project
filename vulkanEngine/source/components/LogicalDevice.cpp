@@ -75,21 +75,48 @@ namespace VkEngine {
     }
   }
 
+  void LogicalDevice::submitVideoGraphicsQueue(const uint32_t currentFrame, const VkCommandBuffer *commandBuffer) const
+  {
+    constexpr VkPipelineStageFlags waitStages[] = {
+      VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
+      VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+    };
+
+    const VkSubmitInfo submitInfo {
+      .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+      .waitSemaphoreCount = 0,
+      .pWaitSemaphores = nullptr,
+      .pWaitDstStageMask = waitStages,
+      .commandBufferCount = 1,
+      .pCommandBuffers = commandBuffer,
+      .signalSemaphoreCount = 1,
+      .pSignalSemaphores = &videoRenderFinishedSemaphores[currentFrame]
+    };
+
+    if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, videoInFlightFences[currentFrame]) != VK_SUCCESS)
+    {
+      throw std::runtime_error("failed to submit draw command buffer!");
+    }
+  }
+
   void LogicalDevice::waitForGraphicsFences(const uint32_t currentFrame) const
   {
     vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
+    vkWaitForFences(device, 1, &videoInFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
   }
 
   void LogicalDevice::resetGraphicsFences(const uint32_t currentFrame) const
   {
     vkResetFences(device, 1, &inFlightFences[currentFrame]);
+    vkResetFences(device, 1, &videoInFlightFences[currentFrame]);
   }
 
   VkResult LogicalDevice::queuePresent(const uint32_t currentFrame, const VkSwapchainKHR& swapchain,
                                        const uint32_t* imageIndex) const
   {
     const std::array waitSemaphores = {
-      renderFinishedSemaphores[currentFrame]
+      renderFinishedSemaphores[currentFrame],
+      videoRenderFinishedSemaphores[currentFrame]
     };
 
     const VkPresentInfoKHR presentInfo {
@@ -162,6 +189,10 @@ namespace VkEngine {
     renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
     inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
 
+    videoImageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+    videoRenderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+    videoInFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+
     constexpr VkSemaphoreCreateInfo semaphoreInfo {
       .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO
     };
@@ -175,7 +206,10 @@ namespace VkEngine {
     {
       if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
           vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS ||
-          vkCreateFence(device, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS)
+          vkCreateFence(device, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS ||
+          vkCreateSemaphore(device, &semaphoreInfo, nullptr, &videoImageAvailableSemaphores[i]) != VK_SUCCESS ||
+          vkCreateSemaphore(device, &semaphoreInfo, nullptr, &videoRenderFinishedSemaphores[i]) != VK_SUCCESS ||
+          vkCreateFence(device, &fenceInfo, nullptr, &videoInFlightFences[i]) != VK_SUCCESS)
       {
         throw std::runtime_error("failed to create graphics sync objects!");
       }
@@ -189,6 +223,10 @@ namespace VkEngine {
       vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
       vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
       vkDestroyFence(device, inFlightFences[i], nullptr);
+
+      vkDestroySemaphore(device, videoRenderFinishedSemaphores[i], nullptr);
+      vkDestroySemaphore(device, videoImageAvailableSemaphores[i], nullptr);
+      vkDestroyFence(device, videoInFlightFences[i], nullptr);
     }
   }
 } // VkEngine

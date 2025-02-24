@@ -9,7 +9,10 @@
 #include "components/ImGuiInstance.h"
 #include "pipelines/RenderPass.h"
 #include "pipelines/custom/GuiPipeline.h"
+#include "utilities/Buffers.h"
+#include "utilities/Images.h"
 #include <stdexcept>
+#include <utility>
 
 #ifdef NDEBUG
 constexpr bool enableValidationLayers = false;
@@ -64,6 +67,22 @@ namespace VkEngine {
     return ImGui::GetCurrentContext();
   }
 
+  void VulkanEngine::loadVideoFrame(std::shared_ptr<std::vector<uint8_t>> frameData, const int width, const int height)
+  {
+    videoFrameData = std::move(frameData);
+
+    if (videoExtent.width != width || videoExtent.height != height)
+    {
+      videoExtent.width = width;
+      videoExtent.height = height;
+
+      logicalDevice->waitIdle();
+      videoFramebuffer.reset();
+      videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
+                                                       videoRenderPass, videoExtent);
+    }
+  }
+
   void VulkanEngine::initVulkan()
   {
     instance = std::make_shared<Instance>();
@@ -82,19 +101,27 @@ namespace VkEngine {
 
     createCommandPool();
     allocateCommandBuffers(swapchainCommandBuffers);
+    allocateCommandBuffers(videoCommandBuffers);
 
     swapChain = std::make_shared<SwapChain>(physicalDevice, logicalDevice, window);
 
     renderPass = std::make_shared<RenderPass>(logicalDevice, physicalDevice, swapChain->getImageFormat(),
                                               physicalDevice->getMsaaSamples(), VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 
+
     framebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, swapChain, commandPool, renderPass,
-                                              swapChain->getExtent());
+                                                swapChain->getExtent());
 
     guiPipeline = std::make_unique<GuiPipeline>(physicalDevice, logicalDevice, renderPass, MAX_GUI_TEXTURES);
 
     imGuiInstance = std::make_shared<ImGuiInstance>(commandPool, window, instance, physicalDevice, logicalDevice,
                                                     renderPass, guiPipeline, true);
+
+    videoRenderPass = std::make_shared<RenderPass>(logicalDevice, physicalDevice, VK_FORMAT_R8G8B8A8_UNORM,
+                                                   physicalDevice->getMsaaSamples(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+    videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
+                                                     videoRenderPass, swapChain->getExtent());
   }
 
   void VulkanEngine::createCommandPool()
@@ -163,6 +190,23 @@ namespace VkEngine {
     });
   }
 
+  void VulkanEngine::recordVideoCommandBuffer(const VkCommandBuffer& commandBuffer, const uint32_t imageIndex) const
+  {
+    recordCommandBuffer(commandBuffer, imageIndex, [this](const VkCommandBuffer& cmdBuffer,
+                        const uint32_t imgIndex)
+    {
+      if (videoExtent.width == 0 || videoExtent.height == 0)
+      {
+        return;
+      }
+
+      if (videoFrameData)
+      {
+        loadVideoFrameToImage(static_cast<int>(imgIndex));
+      }
+    });
+  }
+
   void VulkanEngine::doRendering()
   {
     logicalDevice->waitForGraphicsFences(currentFrame);
@@ -182,7 +226,13 @@ namespace VkEngine {
       throw std::runtime_error("failed to acquire swap chain image!");
     }
 
+    renderVideoWidget(imageIndex);
+
     logicalDevice->resetGraphicsFences(currentFrame);
+
+    vkResetCommandBuffer(videoCommandBuffers[currentFrame], 0);
+    recordVideoCommandBuffer(videoCommandBuffers[currentFrame], imageIndex);
+    logicalDevice->submitVideoGraphicsQueue(currentFrame, &videoCommandBuffers[currentFrame]);
 
     vkResetCommandBuffer(swapchainCommandBuffers[currentFrame], 0);
     recordSwapchainCommandBuffer(swapchainCommandBuffers[currentFrame], imageIndex);
@@ -223,10 +273,81 @@ namespace VkEngine {
     swapChain = std::make_shared<SwapChain>(physicalDevice, logicalDevice, window);
     framebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, swapChain, commandPool, renderPass,
                                                 swapChain->getExtent());
+
+    if (videoExtent.width != 0 && videoExtent.height != 0)
+    {
+      videoFramebuffer.reset();
+
+      videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
+                                                       videoRenderPass, videoExtent);
+    }
   }
 
   void VulkanEngine::createNewFrame() const
   {
     imGuiInstance->createNewFrame();
+  }
+
+  void VulkanEngine::renderVideoWidget(const uint32_t imageIndex) const
+  {
+    const auto widgetName = "Video Output";
+
+    imGuiInstance->dockCenter(widgetName);
+
+    ImGui::Begin(widgetName);
+
+    ImGui::Image(reinterpret_cast<ImTextureID>(videoFramebuffer->getFramebufferImageDescriptorSet(imageIndex)),
+                 { static_cast<float>(videoExtent.width), static_cast<float>(videoExtent.height) });
+
+    ImGui::End();
+  }
+
+  void VulkanEngine::loadVideoFrameToImage(const int framebufferIndex) const
+  {
+    const VkDeviceSize imageSize = videoExtent.width * videoExtent.height * 4; // RGBA format
+
+    VkBuffer stagingBuffer;
+    VkDeviceMemory stagingBufferMemory;
+    Buffers::createBuffer(logicalDevice, physicalDevice, imageSize,
+                          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                          stagingBuffer, stagingBufferMemory);
+
+    void* data;
+    vkMapMemory(logicalDevice->getDevice(), stagingBufferMemory, 0, imageSize, 0, &data);
+    memcpy(data, videoFrameData->data(), imageSize);
+    vkUnmapMemory(logicalDevice->getDevice(), stagingBufferMemory);
+
+    Images::transitionImageLayout(logicalDevice, commandPool, videoFramebuffer->getImages()[framebufferIndex],
+                                  VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_UNDEFINED,
+                                  VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1);
+
+    const VkCommandBuffer commandBuffer = Buffers::beginSingleTimeCommands(logicalDevice, commandPool);
+
+    const VkBufferImageCopy region {
+      .bufferOffset = 0,
+      .bufferRowLength = 0,
+      .bufferImageHeight = 0,
+      .imageSubresource = {
+        .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+        .mipLevel = 0,
+        .baseArrayLayer = 0,
+        .layerCount = 1
+      },
+      .imageOffset = {0, 0, 0},
+      .imageExtent = {videoExtent.width, videoExtent.height, 1}
+    };
+
+    vkCmdCopyBufferToImage(commandBuffer, stagingBuffer, videoFramebuffer->getImages()[framebufferIndex],
+                           VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+
+    Buffers::endSingleTimeCommands(logicalDevice, commandPool, logicalDevice->getGraphicsQueue(), commandBuffer);
+
+    Images::transitionImageLayout(logicalDevice, commandPool, videoFramebuffer->getImages()[framebufferIndex],
+                                  VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                  VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, 1);
+
+    vkDestroyBuffer(logicalDevice->getDevice(), stagingBuffer, nullptr);
+    vkFreeMemory(logicalDevice->getDevice(), stagingBufferMemory, nullptr);
   }
 } // VkEngine
