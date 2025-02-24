@@ -1,6 +1,7 @@
 #include "VideoDecoder.h"
 #include <source/VulkanEngine.h>
 #include <iostream>
+#include <chrono>
 
 int main()
 {
@@ -19,11 +20,25 @@ int main()
     const auto frameData = std::make_shared<std::vector<uint8_t>>();
     int frameWidth, frameHeight;
 
+    std::chrono::time_point<std::chrono::steady_clock> previousTime = std::chrono::steady_clock::now();
+    constexpr float fixedUpdateDt = 1.0f / 30.0f;
+    float timeAccumulator = 0;
+
     while (vulkanEngine.isActive())
     {
-      if (decoder.getNextFrame(*frameData, frameWidth, frameHeight))
+      const auto currentTime = std::chrono::steady_clock::now();
+      const float dt = std::chrono::duration<float>(currentTime - previousTime).count();
+      previousTime = currentTime;
+
+      timeAccumulator += dt;
+      while (timeAccumulator >= fixedUpdateDt)
       {
-        vulkanEngine.loadVideoFrame(frameData, frameWidth, frameHeight);
+        if (decoder.getNextFrame(*frameData, frameWidth, frameHeight))
+        {
+          vulkanEngine.loadVideoFrame(frameData, frameWidth, frameHeight);
+        }
+
+        timeAccumulator -= fixedUpdateDt;
       }
 
       vulkanEngine.render();
