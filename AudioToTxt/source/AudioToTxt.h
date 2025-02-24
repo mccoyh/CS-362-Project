@@ -4,12 +4,12 @@
 
 
 #include <string>
+#include <filesystem>
 
-void extractAudio(const std::string& mp4File, const std::string& audioFile);
+bool extractAudio(const std::filesystem::path& mp4File, const std::filesystem::path& audioFile);
 
-int extract_audio(const char* input_file, const char* output_audio);
 
-// int transcribe_audio(const char* model_path, const char* audio_file, const char* output_srt);
+int transcribe_audio(const std::filesystem::path model_path, const std::filesystem::path audio_file, const std::filesystem::path output_srt);
 
 // int add_subtitles(const char* input_video, const char* subtitle_file, const char* output_video) 
 
