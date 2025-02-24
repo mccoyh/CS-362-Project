@@ -9,6 +9,8 @@
 #include "components/ImGuiInstance.h"
 #include "pipelines/RenderPass.h"
 #include "pipelines/custom/GuiPipeline.h"
+#include "utilities/Buffers.h"
+#include "utilities/Images.h"
 #include <stdexcept>
 #include <utility>
 
@@ -185,6 +187,11 @@ namespace VkEngine {
         return;
       }
 
+      if (videoFrameData)
+      {
+        loadVideoFrameToImage(static_cast<int>(imgIndex));
+      }
+
     });
   }
 
@@ -306,5 +313,66 @@ namespace VkEngine {
                 contentRegionAvailable);
 
     ImGui::End();
+  }
+
+  void VulkanEngine::loadVideoFrameToImage(const int framebufferIndex) const
+  {
+    const VkDeviceSize imageSize = videoWidth * videoHeight * 4; // RGBA format
+
+    // Create staging buffer
+    VkBuffer stagingBuffer;
+    VkDeviceMemory stagingBufferMemory;
+    Buffers::createBuffer(logicalDevice, physicalDevice, imageSize,
+                          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                          stagingBuffer, stagingBufferMemory);
+
+    // Copy frame data into staging buffer
+    void* data;
+    vkMapMemory(logicalDevice->getDevice(), stagingBufferMemory, 0, imageSize, 0, &data);
+    memcpy(data, videoFrameData->data(), imageSize);
+    vkUnmapMemory(logicalDevice->getDevice(), stagingBufferMemory);
+
+    // Get image dimensions
+    const VkExtent3D imageExtent {
+      .width = static_cast<uint32_t>(std::min(videoWidth, static_cast<int>(videoExtent.width))),
+      .height = static_cast<uint32_t>(std::min(videoHeight, static_cast<int>(videoExtent.height))),
+      .depth = 1
+    };
+
+    // Transition framebuffer image to TRANSFER_DST_OPTIMAL
+    Images::transitionImageLayout(logicalDevice, commandPool, videoFramebuffer->getImages()[framebufferIndex],
+                                  VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_UNDEFINED,
+                                  VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1);
+
+    // Create a command buffer for the copy operation
+    const VkCommandBuffer commandBuffer = Buffers::beginSingleTimeCommands(logicalDevice, commandPool);
+
+    // Copy buffer to Vulkan image
+    VkBufferImageCopy region = {};
+    region.bufferOffset = 0;
+    region.bufferRowLength = 0;
+    region.bufferImageHeight = 0;
+    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    region.imageSubresource.mipLevel = 0;
+    region.imageSubresource.baseArrayLayer = 0;
+    region.imageSubresource.layerCount = 1;
+    region.imageOffset = {0, 0, 0};
+    region.imageExtent = imageExtent;
+
+    vkCmdCopyBufferToImage(commandBuffer, stagingBuffer, videoFramebuffer->getImages()[framebufferIndex],
+                           VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+
+    // End the single-time command buffer
+    Buffers::endSingleTimeCommands(logicalDevice, commandPool, logicalDevice->getGraphicsQueue(), commandBuffer);
+
+    // Transition image to SHADER_READ_ONLY_OPTIMAL for rendering
+    Images::transitionImageLayout(logicalDevice, commandPool, videoFramebuffer->getImages()[framebufferIndex],
+                                  VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                  VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, 1);
+
+    // Clean up staging buffer
+    vkDestroyBuffer(logicalDevice->getDevice(), stagingBuffer, nullptr);
+    vkFreeMemory(logicalDevice->getDevice(), stagingBufferMemory, nullptr);
   }
 } // VkEngine

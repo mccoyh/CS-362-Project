@@ -87,6 +87,8 @@ private:
 
   void renderVideoWidget(uint32_t imageIndex);
 
+  void loadVideoFrameToImage(int framebufferIndex) const;
+
   friend void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height);
 };
 

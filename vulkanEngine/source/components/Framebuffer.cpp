@@ -79,6 +79,11 @@ namespace VkEngine {
     return framebufferImageDescriptorSets[imageIndex];
   }
 
+  const std::vector<VkImage>& Framebuffer::getImages() const
+  {
+    return framebufferImages;
+  }
+
   void Framebuffer::createImageResources(const VkCommandPool& commandPool, const VkExtent2D extent)
   {
     if (swapChain)
@@ -124,8 +129,9 @@ namespace VkEngine {
     {
       Images::createImage(logicalDevice, physicalDevice, extent.width, extent.height, 1,
                           1, VK_SAMPLE_COUNT_1_BIT, framebufferImageFormat, VK_IMAGE_TILING_OPTIMAL,
-                          VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                          framebufferImages[i], framebufferImageMemory[i], VK_IMAGE_TYPE_2D);
+                          VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+                          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, framebufferImages[i],
+                          framebufferImageMemory[i], VK_IMAGE_TYPE_2D);
 
       framebufferImageViews[i] = Images::createImageView(logicalDevice, framebufferImages[i],
                                                          framebufferImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1, VK_IMAGE_VIEW_TYPE_2D);
