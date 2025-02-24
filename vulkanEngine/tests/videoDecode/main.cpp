@@ -7,8 +7,8 @@ int main()
   try
   {
     constexpr VkEngine::VulkanEngineOptions vulkanEngineOptions {
-      .WINDOW_WIDTH = 600,
-      .WINDOW_HEIGHT = 400,
+      .WINDOW_WIDTH = 1280,
+      .WINDOW_HEIGHT = 720 + 70,
       .WINDOW_TITLE = "Video Decoding"
     };
 

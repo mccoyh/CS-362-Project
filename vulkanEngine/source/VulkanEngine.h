@@ -85,7 +85,7 @@ private:
 
   void createNewFrame() const;
 
-  void renderVideoWidget(uint32_t imageIndex);
+  void renderVideoWidget(uint32_t imageIndex) const;
 
   void loadVideoFrameToImage(int framebufferIndex) const;
 

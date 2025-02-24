@@ -72,6 +72,18 @@ namespace VkEngine {
     videoFrameData = std::move(frameData);
     videoWidth = width;
     videoHeight = height;
+
+    if (videoExtent.width != width ||
+        videoExtent.height != height)
+    {
+      videoExtent.width = width;
+      videoExtent.height = height;
+
+      logicalDevice->waitIdle();
+      videoFramebuffer.reset();
+      videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
+                                                       renderPass, videoExtent);
+    }
   }
 
   void VulkanEngine::initVulkan()
@@ -276,7 +288,7 @@ namespace VkEngine {
     imGuiInstance->createNewFrame();
   }
 
-  void VulkanEngine::renderVideoWidget(const uint32_t imageIndex)
+  void VulkanEngine::renderVideoWidget(const uint32_t imageIndex) const
   {
     const auto widgetName = "Video Output";
 
@@ -284,33 +296,8 @@ namespace VkEngine {
 
     ImGui::Begin(widgetName);
 
-    const auto contentRegionAvailable = ImGui::GetContentRegionAvail();
-
-    const VkExtent2D currentOffscreenViewportExtent {
-      .width = static_cast<uint32_t>(std::max(0.0f, contentRegionAvailable.x)),
-      .height = static_cast<uint32_t>(std::max(0.0f, contentRegionAvailable.y))
-    };
-
-    if (currentOffscreenViewportExtent.width == 0 || currentOffscreenViewportExtent.height == 0)
-    {
-      videoExtent = currentOffscreenViewportExtent;
-      ImGui::End();
-      return;
-    }
-
-    if (videoExtent.width != currentOffscreenViewportExtent.width ||
-        videoExtent.height != currentOffscreenViewportExtent.height)
-    {
-      videoExtent = currentOffscreenViewportExtent;
-
-      logicalDevice->waitIdle();
-      videoFramebuffer.reset();
-      videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
-                                                       renderPass, videoExtent);
-    }
-
     ImGui::Image(reinterpret_cast<ImTextureID>(videoFramebuffer->getFramebufferImageDescriptorSet(imageIndex)),
-                contentRegionAvailable);
+                {static_cast<float>(videoExtent.width), static_cast<float>(videoExtent.height)});
 
     ImGui::End();
   }
