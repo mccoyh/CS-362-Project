@@ -60,6 +60,7 @@ private:
   uint32_t currentFrame;
   bool framebufferResized;
 
+  std::shared_ptr<RenderPass> videoRenderPass;
   std::shared_ptr<Framebuffer> videoFramebuffer;
   std::vector<VkCommandBuffer> videoCommandBuffers;
   VkExtent2D videoExtent{};

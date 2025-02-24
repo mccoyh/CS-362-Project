@@ -82,7 +82,7 @@ namespace VkEngine {
       logicalDevice->waitIdle();
       videoFramebuffer.reset();
       videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
-                                                       renderPass, videoExtent);
+                                                       videoRenderPass, videoExtent);
     }
   }
 
@@ -111,16 +111,20 @@ namespace VkEngine {
     renderPass = std::make_shared<RenderPass>(logicalDevice, physicalDevice, swapChain->getImageFormat(),
                                               physicalDevice->getMsaaSamples(), VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 
+
     framebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, swapChain, commandPool, renderPass,
-                                              swapChain->getExtent());
+                                                swapChain->getExtent());
 
     guiPipeline = std::make_unique<GuiPipeline>(physicalDevice, logicalDevice, renderPass, MAX_GUI_TEXTURES);
 
     imGuiInstance = std::make_shared<ImGuiInstance>(commandPool, window, instance, physicalDevice, logicalDevice,
                                                     renderPass, guiPipeline, true);
 
+    videoRenderPass = std::make_shared<RenderPass>(logicalDevice, physicalDevice, VK_FORMAT_R8G8B8A8_UNORM,
+                                                   physicalDevice->getMsaaSamples(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
     videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
-                                                     renderPass, swapChain->getExtent());
+                                                     videoRenderPass, swapChain->getExtent());
   }
 
   void VulkanEngine::createCommandPool()
@@ -279,7 +283,7 @@ namespace VkEngine {
       videoFramebuffer.reset();
 
       videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
-                                                       renderPass, videoExtent);
+                                                       videoRenderPass, videoExtent);
     }
   }
 

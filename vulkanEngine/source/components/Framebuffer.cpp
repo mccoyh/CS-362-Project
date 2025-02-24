@@ -91,7 +91,7 @@ namespace VkEngine {
       return;
     }
 
-    framebufferImageFormat = VK_FORMAT_B8G8R8A8_UNORM;
+    framebufferImageFormat = VK_FORMAT_R8G8B8A8_UNORM;
 
     constexpr VkSamplerCreateInfo samplerInfo {
       .sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
