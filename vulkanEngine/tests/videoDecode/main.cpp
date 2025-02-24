@@ -1,3 +1,4 @@
+#include "VideoDecoder.h"
 #include <source/VulkanEngine.h>
 #include <iostream>
 
@@ -13,8 +14,18 @@ int main()
 
     auto vulkanEngine = VkEngine::VulkanEngine(vulkanEngineOptions);
 
+    const VideoDecoder decoder("assets/sample.mp4");
+
+    const auto frameData = std::make_shared<std::vector<uint8_t>>();
+    int frameWidth, frameHeight;
+
     while (vulkanEngine.isActive())
     {
+      if (decoder.getNextFrame(*frameData, frameWidth, frameHeight))
+      {
+        vulkanEngine.loadVideoFrame(frameData, frameWidth, frameHeight);
+      }
+
       vulkanEngine.render();
     }
   }
