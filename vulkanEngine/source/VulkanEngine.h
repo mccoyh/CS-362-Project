@@ -66,8 +66,6 @@ private:
   VkExtent2D videoExtent{};
 
   std::shared_ptr<std::vector<uint8_t>> videoFrameData;
-  int videoWidth;
-  int videoHeight;
 
   void initVulkan();
   void createCommandPool();

@@ -70,11 +70,8 @@ namespace VkEngine {
   void VulkanEngine::loadVideoFrame(std::shared_ptr<std::vector<uint8_t>> frameData, const int width, const int height)
   {
     videoFrameData = std::move(frameData);
-    videoWidth = width;
-    videoHeight = height;
 
-    if (videoExtent.width != width ||
-        videoExtent.height != height)
+    if (videoExtent.width != width || videoExtent.height != height)
     {
       videoExtent.width = width;
       videoExtent.height = height;
@@ -207,7 +204,6 @@ namespace VkEngine {
       {
         loadVideoFrameToImage(static_cast<int>(imgIndex));
       }
-
     });
   }
 
@@ -301,16 +297,15 @@ namespace VkEngine {
     ImGui::Begin(widgetName);
 
     ImGui::Image(reinterpret_cast<ImTextureID>(videoFramebuffer->getFramebufferImageDescriptorSet(imageIndex)),
-                {static_cast<float>(videoExtent.width), static_cast<float>(videoExtent.height)});
+                 { static_cast<float>(videoExtent.width), static_cast<float>(videoExtent.height) });
 
     ImGui::End();
   }
 
   void VulkanEngine::loadVideoFrameToImage(const int framebufferIndex) const
   {
-    const VkDeviceSize imageSize = videoWidth * videoHeight * 4; // RGBA format
+    const VkDeviceSize imageSize = videoExtent.width * videoExtent.height * 4; // RGBA format
 
-    // Create staging buffer
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
     Buffers::createBuffer(logicalDevice, physicalDevice, imageSize,
@@ -318,51 +313,40 @@ namespace VkEngine {
                           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                           stagingBuffer, stagingBufferMemory);
 
-    // Copy frame data into staging buffer
     void* data;
     vkMapMemory(logicalDevice->getDevice(), stagingBufferMemory, 0, imageSize, 0, &data);
     memcpy(data, videoFrameData->data(), imageSize);
     vkUnmapMemory(logicalDevice->getDevice(), stagingBufferMemory);
 
-    // Get image dimensions
-    const VkExtent3D imageExtent {
-      .width = static_cast<uint32_t>(std::min(videoWidth, static_cast<int>(videoExtent.width))),
-      .height = static_cast<uint32_t>(std::min(videoHeight, static_cast<int>(videoExtent.height))),
-      .depth = 1
-    };
-
-    // Transition framebuffer image to TRANSFER_DST_OPTIMAL
     Images::transitionImageLayout(logicalDevice, commandPool, videoFramebuffer->getImages()[framebufferIndex],
                                   VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_UNDEFINED,
                                   VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1);
 
-    // Create a command buffer for the copy operation
     const VkCommandBuffer commandBuffer = Buffers::beginSingleTimeCommands(logicalDevice, commandPool);
 
-    // Copy buffer to Vulkan image
-    VkBufferImageCopy region = {};
-    region.bufferOffset = 0;
-    region.bufferRowLength = 0;
-    region.bufferImageHeight = 0;
-    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    region.imageSubresource.mipLevel = 0;
-    region.imageSubresource.baseArrayLayer = 0;
-    region.imageSubresource.layerCount = 1;
-    region.imageOffset = {0, 0, 0};
-    region.imageExtent = imageExtent;
+    const VkBufferImageCopy region {
+      .bufferOffset = 0,
+      .bufferRowLength = 0,
+      .bufferImageHeight = 0,
+      .imageSubresource = {
+        .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+        .mipLevel = 0,
+        .baseArrayLayer = 0,
+        .layerCount = 1
+      },
+      .imageOffset = {0, 0, 0},
+      .imageExtent = {videoExtent.width, videoExtent.height, 1}
+    };
 
     vkCmdCopyBufferToImage(commandBuffer, stagingBuffer, videoFramebuffer->getImages()[framebufferIndex],
                            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
-    // End the single-time command buffer
     Buffers::endSingleTimeCommands(logicalDevice, commandPool, logicalDevice->getGraphicsQueue(), commandBuffer);
 
-    // Transition image to SHADER_READ_ONLY_OPTIMAL for rendering
     Images::transitionImageLayout(logicalDevice, commandPool, videoFramebuffer->getImages()[framebufferIndex],
                                   VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                                   VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, 1);
 
-    // Clean up staging buffer
     vkDestroyBuffer(logicalDevice->getDevice(), stagingBuffer, nullptr);
     vkFreeMemory(logicalDevice->getDevice(), stagingBufferMemory, nullptr);
   }
