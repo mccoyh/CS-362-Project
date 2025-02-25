@@ -66,9 +66,15 @@ private:
   std::shared_ptr<RenderPass> videoRenderPass;
   std::shared_ptr<Framebuffer> videoFramebuffer;
   std::vector<VkCommandBuffer> videoCommandBuffers;
-  VkExtent2D videoExtent{};
+  VkExtent2D videoExtent{ 100, 100 };
 
   std::shared_ptr<std::vector<uint8_t>> videoFrameData;
+
+  std::vector<VkImage> videoTextureImages{};
+  std::vector<VkDeviceMemory> videoTextureImageMemory{};
+  std::vector<VkImageView> videoTextureImageViews{};
+  VkSampler videoTextureSampler = VK_NULL_HANDLE;
+  VkDescriptorImageInfo videoTextureImageInfo{};
 
   void initVulkan();
   void createCommandPool();
@@ -90,6 +96,10 @@ private:
   void renderVideoWidget(uint32_t imageIndex) const;
 
   void loadVideoFrameToImage(int framebufferIndex) const;
+
+  void setupVideoTexture();
+
+  void destroyVideoTexture() const;
 
   friend void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height);
 };
