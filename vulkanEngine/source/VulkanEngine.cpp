@@ -9,6 +9,7 @@
 #include "components/ImGuiInstance.h"
 #include "pipelines/RenderPass.h"
 #include "pipelines/custom/GuiPipeline.h"
+#include "pipelines/custom/VideoPipeline.h"
 #include "utilities/Buffers.h"
 #include "utilities/Images.h"
 #include <stdexcept>
@@ -114,6 +115,7 @@ namespace VkEngine {
 
     guiPipeline = std::make_unique<GuiPipeline>(physicalDevice, logicalDevice, renderPass, MAX_GUI_TEXTURES);
 
+
     imGuiInstance = std::make_shared<ImGuiInstance>(commandPool, window, instance, physicalDevice, logicalDevice,
                                                     renderPass, guiPipeline, true);
 
@@ -122,6 +124,8 @@ namespace VkEngine {
 
     videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
                                                      videoRenderPass, swapChain->getExtent());
+
+    videoPipeline = std::make_unique<VideoPipeline>(physicalDevice, logicalDevice, videoRenderPass);
   }
 
   void VulkanEngine::createCommandPool()
@@ -200,10 +204,16 @@ namespace VkEngine {
         return;
       }
 
-      if (videoFrameData)
-      {
-        loadVideoFrameToImage(static_cast<int>(imgIndex));
-      }
+      videoRenderPass->begin(videoFramebuffer->getFramebuffer(imgIndex), videoExtent, cmdBuffer);
+
+      videoPipeline->render(cmdBuffer, videoExtent);
+
+      RenderPass::end(cmdBuffer);
+
+      // if (videoFrameData)
+      // {
+      //   loadVideoFrameToImage(static_cast<int>(imgIndex));
+      // }
     });
   }
 

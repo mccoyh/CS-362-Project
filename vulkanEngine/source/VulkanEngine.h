@@ -19,6 +19,7 @@ class SwapChain;
 class RenderPass;
 class Framebuffer;
 class GuiPipeline;
+class VideoPipeline;
 class ImGuiInstance;
 
 class VulkanEngine {
@@ -49,6 +50,8 @@ private:
   std::shared_ptr<RenderPass> renderPass;
 
   std::unique_ptr<GuiPipeline> guiPipeline;
+
+  std::unique_ptr<VideoPipeline> videoPipeline;
 
   std::shared_ptr<ImGuiInstance> imGuiInstance;
 
