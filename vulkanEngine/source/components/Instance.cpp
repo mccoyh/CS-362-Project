@@ -10,6 +10,12 @@ constexpr bool enableValidationLayers = false;
 constexpr bool enableValidationLayers = true;
 #endif
 
+#ifdef __APPLE__
+#define IS_MAC 1
+#else
+#define IS_MAC 0
+#endif
+
 namespace VkEngine {
   Instance::Instance()
   {
@@ -38,7 +44,7 @@ namespace VkEngine {
     const VkInstanceCreateInfo createInfo {
       .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
       .pNext = enableValidationLayers ? &debugCreateInfo : nullptr,
-      .flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR,
+      .flags = IS_MAC ? VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR : 0,
       .pApplicationInfo = &appInfo,
       .enabledLayerCount = enableValidationLayers ? static_cast<uint32_t>(validationLayers.size()) : 0,
       .ppEnabledLayerNames = enableValidationLayers ? validationLayers.data() : nullptr,
@@ -100,7 +106,10 @@ namespace VkEngine {
       extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     }
 
-    extensions.push_back("VK_KHR_portability_enumeration");
+    if constexpr (IS_MAC)
+    {
+      extensions.push_back("VK_KHR_portability_enumeration");
+    }
 
     return extensions;
   }

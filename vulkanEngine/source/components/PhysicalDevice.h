@@ -12,7 +12,9 @@ class Instance;
 
 const std::vector deviceExtensions = {
   VK_KHR_SWAPCHAIN_EXTENSION_NAME
-  // "VK_KHR_portability_subset"
+#ifdef __APPLE__
+  , "VK_KHR_portability_subset"
+#endif
 };
 
 struct QueueFamilyIndices {
