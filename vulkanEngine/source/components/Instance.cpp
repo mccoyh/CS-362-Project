@@ -24,7 +24,7 @@ namespace VkEngine {
       .applicationVersion = VK_MAKE_VERSION(1, 0, 0),
       .pEngineName = "No Engine",
       .engineVersion = VK_MAKE_VERSION(1, 0, 0),
-      .apiVersion = VK_API_VERSION_1_0
+      .apiVersion = VK_API_VERSION_1_1
     };
 
     const auto extensions = getRequiredExtensions();
@@ -38,6 +38,7 @@ namespace VkEngine {
     const VkInstanceCreateInfo createInfo {
       .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
       .pNext = enableValidationLayers ? &debugCreateInfo : nullptr,
+      .flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR,
       .pApplicationInfo = &appInfo,
       .enabledLayerCount = enableValidationLayers ? static_cast<uint32_t>(validationLayers.size()) : 0,
       .ppEnabledLayerNames = enableValidationLayers ? validationLayers.data() : nullptr,
@@ -98,6 +99,8 @@ namespace VkEngine {
     {
       extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     }
+
+    extensions.push_back("VK_KHR_portability_enumeration");
 
     return extensions;
   }
