@@ -37,11 +37,17 @@ A successful implementation will redefine how users interact with video playback
 
 ---
 
-## Technical Approach
-The Desktop Media Player leverages modern development tools to deliver an efficient and polished experience:
-- **Languages**: The application is built with C++ for high performance.
-- **Frameworks and Libraries**: The project employs FFmpeg for reliable video decoding and processing. It utilizes ImGui for its lightweight and responsive graphical interface.
-- **Tools**: Git and CMake streamline development and build processes. Regular code reviews and testing are integrated to ensure quality and maintainability. Github Actions will be used to have a simple CI/CD Pipeline, allowing for testing of compiling and developer-defined test cases.
+## Technical Approach  
+- **Languages**: The application is built with **C++** for high performance and memory efficiency.  
+- **Frameworks and Libraries**:  
+  - **FFmpeg** for robust video/audio decoding and processing.  
+  - **ImGui** for a lightweight and responsive graphical interface.  
+  - **Vulkan API** for high-performance video and GUI rendering.  
+  - **Whisper ASR Library** for real-time automatic speech recognition and translations.  
+  - **SDL3** for cross-platform audio output.  
+- **Tools**:  
+  - **Git & CMake** streamline development and build processes.  
+  - **GitHub Actions** enables a simple **CI/CD pipeline** for automated builds and testing.
 
 The technical implementation focuses on modular design, allowing flexibility for future feature additions and performance optimizations.
 
@@ -352,7 +358,8 @@ Libraries are used to facilitate the core functionalities of application. Each i
 The UI wil be implemented through a the IMGUI library. This component is responsible for collecting the users actions and displaying the results to the user. 
 
 **Backend Libraries**:
-The backend libaries provide the functionality of the applicaiton. They integrate functions provided by third party and standard libraries to fit the needs of the media player as well as create the workflow between operations. Each backend library is defined by a core feature of the media player creating a modular design where each feature works independently. The third party libraries include IMGUI, FFMPeg, Whisper ASR CPP, and Vulkan SDK.
+The backend libaries provide the functionality of the application. They integrate functions provided by third party and standard libraries to fit the needs of the media player as well as create the workflow between operations. Each backend library is defined by a core feature of the media player creating a modular design where each feature works independently. The third party libraries include IMGUI, FFMPeg, Whisper ASR CPP, and Vulkan SDK.
+
 
 ## Coding guidlines
 The C++ Core Guidlines will be used to create a constistent coding style between project members. These are common guidelines widely used and adopted in the world. The guidelines specify ways to enforce their rules through several options: static analysis, compiler, run-time checks, and human review. All pull request to the main branch require approval from another member, ensuring multiple sets of eyes have looked over the code for consistent style and best practices. 
