@@ -328,9 +328,9 @@ namespace VkEngine {
     memcpy(data, videoFrameData->data(), imageSize);
     vkUnmapMemory(logicalDevice->getDevice(), stagingBufferMemory);
 
-    Images::transitionImageLayout(logicalDevice, commandPool, videoFramebuffer->getImages()[framebufferIndex],
-                                  VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_UNDEFINED,
-                                  VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1);
+    // Images::transitionImageLayout(logicalDevice, commandPool, videoFramebuffer->getImages()[framebufferIndex],
+                                  // VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_UNDEFINED,
+                                  // VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1);
 
     const VkCommandBuffer commandBuffer = Buffers::beginSingleTimeCommands(logicalDevice, commandPool);
 
@@ -348,14 +348,14 @@ namespace VkEngine {
       .imageExtent = {videoExtent.width, videoExtent.height, 1}
     };
 
-    vkCmdCopyBufferToImage(commandBuffer, stagingBuffer, videoFramebuffer->getImages()[framebufferIndex],
-                           VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+    // vkCmdCopyBufferToImage(commandBuffer, stagingBuffer, videoFramebuffer->getImages()[framebufferIndex],
+                           // VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
     Buffers::endSingleTimeCommands(logicalDevice, commandPool, logicalDevice->getGraphicsQueue(), commandBuffer);
 
-    Images::transitionImageLayout(logicalDevice, commandPool, videoFramebuffer->getImages()[framebufferIndex],
-                                  VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                                  VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, 1);
+    // Images::transitionImageLayout(logicalDevice, commandPool, videoFramebuffer->getImages()[framebufferIndex],
+                                  // VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                  // VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, 1);
 
     vkDestroyBuffer(logicalDevice->getDevice(), stagingBuffer, nullptr);
     vkFreeMemory(logicalDevice->getDevice(), stagingBufferMemory, nullptr);

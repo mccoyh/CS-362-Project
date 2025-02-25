@@ -79,11 +79,6 @@ namespace VkEngine {
     return framebufferImageDescriptorSets[imageIndex];
   }
 
-  const std::vector<VkImage>& Framebuffer::getImages() const
-  {
-    return framebufferImages;
-  }
-
   void Framebuffer::createImageResources(const VkCommandPool& commandPool, const VkExtent2D extent)
   {
     if (swapChain)
