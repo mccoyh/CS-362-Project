@@ -34,6 +34,8 @@ namespace VkEngine {
 
     initVulkan();
 
+    createVideoTextureSampler();
+
     setupVideoTexture();
   }
 
@@ -42,6 +44,8 @@ namespace VkEngine {
     logicalDevice->waitIdle();
 
     destroyVideoTexture();
+
+    destroyVideoTextureSampler();
 
     vkDestroyCommandPool(logicalDevice->getDevice(), commandPool, nullptr);
 
@@ -394,7 +398,37 @@ namespace VkEngine {
                                     VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, 1);
     }
 
-    // Create Sampler
+    // Setup Image Info
+    for (int i = 0; i < videoTextureImageInfos.capacity(); i++)
+    {
+      videoTextureImageInfos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+      videoTextureImageInfos[i].imageView = videoTextureImageViews[i];
+      videoTextureImageInfos[i].sampler = videoTextureSampler;
+    }
+  }
+
+  void VulkanEngine::destroyVideoTexture() const
+  {
+    logicalDevice->waitIdle(); // This is bad practice but works for now
+
+    for (const auto& imageView : videoTextureImageViews)
+    {
+      vkDestroyImageView(logicalDevice->getDevice(), imageView, nullptr);
+    }
+
+    for (const auto& imageMemory : videoTextureImageMemory)
+    {
+      vkFreeMemory(logicalDevice->getDevice(), imageMemory, nullptr);
+    }
+
+    for (const auto& image : videoTextureImages)
+    {
+      vkDestroyImage(logicalDevice->getDevice(), image, nullptr);
+    }
+  }
+
+  void VulkanEngine::createVideoTextureSampler()
+  {
     constexpr VkSamplerCreateInfo samplerInfo {
       .sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
       .pNext = nullptr,
@@ -420,33 +454,10 @@ namespace VkEngine {
     {
       throw std::runtime_error("Failed to create image sampler!");
     }
-
-    // Setup Image Info
-    for (int i = 0; i < videoTextureImageInfos.capacity(); i++)
-    {
-      videoTextureImageInfos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-      videoTextureImageInfos[i].imageView = videoTextureImageViews[i];
-      videoTextureImageInfos[i].sampler = videoTextureSampler;
-    }
   }
 
-  void VulkanEngine::destroyVideoTexture() const
+  void VulkanEngine::destroyVideoTextureSampler() const
   {
     vkDestroySampler(logicalDevice->getDevice(), videoTextureSampler, nullptr);
-
-    for (const auto& imageView : videoTextureImageViews)
-    {
-      vkDestroyImageView(logicalDevice->getDevice(), imageView, nullptr);
-    }
-
-    for (const auto& imageMemory : videoTextureImageMemory)
-    {
-      vkFreeMemory(logicalDevice->getDevice(), imageMemory, nullptr);
-    }
-
-    for (const auto& image : videoTextureImages)
-    {
-      vkDestroyImage(logicalDevice->getDevice(), image, nullptr);
-    }
   }
 } // VkEngine

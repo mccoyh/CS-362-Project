@@ -101,6 +101,10 @@ private:
 
   void destroyVideoTexture() const;
 
+  void createVideoTextureSampler();
+
+  void destroyVideoTextureSampler() const;
+
   friend void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height);
 };
 
