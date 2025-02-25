@@ -17,16 +17,26 @@ public:
 
   ~VideoPipeline() override;
 
-  void render(const VkCommandBuffer& commandBuffer, VkExtent2D swapChainExtent) const;
+  void render(const VkCommandBuffer& commandBuffer, VkExtent2D swapChainExtent, const VkDescriptorImageInfo* imageInfo,
+              uint32_t currentFrame) const;
 
 private:
   VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
+  std::vector<VkDescriptorSet> descriptorSets;
+
+  VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
 
   void loadGraphicsShaders() override;
+
+  void loadGraphicsDescriptorSetLayouts() override;
 
   void defineStates() override;
 
   void createDescriptorPool();
+
+  void createDescriptorSetLayout();
+
+  void createDescriptorSets();
 };
 
 }

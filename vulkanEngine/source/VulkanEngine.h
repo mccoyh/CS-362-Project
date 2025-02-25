@@ -74,7 +74,7 @@ private:
   std::vector<VkDeviceMemory> videoTextureImageMemory{};
   std::vector<VkImageView> videoTextureImageViews{};
   VkSampler videoTextureSampler = VK_NULL_HANDLE;
-  VkDescriptorImageInfo videoTextureImageInfo{};
+  std::vector<VkDescriptorImageInfo> videoTextureImageInfos{};
 
   void initVulkan();
   void createCommandPool();
@@ -95,7 +95,7 @@ private:
 
   void renderVideoWidget(uint32_t imageIndex) const;
 
-  void loadVideoFrameToImage(int framebufferIndex) const;
+  void loadVideoFrameToImage(int imageIndex) const;
 
   void setupVideoTexture();
 
