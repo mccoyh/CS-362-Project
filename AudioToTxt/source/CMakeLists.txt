@@ -11,25 +11,6 @@ add_library(${PROJECT_NAME}
     AudioToTxt.cpp
 )
 
-#turbo model
-set(MODEL_URL "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo-q5_0.bin?download=true")
-set(MODEL_PATH "${CMAKE_BINARY_DIR}/models/ggml-large-v3-turbo-q5_0.bin")
-
-#base model
-set(MODEL_URL_BASE "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin?download=true")
-set(MODEL_PATH_BASE "${CMAKE_BINARY_DIR}/models/ggml-base.bin")
-
-# Download model if it doesn't exist
-if(NOT EXISTS ${MODEL_PATH})
-    message(STATUS "Downloading Whisper model...")
-    file(DOWNLOAD ${MODEL_URL} ${MODEL_PATH} SHOW_PROGRESS)
-endif()
-#download base model
-if(NOT EXISTS ${MODEL_PATH_BASE})
-    message(STATUS "Downloading Whisper model...")
-    file(DOWNLOAD ${MODEL_URL_BASE} ${MODEL_PATH_BASE} SHOW_PROGRESS)
-endif()
-
 # Define lists of model URLs and paths
 set(MODEL_URLS
     "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo-q5_0.bin?download=true"
@@ -66,6 +47,7 @@ if (WHISPER_USE_VULKAN)
         
         # Set Whisper backend to Vulkan
         set(WHISPER_BACKEND "Vulkan" CACHE STRING "Set Whisper backend" FORCE)
+        target_link_libraries(${PROJECT_NAME} PUBLIC Vulkan::Vulkan)
     else()
         message(WARNING "Vulkan not found, building Whisper without Vulkan support")
         set(GGML_VULKAN OFF CACHE BOOL "Disable Vulkan in GGML" FORCE)
@@ -86,17 +68,9 @@ FetchContent_MakeAvailable(
     whisper
 )
 
-
-#Vulkan
-find_package(Vulkan REQUIRED)
-
 target_link_libraries(${PROJECT_NAME} PUBLIC 
     whisper
 )
-
-if (WHISPER_USE_VULKAN)
-    target_link_libraries(${PROJECT_NAME} PUBLIC Vulkan::Vulkan)
-endif()
 
 #Create Include Headers
 IF (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL ${CMAKE_SOURCE_DIR}/AudioToTxt/source)
