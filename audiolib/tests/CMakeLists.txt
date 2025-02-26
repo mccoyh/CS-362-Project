@@ -1,1 +1,3 @@
 add_subdirectory(audioplayback)
+
+add_subdirectory(convertwav)

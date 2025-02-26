@@ -6,10 +6,10 @@
 // Checks if file exists
 bool exists(const std::string& name);
 
-// Converts mp4 to mp3, pulls audio from video
-void convert_mp4_mp3(const std::string& input_mp4);
+// Converts any video or audio file to wav
+void convertWav(const std::string& input);
 
-// Plays audio file
-void play_audio(const std::string& input_mp3);
+// Plays audio file, must be wav format, convert if necessary
+bool play_audio(const char* input_wav);
 
 #endif

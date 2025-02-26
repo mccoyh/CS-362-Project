@@ -2,5 +2,5 @@
 
 int main() 
 {
-  play_audio("audio.wav");
+  convertWav("audio.mp3");
 }
