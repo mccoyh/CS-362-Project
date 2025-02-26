@@ -1,0 +1,51 @@
+# Weekly Status Report - 2025-02-12
+
+## Team Report
+
+### Progress
+- **Basic Rendering:** Initial rendering functionality implemented.
+- **Audio Integration:** Integrating an audio playback system.
+- **Audio-to-Text:** Started integrating whisper asr cpp with build system
+- **GUI Concept Design:** Initial design
+
+---
+
+## Contributions
+
+### Hunter
+- Integrated audio playback
+
+### Alex
+- Initial implementation of a window
+- Set up github CI
+
+### Jared
+- Worked on integrating whisper with cmake
+- Created base functions for audio to text library
+
+---
+
+## Goals for Next Week
+
+### Short-Term Goals
+- **Audio Integration:**
+    - Create tests and revise
+    - Ensure cross-platform support for audio functionality.
+
+- **Audio-to-Text Conversion:**
+    - Develop a library for converting audio to text using Whisper ASR.
+    - Optimize model selection for efficiency and accuracy.
+    - Integrate library with main branch
+
+- **Video Playback:**
+    - Ensure compatibility with the rendering pipeline.
+
+- **Front-End UI Development:**
+    - Begin developing the UI based on the mockups.
+    - Implement basic interaction elements.
+    - Implement basic IMGUI app
+
+### Long-Term Goals
+- Improve Vulkan rendering with optimizations and additional graphical features.
+- Expand UI functionality with more interactive elements.
+- Refine audio processing for better accuracy and performance.  
