@@ -22,9 +22,9 @@ set(MODEL_PATHS
     "${CMAKE_BINARY_DIR}/models/ggml-base.bin"
 )
 list(LENGTH MODEL_URLS num_models)
-
+math(EXPR num_models_minus_one "${num_models} - 1")
 # Loop through the lists and download models if they don't exist
-foreach(i RANGE 0 ${num_models} - 1) 
+foreach(i RANGE 0 ${num_models_minus_one}) 
     list(GET MODEL_URLS ${i} model_url)
     list(GET MODEL_PATHS ${i} model_path)
 
