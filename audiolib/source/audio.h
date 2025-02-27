@@ -3,13 +3,17 @@
 
 #include <string>
 
-// Checks if file exists
-bool exists(const std::string& name);
+namespace Audio {
 
-// Converts any video or audio file to wav
-void convertWav(const std::string& input);
+    // Checks if file exists
+    bool exists(const std::string& name);
 
-// Plays audio file, must be wav format, convert if necessary
-bool play_audio(const char* input_wav);
+    // Converts any video or audio file to wav
+    void convertWav(const std::string& input);
+
+    // Plays audio file, must be wav format, convert if necessary
+    bool playAudio(const char* input_wav);
+
+}
 
 #endif

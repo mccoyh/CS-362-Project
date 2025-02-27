@@ -2,5 +2,5 @@
 
 int main() 
 {
-  convertWav("audio.mp3");
+  Audio::convertWav("audio.mp3");
 }
