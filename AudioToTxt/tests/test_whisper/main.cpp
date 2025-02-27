@@ -9,13 +9,13 @@ int main() {
     std::filesystem::path exePath = std::filesystem::current_path(); // Gets the current working directory (where executable runs)
 
     // Path to the assets folder relative to the executable's directory
-    std::filesystem::path assetsPath =  exePath / "bin" / "assets";
+    std::filesystem::path assetsPath =  exePath / "assets";
     std::filesystem::path inputVideo = assetsPath / "CS_test.mp4";    
 
     const std::filesystem::path audioFile = assetsPath / "audio.pcm";
     const std::filesystem::path subtitleFile = assetsPath / "subtitles.srt";
     const std::filesystem::path outputVideo = assetsPath / "output_with_subtitles_turbo.mp4";
-    const std::filesystem::path modelPath = exePath/ "bin" / "models" / "ggml-large-v3-turbo-q5_0.bin"; //"ggml-base.bin"
+    const std::filesystem::path modelPath = exePath / "models" / "ggml-large-v3-turbo-q5_0.bin"; //"ggml-base.bin"
 
     std::cout <<"pwd: " << exePath << std::endl 
         << "Assests path: " << assetsPath << std::endl 
