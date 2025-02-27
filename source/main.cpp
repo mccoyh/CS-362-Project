@@ -147,15 +147,16 @@ int main()
 
         while (vulkanEngine.isActive())
         {
-            gui->dockBottom("Test Widget");
+            gui->dockTop("Video Player");
+            gui->dockCenter("APP_NAME");
+
+            gui->dockBottom("File Explorer");
+            gui->dockBottom("Playlist");
+            gui->dockBottom("Application Settings");
+            gui->dockBottom("Subtitle Controls");
+            gui->dockBottom("Subtitles");
 
             gui->setBottomDockPercent(0.2);
-
-            ImGui::Begin("Test Widget");
-
-            ImGui::Text("This is a Test Widget");
-
-            ImGui::End();
 
             mainWindow.render();
 

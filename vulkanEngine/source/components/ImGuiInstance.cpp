@@ -77,29 +77,35 @@ namespace VkEngine {
       return;
     }
 
-    ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
-    ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
+    ImGui::SetNextWindowPos(viewport->Pos);
+    ImGui::SetNextWindowSize(viewport->Size);
+    ImGui::SetNextWindowViewport(viewport->ID);
     ImGui::SetNextWindowBgAlpha(1.0f);
 
-    ImGuiID id = ImGui::GetID("WindowDockSpace");
-    ImGui::DockBuilderRemoveNode(id); // Clear previous layout if any
-    ImGui::DockBuilderAddNode(id);    // Create new dock node
+    ImGuiWindowFlags dockspace_flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
+                                       ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
+                                       ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
-    if (ImGui::Begin("WindowDockSpace", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize))
-    {
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
+    if (ImGui::Begin("WindowDockSpace", nullptr, dockspace_flags)) {
+      ImGui::PopStyleVar(3);
+
       const ImGuiID dockspaceID = ImGui::GetID("WindowDockSpace");
       ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
 
-      if (dockNeedsUpdate)
-      {
-        // Rebuild the dock layout with current percentages
-        ImGui::DockBuilderRemoveNode(dockspaceID);
-        ImGui::DockBuilderAddNode(dockspaceID, ImGuiDockNodeFlags_DockSpace);
+      if (dockNeedsUpdate) {
+        // Rebuild layout
+        ImGui::DockBuilderRemoveNode(dockspaceID);  // Only reset if update is needed
+        ImGui::DockBuilderAddNode(dockspaceID, ImGuiDockNodeFlags_None);
         ImGui::DockBuilderSetNodeSize(dockspaceID, ImGui::GetWindowSize());
 
         mainDock = dockspaceID;
 
-        // Split nodes using current percentages
+        // Split nodes using stored percentages
         ImGui::DockBuilderSplitNode(mainDock, ImGuiDir_Left, leftDockPercent, &leftDock, &mainDock);
         ImGui::DockBuilderSplitNode(mainDock, ImGuiDir_Right, rightDockPercent, &rightDock, &mainDock);
         ImGui::DockBuilderSplitNode(mainDock, ImGuiDir_Up, topDockPercent, &topDock, &mainDock);
@@ -112,6 +118,43 @@ namespace VkEngine {
       }
     }
     ImGui::End();
+
+
+    // ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+    // ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+    // ImGui::SetNextWindowBgAlpha(1.0f);
+    //
+    // ImGuiID id = ImGui::GetID("WindowDockSpace");
+    // ImGui::DockBuilderRemoveNode(id); // Clear previous layout if any
+    // ImGui::DockBuilderAddNode(id);    // Create new dock node
+    //
+    // if (ImGui::Begin("WindowDockSpace", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize))
+    // {
+    //   const ImGuiID dockspaceID = ImGui::GetID("WindowDockSpace");
+    //   ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
+    //
+    //   if (dockNeedsUpdate)
+    //   {
+    //     // Rebuild the dock layout with current percentages
+    //     ImGui::DockBuilderRemoveNode(dockspaceID);
+    //     ImGui::DockBuilderAddNode(dockspaceID, ImGuiDockNodeFlags_DockSpace);
+    //     ImGui::DockBuilderSetNodeSize(dockspaceID, ImGui::GetWindowSize());
+    //
+    //     mainDock = dockspaceID;
+    //
+    //     // Split nodes using current percentages
+    //     ImGui::DockBuilderSplitNode(mainDock, ImGuiDir_Left, leftDockPercent, &leftDock, &mainDock);
+    //     ImGui::DockBuilderSplitNode(mainDock, ImGuiDir_Right, rightDockPercent, &rightDock, &mainDock);
+    //     ImGui::DockBuilderSplitNode(mainDock, ImGuiDir_Up, topDockPercent, &topDock, &mainDock);
+    //     ImGui::DockBuilderSplitNode(mainDock, ImGuiDir_Down, bottomDockPercent, &bottomDock, &mainDock);
+    //
+    //     centerDock = mainDock;
+    //
+    //     ImGui::DockBuilderFinish(dockspaceID);
+    //     dockNeedsUpdate = false;
+    //   }
+    // }
+    // ImGui::End();
   }
 
   void ImGuiInstance::dockTop(const char* widget) const
