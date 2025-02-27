@@ -19,6 +19,7 @@ class SwapChain;
 class RenderPass;
 class Framebuffer;
 class GuiPipeline;
+class VideoPipeline;
 class ImGuiInstance;
 
 class VulkanEngine {
@@ -50,6 +51,8 @@ private:
 
   std::unique_ptr<GuiPipeline> guiPipeline;
 
+  std::unique_ptr<VideoPipeline> videoPipeline;
+
   std::shared_ptr<ImGuiInstance> imGuiInstance;
 
   VkCommandPool commandPool = VK_NULL_HANDLE;
@@ -63,9 +66,15 @@ private:
   std::shared_ptr<RenderPass> videoRenderPass;
   std::shared_ptr<Framebuffer> videoFramebuffer;
   std::vector<VkCommandBuffer> videoCommandBuffers;
-  VkExtent2D videoExtent{};
+  VkExtent2D videoExtent{ 100, 100 };
 
   std::shared_ptr<std::vector<uint8_t>> videoFrameData;
+
+  std::vector<VkImage> videoTextureImages{};
+  std::vector<VkDeviceMemory> videoTextureImageMemory{};
+  std::vector<VkImageView> videoTextureImageViews{};
+  VkSampler videoTextureSampler = VK_NULL_HANDLE;
+  std::vector<VkDescriptorImageInfo> videoTextureImageInfos{};
 
   void initVulkan();
   void createCommandPool();
@@ -86,7 +95,15 @@ private:
 
   void renderVideoWidget(uint32_t imageIndex) const;
 
-  void loadVideoFrameToImage(int framebufferIndex) const;
+  void loadVideoFrameToImage(int imageIndex) const;
+
+  void setupVideoTexture();
+
+  void destroyVideoTexture() const;
+
+  void createVideoTextureSampler();
+
+  void destroyVideoTextureSampler() const;
 
   friend void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height);
 };

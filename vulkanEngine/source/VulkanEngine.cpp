@@ -9,6 +9,7 @@
 #include "components/ImGuiInstance.h"
 #include "pipelines/RenderPass.h"
 #include "pipelines/custom/GuiPipeline.h"
+#include "pipelines/custom/VideoPipeline.h"
 #include "utilities/Buffers.h"
 #include "utilities/Images.h"
 #include <stdexcept>
@@ -32,11 +33,19 @@ namespace VkEngine {
     glfwInit();
 
     initVulkan();
+
+    createVideoTextureSampler();
+
+    setupVideoTexture();
   }
 
   VulkanEngine::~VulkanEngine()
   {
     logicalDevice->waitIdle();
+
+    destroyVideoTexture();
+
+    destroyVideoTextureSampler();
 
     vkDestroyCommandPool(logicalDevice->getDevice(), commandPool, nullptr);
 
@@ -76,6 +85,9 @@ namespace VkEngine {
       videoExtent.width = width;
       videoExtent.height = height;
 
+      destroyVideoTexture();
+      setupVideoTexture();
+
       logicalDevice->waitIdle();
       videoFramebuffer.reset();
       videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
@@ -114,6 +126,7 @@ namespace VkEngine {
 
     guiPipeline = std::make_unique<GuiPipeline>(physicalDevice, logicalDevice, renderPass, MAX_GUI_TEXTURES);
 
+
     imGuiInstance = std::make_shared<ImGuiInstance>(commandPool, window, instance, physicalDevice, logicalDevice,
                                                     renderPass, guiPipeline, true);
 
@@ -122,6 +135,8 @@ namespace VkEngine {
 
     videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
                                                      videoRenderPass, swapChain->getExtent());
+
+    videoPipeline = std::make_unique<VideoPipeline>(physicalDevice, logicalDevice, videoRenderPass);
   }
 
   void VulkanEngine::createCommandPool()
@@ -204,6 +219,12 @@ namespace VkEngine {
       {
         loadVideoFrameToImage(static_cast<int>(imgIndex));
       }
+
+      videoRenderPass->begin(videoFramebuffer->getFramebuffer(imgIndex), videoExtent, cmdBuffer);
+
+      videoPipeline->render(cmdBuffer, videoExtent, &videoTextureImageInfos[currentFrame], currentFrame);
+
+      RenderPass::end(cmdBuffer);
     });
   }
 
@@ -302,7 +323,7 @@ namespace VkEngine {
     ImGui::End();
   }
 
-  void VulkanEngine::loadVideoFrameToImage(const int framebufferIndex) const
+  void VulkanEngine::loadVideoFrameToImage(const int imageIndex) const
   {
     const VkDeviceSize imageSize = videoExtent.width * videoExtent.height * 4; // RGBA format
 
@@ -318,7 +339,7 @@ namespace VkEngine {
     memcpy(data, videoFrameData->data(), imageSize);
     vkUnmapMemory(logicalDevice->getDevice(), stagingBufferMemory);
 
-    Images::transitionImageLayout(logicalDevice, commandPool, videoFramebuffer->getImages()[framebufferIndex],
+    Images::transitionImageLayout(logicalDevice, commandPool, videoTextureImages[imageIndex],
                                   VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_UNDEFINED,
                                   VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1);
 
@@ -338,16 +359,105 @@ namespace VkEngine {
       .imageExtent = {videoExtent.width, videoExtent.height, 1}
     };
 
-    vkCmdCopyBufferToImage(commandBuffer, stagingBuffer, videoFramebuffer->getImages()[framebufferIndex],
+    vkCmdCopyBufferToImage(commandBuffer, stagingBuffer, videoTextureImages[imageIndex],
                            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
     Buffers::endSingleTimeCommands(logicalDevice, commandPool, logicalDevice->getGraphicsQueue(), commandBuffer);
 
-    Images::transitionImageLayout(logicalDevice, commandPool, videoFramebuffer->getImages()[framebufferIndex],
+    Images::transitionImageLayout(logicalDevice, commandPool, videoTextureImages[imageIndex],
                                   VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                                   VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, 1);
 
     vkDestroyBuffer(logicalDevice->getDevice(), stagingBuffer, nullptr);
     vkFreeMemory(logicalDevice->getDevice(), stagingBufferMemory, nullptr);
+  }
+
+  void VulkanEngine::setupVideoTexture()
+  {
+    // Create Image
+    constexpr size_t numImages = 3;
+    videoTextureImageMemory.resize(numImages);
+    videoTextureImageViews.resize(numImages);
+    videoTextureImages.resize(numImages);
+    videoTextureImageInfos.resize(numImages);
+
+    constexpr auto imageFormat = VK_FORMAT_R8G8B8A8_UNORM;
+
+    for (int i = 0; i < numImages; i++)
+    {
+      Images::createImage(logicalDevice, physicalDevice, videoExtent.width, videoExtent.height, 1,
+                          1, VK_SAMPLE_COUNT_1_BIT, imageFormat, VK_IMAGE_TILING_OPTIMAL,
+                          VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+                          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, videoTextureImages[i],
+                          videoTextureImageMemory[i], VK_IMAGE_TYPE_2D);
+
+      videoTextureImageViews[i] = Images::createImageView(logicalDevice, videoTextureImages[i],
+                                                         imageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1, VK_IMAGE_VIEW_TYPE_2D);
+
+      Images::transitionImageLayout(this->logicalDevice, commandPool, videoTextureImages[i], imageFormat, VK_IMAGE_LAYOUT_UNDEFINED,
+                                    VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, 1);
+    }
+
+    // Setup Image Info
+    for (int i = 0; i < videoTextureImageInfos.capacity(); i++)
+    {
+      videoTextureImageInfos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+      videoTextureImageInfos[i].imageView = videoTextureImageViews[i];
+      videoTextureImageInfos[i].sampler = videoTextureSampler;
+    }
+  }
+
+  void VulkanEngine::destroyVideoTexture() const
+  {
+    logicalDevice->waitIdle(); // This is bad practice but works for now
+
+    for (const auto& imageView : videoTextureImageViews)
+    {
+      vkDestroyImageView(logicalDevice->getDevice(), imageView, nullptr);
+    }
+
+    for (const auto& imageMemory : videoTextureImageMemory)
+    {
+      vkFreeMemory(logicalDevice->getDevice(), imageMemory, nullptr);
+    }
+
+    for (const auto& image : videoTextureImages)
+    {
+      vkDestroyImage(logicalDevice->getDevice(), image, nullptr);
+    }
+  }
+
+  void VulkanEngine::createVideoTextureSampler()
+  {
+    constexpr VkSamplerCreateInfo samplerInfo {
+      .sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
+      .pNext = nullptr,
+      .flags = 0,
+      .magFilter = VK_FILTER_LINEAR,
+      .minFilter = VK_FILTER_LINEAR,
+      .mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR,
+      .addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+      .addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+      .addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+      .mipLodBias = 0.0f,
+      .anisotropyEnable = VK_FALSE,
+      .maxAnisotropy = 1.0f,
+      .compareEnable = VK_FALSE,
+      .compareOp = VK_COMPARE_OP_ALWAYS,
+      .minLod = 0.0f,
+      .maxLod = 0.0f,
+      .borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK,
+      .unnormalizedCoordinates = VK_FALSE
+    };
+
+    if (vkCreateSampler(this->logicalDevice->getDevice(), &samplerInfo, nullptr, &videoTextureSampler) != VK_SUCCESS)
+    {
+      throw std::runtime_error("Failed to create image sampler!");
+    }
+  }
+
+  void VulkanEngine::destroyVideoTextureSampler() const
+  {
+    vkDestroySampler(logicalDevice->getDevice(), videoTextureSampler, nullptr);
   }
 } // VkEngine

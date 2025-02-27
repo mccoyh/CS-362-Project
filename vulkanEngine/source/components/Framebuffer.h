@@ -26,8 +26,6 @@ public:
 
   [[nodiscard]] VkDescriptorSet getFramebufferImageDescriptorSet(uint32_t imageIndex) const;
 
-  [[nodiscard]] const std::vector<VkImage>& getImages() const;
-
 private:
   std::shared_ptr<PhysicalDevice> physicalDevice;
   std::shared_ptr<LogicalDevice> logicalDevice;
