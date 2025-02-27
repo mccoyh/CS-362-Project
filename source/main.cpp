@@ -11,7 +11,7 @@ int main()
             .WINDOW_WIDTH = 600,
             .WINDOW_HEIGHT = 400,
             .WINDOW_TITLE = "Widget Test"
-          };
+        };
 
         auto vulkanEngine = VkEngine::VulkanEngine(vulkanEngineOptions);
         ImGui::SetCurrentContext(VkEngine::VulkanEngine::getImGuiContext());
