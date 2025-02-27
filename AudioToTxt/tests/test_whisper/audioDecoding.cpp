@@ -115,7 +115,7 @@ bool extractAudio(const std::string mp4File, const std::string audioFile){
                                                         16000, codecContext->sample_rate, AV_ROUND_UP);
                     av_samples_alloc(&out_data, nullptr, 1, out_samples, AV_SAMPLE_FMT_S16, 0);
                     int samples_converted = swr_convert(swrContext, &out_data, out_samples,
-                                                        frame->data, frame->nb_samples);
+                                                        const_cast<const uint8_t**>(reinterpret_cast<uint8_t* const*>(frame->data)), frame->nb_samples);
                     if (samples_converted > 0){
                         outFile.write(reinterpret_cast<char*>(out_data), samples_converted * 2);
                     }
