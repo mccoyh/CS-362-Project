@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.2)
 project(CS_362_Project)
 
+if(APPLE)
+  enable_language(OBJC)
+endif()
+
 set(CMAKE_CXX_STANDARD 23)
 
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
