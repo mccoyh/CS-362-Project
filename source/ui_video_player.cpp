@@ -1,5 +1,6 @@
 #include "ui_video_player.h"
-#include "../include/config.h"
+// #include "../include/config.h"
+#include <algorithm>
 #include <iostream>
 #include <stdexcept>
 
@@ -21,8 +22,8 @@ UIVideoPlayer::UIVideoPlayer() :
     currentVideo->codecContext = nullptr;
     currentVideo->videoStream = nullptr;
     currentVideo->swsContext = nullptr;
-    currentVideo->texture = nullptr;
-    currentVideo->renderer = nullptr;
+    // currentVideo->texture = nullptr;
+    // currentVideo->renderer = nullptr;
 }
 
 UIVideoPlayer::~UIVideoPlayer() {
@@ -49,10 +50,10 @@ void UIVideoPlayer::render() {
 
 bool UIVideoPlayer::loadVideo(const std::string& filepath) {
     // Validate file format
-    if (!MediaPlayerConfig::isSupportedVideoFormat(filepath)) {
-        std::cerr << "Unsupported video format: " << filepath << std::endl;
-        return false;
-    }
+    // if (!MediaPlayerConfig::isSupportedVideoFormat(filepath)) {
+        // std::cerr << "Unsupported video format: " << filepath << std::endl;
+        // return false;
+    // }
 
     // Cleanup any existing playback
     cleanupPlayback();
@@ -63,7 +64,7 @@ bool UIVideoPlayer::loadVideo(const std::string& filepath) {
         
         // Update current video state
         currentVideo->filepath = filepath;
-        currentVideo->filename = std::filesystem::path(filepath).filename().string();
+        // currentVideo->filename = std::filesystem::path(filepath).filename().string();
         currentVideo->isPlaying = true;
         currentVideo->isPaused = false;
 
@@ -157,15 +158,15 @@ void UIVideoPlayer::cleanupPlayback() {
     }
 
     // Free SDL resources
-    if (currentVideo->texture) {
-        SDL_DestroyTexture(currentVideo->texture);
-        currentVideo->texture = nullptr;
-    }
-
-    if (currentVideo->renderer) {
-        SDL_DestroyRenderer(currentVideo->renderer);
-        currentVideo->renderer = nullptr;
-    }
+    // if (currentVideo->texture) {
+    //     SDL_DestroyTexture(currentVideo->texture);
+    //     currentVideo->texture = nullptr;
+    // }
+    //
+    // if (currentVideo->renderer) {
+    //     SDL_DestroyRenderer(currentVideo->renderer);
+    //     currentVideo->renderer = nullptr;
+    // }
 
     // Reset video state
     currentVideo->isPlaying = false;

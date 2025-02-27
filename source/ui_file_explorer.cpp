@@ -1,9 +1,10 @@
 #include "ui_file_explorer.h"
-#include "../include/config.h"
+// #include "../include/config.h"
 #include <iostream>
 #include <sstream>
 #include <iomanip>
 #include <ctime>
+#include <filesystem>
 
 // Supported video extensions
 const std::vector<std::string> UIFileExplorer::SUPPORTED_VIDEO_EXTENSIONS = {
@@ -51,7 +52,8 @@ void UIFileExplorer::renderPathNavigation() {
     }
     ImGui::SameLine();
     if (ImGui::Button("Home")) {
-        currentPath = std::filesystem::home_directory();
+        // TODO: Fix this
+        // currentPath = std::filesystem::home_directory();
         refreshDirectoryContents();
     }
     ImGui::SameLine();
@@ -363,16 +365,18 @@ std::string FileSystemUtils::formatFileSize(uintmax_t bytes) {
 std::string FileSystemUtils::formatFileTime(
     const std::filesystem::file_time_type& time
 ) {
-    // Convert to time_t
-    auto timeT = std::filesystem::file_time_type::clock::to_time_t(time);
-    
-    // Convert to local time
-    std::tm* localTime = std::localtime(&timeT);
-    
-    // Format time
-    std::ostringstream oss;
-    oss << std::put_time(localTime, "%Y-%m-%d %H:%M:%S");
-    return oss.str();
+    return "";
+    // TODO: Fix this
+    // // Convert to time_t
+    // auto timeT = std::filesystem::file_time_type::clock::to_time_t(time);
+    //
+    // // Convert to local time
+    // std::tm* localTime = std::localtime(&timeT);
+    //
+    // // Format time
+    // std::ostringstream oss;
+    // oss << std::put_time(localTime, "%Y-%m-%d %H:%M:%S");
+    // return oss.str();
 }
 
 bool FileSystemUtils::canRead(const std::filesystem::path& filepath) {

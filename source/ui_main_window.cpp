@@ -1,5 +1,5 @@
 #include "ui_main_window.h"
-#include "../include/config.h"
+// #include "../include/config.h"
 
 UIMainWindow::UIMainWindow() : 
     currentTab(ActiveTab::VideoPlayer) {
@@ -59,7 +59,7 @@ void UIMainWindow::renderActiveTab() {
             playlist.render();
             break;
         case ActiveTab::VideoEditor:
-            videoEditor.render();
+            // videoEditor.render();
             break;
         case ActiveTab::Settings:
             settings.render();
@@ -87,7 +87,7 @@ void UIMainWindow::render() {
         ImGuiWindowFlags_NoBringToFrontOnFocus | 
         ImGuiWindowFlags_NoNavFocus;
 
-    ImGui::Begin(MediaPlayerConfig::APP_NAME, nullptr, windowFlags);
+    ImGui::Begin("APP_NAME", nullptr, windowFlags);
     
     renderMenuBar();
     renderActiveTab();

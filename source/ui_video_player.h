@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 #include <imgui.h>
-#include <SDL3/SDL.h>
+// #include <SDL3/SDL.h>
 
 extern "C" {
     #include <libavcodec/avcodec.h>
@@ -44,8 +44,8 @@ private:
         SwsContext* swsContext;
 
         // SDL rendering
-        SDL_Texture* texture;
-        SDL_Renderer* renderer;
+        // SDL_Texture* texture;
+        // SDL_Renderer* renderer;
     };
 
     // Current video state

@@ -4,7 +4,7 @@
 #include "ui_video_player.h"
 #include "ui_playlist.h"
 #include "ui_subtitle_controls.h"
-#include "ui_video_editor.h"
+// #include "ui_video_editor.h"
 #include "ui_settings.h"
 #include "ui_file_explorer.h"
 
@@ -14,7 +14,7 @@ private:
     UIVideoPlayer videoPlayer;
     UIPlaylist playlist;
     UISubtitleControls subtitleControls;
-    UIVideoEditor videoEditor;
+    // UIVideoEditor videoEditor;
     UISettings settings;
     UIFileExplorer fileExplorer;
 

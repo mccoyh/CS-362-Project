@@ -1,5 +1,5 @@
 #include "ui_settings.h"
-#include "../include/config.h"
+// #include "../include/config.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -127,7 +127,8 @@ void UISettings::renderVideoLibrarySettings() {
     std::string libraryPath = currentSettings.videoLibraryPath.string();
     ImGui::Text("Library Path:");
     ImGui::SameLine();
-    ImGui::InputText("##LibraryPath", &libraryPath);
+    // TODO: Fix this
+    // ImGui::InputText("##LibraryPath", &libraryPath);
 
     // Browse button
     ImGui::SameLine();
@@ -331,14 +332,16 @@ std::vector<std::string> UISettings::getAvailableThemes() {
 }
 
 // Configuration Manager Implementation
-bool ConfigurationManager::saveConfiguration(const std::filesystem::path& filepath, 
-                                             const std::string& configData) {
-    try
-        std::ofstream configFile(filepath);
-        if (!configFile.is_open()) {
-            throw std::runtime_error("Could not open config file for writing");
-        }
-        // Continuation of Configuration Manager Implementation
+// bool ConfigurationManager::saveConfiguration(const std::filesystem::path& filepath,
+//                                              const std::string& configData)
+// {
+//     // try {}
+//         std::ofstream configFile(filepath);
+//     if (!configFile.is_open()) {
+//         throw std::runtime_error("Could not open config file for writing");
+//     }
+//     // Continuation of Configuration Manager Implementation
+// }
 bool ConfigurationManager::saveConfiguration(const std::filesystem::path& filepath, 
                                              const std::string& configData) {
     try {
