@@ -49,7 +49,7 @@ cmake --build .
 cd bin
 ```
 
-## FFmpeg Setup
+## FFmpeg Setup (Windows/Linux)
 
 ### 1. Download FFmpeg
 - Official website: [FFmpeg Downloads](https://www.ffmpeg.org/download.html)
@@ -66,6 +66,18 @@ Extract the downloaded archive to a location of your choice.
 Add the following directories to your system's `PATH` environment variable:
 - `<extracted-folder>/bin`
 - `<extracted-folder>/`
+## FFmpeg Setup (MacOS)
+
+### 1. Download FFmpeg
+
+### 2. Find Brew's install location
+Run `brew --prefix` to find your brew install location.
+
+### 3. Add to System PATH
+Add the following paths to your system's PATH environment variable where BREW_PREFIX is the actual prefix you found in the previous step:
+ - `"BREW_PREFIX/bin/ffmpeg:$PATH"`
+ - `"BREW_PREFIX/opt/ffmpeg/bin:$PATH"`
+
 
 ## Vulkan Setup
 
