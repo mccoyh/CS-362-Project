@@ -2,7 +2,7 @@
 #include <stdexcept>
 
 namespace AVParser {
-  AVParser::AVParser(const std::string& mediaFile)
+  MediaParser::MediaParser(const std::string& mediaFile)
     : currentFrame(0)
   {
     if (avformat_open_input(&formatContext, mediaFile.c_str(), nullptr, nullptr) < 0)
@@ -25,7 +25,7 @@ namespace AVParser {
     packet = av_packet_alloc();
   }
 
-  AVParser::~AVParser()
+  MediaParser::~MediaParser()
   {
     av_packet_free(&packet);
     av_frame_free(&frame);
@@ -35,7 +35,7 @@ namespace AVParser {
     sws_freeContext(swsContext);
   }
 
-  AVFrameData AVParser::getCurrentFrame() const
+  AVFrameData MediaParser::getCurrentFrame() const
   {
     return {
       .frameWidth = getFrameWidth(),
@@ -43,7 +43,7 @@ namespace AVParser {
     };
   }
 
-  double AVParser::getFrameRate() const
+  double MediaParser::getFrameRate() const
   {
     if (videoStreamIndex == -1)
     {
@@ -55,21 +55,21 @@ namespace AVParser {
     return av_q2d(fps);
   }
 
-  int AVParser::getFrameWidth() const
+  int MediaParser::getFrameWidth() const
   {
     validateVideoContext();
 
     return videoCodecContext->width;
   }
 
-  int AVParser::getFrameHeight() const
+  int MediaParser::getFrameHeight() const
   {
     validateVideoContext();
 
     return videoCodecContext->height;
   }
 
-  void AVParser::findStreamIndices()
+  void MediaParser::findStreamIndices()
   {
     for (size_t i = 0; i < formatContext->nb_streams; i++)
     {
@@ -99,7 +99,7 @@ namespace AVParser {
     }
   }
 
-  void AVParser::setupVideo()
+  void MediaParser::setupVideo()
   {
     videoCodec = avcodec_find_decoder(formatContext->streams[videoStreamIndex]->codecpar->codec_id);
     if (!videoCodec)
@@ -121,7 +121,7 @@ namespace AVParser {
                                 nullptr, nullptr, nullptr);
   }
 
-  void AVParser::setupAudio()
+  void MediaParser::setupAudio()
   {
     audioCodec = avcodec_find_decoder(formatContext->streams[audioStreamIndex]->codecpar->codec_id);
     if (!audioCodec)
@@ -138,7 +138,7 @@ namespace AVParser {
     }
   }
 
-  void AVParser::validateVideoContext() const
+  void MediaParser::validateVideoContext() const
   {
     if (!videoCodecContext)
     {

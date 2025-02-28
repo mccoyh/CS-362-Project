@@ -5,7 +5,7 @@ int main()
 {
   try
   {
-    const auto parser = AVParser::AVParser("assets/CS_test.mp4");
+    const auto parser = AVParser::MediaParser("assets/CS_test.mp4");
 
     const auto frameData = parser.getCurrentFrame();
 

@@ -18,11 +18,11 @@ struct AVFrameData {
   int frameHeight;
 };
 
-class AVParser {
+class MediaParser {
 public:
-  explicit AVParser(const std::string& mediaFile);
+  explicit MediaParser(const std::string& mediaFile);
 
-  ~AVParser();
+  ~MediaParser();
 
   [[nodiscard]] AVFrameData getCurrentFrame() const;
 
