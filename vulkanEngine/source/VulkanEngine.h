@@ -51,7 +51,7 @@ private:
   std::shared_ptr<SwapChain> swapChain;
   std::shared_ptr<RenderPass> renderPass;
 
-  std::unique_ptr<GuiPipeline> guiPipeline;
+  std::shared_ptr<GuiPipeline> guiPipeline;
 
   std::unique_ptr<VideoPipeline> videoPipeline;
 
@@ -69,6 +69,8 @@ private:
   std::shared_ptr<Framebuffer> videoFramebuffer;
   std::vector<VkCommandBuffer> videoCommandBuffers;
   VkExtent2D videoExtent{ 100, 100 };
+
+  VkExtent2D videoViewportExtent{ 100, 100 };
 
   std::shared_ptr<std::vector<uint8_t>> videoFrameData;
 
@@ -97,9 +99,11 @@ private:
 
   void createNewFrame() const;
 
-  void renderVideoWidget(uint32_t imageIndex) const;
+  void renderVideoWidget(uint32_t imageIndex);
 
   void renderCaption(const ImVec2& imagePos) const;
+
+  [[nodiscard]] bool validateVideoWidget();
 
   void loadVideoFrameToImage(int imageIndex) const;
 

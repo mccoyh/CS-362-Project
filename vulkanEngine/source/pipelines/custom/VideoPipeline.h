@@ -8,6 +8,13 @@
 namespace VkEngine {
 
 class RenderPass;
+class UniformBuffer;
+
+struct ScreenSizeUniform {
+  float width;
+  float height;
+  float imageAspectRatio;
+};
 
 class VideoPipeline final : public GraphicsPipeline {
 public:
@@ -18,13 +25,15 @@ public:
   ~VideoPipeline() override;
 
   void render(const VkCommandBuffer& commandBuffer, VkExtent2D swapChainExtent, const VkDescriptorImageInfo* imageInfo,
-              uint32_t currentFrame) const;
+              uint32_t currentFrame, float imageAspectRatio) const;
 
 private:
   VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
   std::vector<VkDescriptorSet> descriptorSets;
 
   VkDescriptorSetLayout descriptorSetLayout = VK_NULL_HANDLE;
+
+  std::unique_ptr<UniformBuffer> screenSizeUniform;
 
   void loadGraphicsShaders() override;
 
@@ -37,6 +46,8 @@ private:
   void createDescriptorSetLayout();
 
   void createDescriptorSets();
+
+  void createUniforms();
 };
 
 }
