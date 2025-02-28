@@ -72,8 +72,6 @@ Add the following directories to your system's `PATH` environment variable:
 ### 1. Download the Vulkan SDK
 - Official website: [Vulkan SDK Download](https://www.lunarg.com/vulkan-sdk/)
 - Choose the appropriate version for your operating system (Windows, Linux, or macOS).
-- Alternatively, you can install on macbook using brew
-
 
 ### 2. Install the SDK
 After downloading, run the installer and follow the on-screen instructions. Alternatively, you can install it manually by following the platform-specific setup guide provided on the Vulkan SDK website.  
