@@ -5,8 +5,6 @@ int main()
 {
   try
   {
-    std::cout << "Hello, World!" << std::endl;
-
     const auto parser = AVParser::AVParser("assets/CS_test.mp4");
 
     const auto frameData = parser.getCurrentFrame();
