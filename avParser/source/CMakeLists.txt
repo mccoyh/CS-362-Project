@@ -4,7 +4,8 @@ include(FetchContent)
 set(BUILD_SHARED_LIBS ON)
 
 add_library(${PROJECT_NAME}
-
+  AVParser.cpp
+  AVParser.h
 )
 
 # Specify the components FFmpeg should have available
