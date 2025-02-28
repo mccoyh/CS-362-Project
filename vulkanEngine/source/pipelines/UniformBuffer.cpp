@@ -2,6 +2,7 @@
 #include "../components/LogicalDevice.h"
 #include "../components/PhysicalDevice.h"
 #include "../utilities/Buffers.h"
+#include <cstring>
 
 namespace VkEngine {
   UniformBuffer::UniformBuffer(const std::shared_ptr<LogicalDevice>& logicalDevice,
