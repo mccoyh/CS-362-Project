@@ -70,6 +70,8 @@ private:
   std::vector<VkCommandBuffer> videoCommandBuffers;
   VkExtent2D videoExtent{ 100, 100 };
 
+  VkExtent2D videoViewportExtent{ 100, 100 };
+
   std::shared_ptr<std::vector<uint8_t>> videoFrameData;
 
   std::vector<VkImage> videoTextureImages{};
@@ -97,9 +99,11 @@ private:
 
   void createNewFrame() const;
 
-  void renderVideoWidget(uint32_t imageIndex) const;
+  void renderVideoWidget(uint32_t imageIndex);
 
   void renderCaption(const ImVec2& imagePos) const;
+
+  [[nodiscard]] bool validateVideoWidget();
 
   void loadVideoFrameToImage(int imageIndex) const;
 

@@ -87,11 +87,6 @@ namespace VkEngine {
 
       destroyVideoTexture();
       setupVideoTexture();
-
-      logicalDevice->waitIdle();
-      videoFramebuffer.reset();
-      videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
-                                                       videoRenderPass, videoExtent);
     }
   }
 
@@ -215,7 +210,7 @@ namespace VkEngine {
     recordCommandBuffer(commandBuffer, imageIndex, [this](const VkCommandBuffer& cmdBuffer,
                         const uint32_t imgIndex)
     {
-      if (videoExtent.width == 0 || videoExtent.height == 0)
+      if (videoViewportExtent.width == 0 || videoViewportExtent.height == 0)
       {
         return;
       }
@@ -225,9 +220,9 @@ namespace VkEngine {
         loadVideoFrameToImage(static_cast<int>(imgIndex));
       }
 
-      videoRenderPass->begin(videoFramebuffer->getFramebuffer(imgIndex), videoExtent, cmdBuffer);
+      videoRenderPass->begin(videoFramebuffer->getFramebuffer(imgIndex), videoViewportExtent, cmdBuffer);
 
-      videoPipeline->render(cmdBuffer, videoExtent, &videoTextureImageInfos[currentFrame], currentFrame);
+      videoPipeline->render(cmdBuffer, videoViewportExtent, &videoTextureImageInfos[currentFrame], currentFrame);
 
       RenderPass::end(cmdBuffer);
     });
@@ -300,12 +295,12 @@ namespace VkEngine {
     framebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, swapChain, commandPool, renderPass,
                                                 swapChain->getExtent());
 
-    if (videoExtent.width != 0 && videoExtent.height != 0)
+    if (videoViewportExtent.width != 0 && videoViewportExtent.height != 0)
     {
       videoFramebuffer.reset();
 
       videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
-                                                       videoRenderPass, videoExtent);
+                                                       videoRenderPass, videoViewportExtent);
     }
   }
 
@@ -314,7 +309,7 @@ namespace VkEngine {
     imGuiInstance->createNewFrame();
   }
 
-  void VulkanEngine::renderVideoWidget(const uint32_t imageIndex) const
+  void VulkanEngine::renderVideoWidget(const uint32_t imageIndex)
   {
     const auto widgetName = "Video Output";
 
@@ -322,10 +317,16 @@ namespace VkEngine {
 
     ImGui::Begin(widgetName);
 
+    if (!validateVideoWidget())
+    {
+      ImGui::End();
+      return;
+    }
+
     const ImVec2 imagePosition = ImGui::GetCursorScreenPos();  // Position of the image
 
     ImGui::Image(reinterpret_cast<ImTextureID>(videoFramebuffer->getFramebufferImageDescriptorSet(imageIndex)),
-                 { static_cast<float>(videoExtent.width), static_cast<float>(videoExtent.height) });
+                 { static_cast<float>(videoViewportExtent.width), static_cast<float>(videoViewportExtent.height) });
 
     if (captionText != "")
     {
@@ -343,8 +344,8 @@ namespace VkEngine {
     // Calculate the size of the box based on the text size and padding
     const ImVec2 textSize = ImGui::CalcTextSize(captionText);
     const auto boxSize = ImVec2(textSize.x + padding * 2, 50);
-    const auto boxPos = ImVec2(imagePos.x + (static_cast<float>(videoExtent.width) - boxSize.x) * 0.5f,
-                               imagePos.y + static_cast<float>(videoExtent.height) - boxSize.y - padding);
+    const auto boxPos = ImVec2(imagePos.x + (static_cast<float>(videoViewportExtent.width) - boxSize.x) * 0.5f,
+                               imagePos.y + static_cast<float>(videoViewportExtent.height) - boxSize.y - padding);
 
     // Get the ImGui draw list for this window
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -361,6 +362,35 @@ namespace VkEngine {
 
     // Draw the text inside the box
     draw_list->AddText(textPos, IM_COL32(255, 255, 255, 255), captionText);
+  }
+
+  bool VulkanEngine::validateVideoWidget()
+  {
+    const auto contentRegionAvailable = ImGui::GetContentRegionAvail();
+
+    const VkExtent2D currentOffscreenViewportExtent {
+      .width = static_cast<uint32_t>(std::max(0.0f, contentRegionAvailable.x)),
+      .height = static_cast<uint32_t>(std::max(0.0f, contentRegionAvailable.y))
+    };
+
+    if (currentOffscreenViewportExtent.width == 0 || currentOffscreenViewportExtent.height == 0)
+    {
+      videoViewportExtent = currentOffscreenViewportExtent;
+      return false;
+    }
+
+    if (videoViewportExtent.width != currentOffscreenViewportExtent.width ||
+        videoViewportExtent.height != currentOffscreenViewportExtent.height)
+    {
+      videoViewportExtent = currentOffscreenViewportExtent;
+
+      logicalDevice->waitIdle();
+      videoFramebuffer.reset();
+      videoFramebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, nullptr, commandPool,
+                                                       videoRenderPass, videoViewportExtent);
+    }
+
+    return true;
   }
 
   void VulkanEngine::loadVideoFrameToImage(const int imageIndex) const
