@@ -124,7 +124,7 @@ namespace VkEngine {
     framebuffer = std::make_shared<Framebuffer>(physicalDevice, logicalDevice, swapChain, commandPool, renderPass,
                                                 swapChain->getExtent());
 
-    guiPipeline = std::make_unique<GuiPipeline>(physicalDevice, logicalDevice, renderPass, MAX_GUI_TEXTURES);
+    guiPipeline = std::make_shared<GuiPipeline>(physicalDevice, logicalDevice, renderPass, MAX_GUI_TEXTURES);
 
 
     imGuiInstance = std::make_shared<ImGuiInstance>(commandPool, window, instance, physicalDevice, logicalDevice,

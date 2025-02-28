@@ -51,7 +51,7 @@ private:
   std::shared_ptr<SwapChain> swapChain;
   std::shared_ptr<RenderPass> renderPass;
 
-  std::unique_ptr<GuiPipeline> guiPipeline;
+  std::shared_ptr<GuiPipeline> guiPipeline;
 
   std::unique_ptr<VideoPipeline> videoPipeline;
 
