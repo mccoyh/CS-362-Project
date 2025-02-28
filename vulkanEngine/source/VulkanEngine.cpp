@@ -95,6 +95,11 @@ namespace VkEngine {
     }
   }
 
+  void VulkanEngine::loadCaption(const char* caption)
+  {
+    captionText = caption;
+  }
+
   void VulkanEngine::initVulkan()
   {
     instance = std::make_shared<Instance>();
@@ -317,17 +322,26 @@ namespace VkEngine {
 
     ImGui::Begin(widgetName);
 
-    const ImVec2 imagePos = ImGui::GetCursorScreenPos();  // Position of the image
+    const ImVec2 imagePosition = ImGui::GetCursorScreenPos();  // Position of the image
 
     ImGui::Image(reinterpret_cast<ImTextureID>(videoFramebuffer->getFramebufferImageDescriptorSet(imageIndex)),
                  { static_cast<float>(videoExtent.width), static_cast<float>(videoExtent.height) });
 
+    if (captionText != "")
+    {
+      renderCaption(imagePosition);
+    }
+
+    ImGui::End();
+  }
+
+  void VulkanEngine::renderCaption(const ImVec2& imagePos) const
+  {
     // Define padding for the box
     constexpr float padding = 10.0f;
 
     // Calculate the size of the box based on the text size and padding
-    const auto text = "Overlay Text";
-    const ImVec2 textSize = ImGui::CalcTextSize(text);
+    const ImVec2 textSize = ImGui::CalcTextSize(captionText);
     const auto boxSize = ImVec2(textSize.x + padding * 2, 50);
     const auto boxPos = ImVec2(imagePos.x + (static_cast<float>(videoExtent.width) - boxSize.x) * 0.5f,
                                imagePos.y + static_cast<float>(videoExtent.height) - boxSize.y - padding);
@@ -337,18 +351,16 @@ namespace VkEngine {
 
     // Draw the transparent black box at the bottom of the image
     draw_list->AddRectFilled(boxPos, ImVec2(boxPos.x + boxSize.x, boxPos.y + boxSize.y),
-                             IM_COL32(0, 200, 0, 128));  // Semi-transparent black box
+                             IM_COL32(0, 0, 0, 128));
 
     // Calculate the position of the text to center it inside the box
     const auto textPos = ImVec2(
-        boxPos.x + padding,  // Add padding from the left side
-        boxPos.y + (boxSize.y - textSize.y) * 0.5f   // Center vertically in the box
+        boxPos.x + padding,
+        boxPos.y + (boxSize.y - textSize.y) * 0.5f
     );
 
     // Draw the text inside the box
-    draw_list->AddText(textPos, IM_COL32(255, 255, 255, 255), text);
-
-    ImGui::End();
+    draw_list->AddText(textPos, IM_COL32(255, 255, 255, 255), captionText);
   }
 
   void VulkanEngine::loadVideoFrameToImage(const int imageIndex) const
