@@ -14,10 +14,10 @@ extern "C"{
     #include <libavutil/channel_layout.h>
 }
     
-bool extractAudio(const std::filesystem::path& mp4File, const std::filesystem::path& audioFile) {
+bool extractAudio(const std::string mp4File, const std::string audioFile) {
     //Open video file
     AVFormatContext* formatContext = nullptr;
-    if (avformat_open_input(&formatContext, mp4File.string().c_str(), nullptr, nullptr) != 0) {
+    if (avformat_open_input(&formatContext, mp4File.c_str(), nullptr, nullptr) != 0) {
         std::cout << "Error: Could not open input file " << mp4File << std::endl;
         return false;
     }

@@ -2,9 +2,8 @@
 #define AudioTotxt_H
 
 #include <string>
-#include <filesystem>
 
 namespace Captions{
-int transcribeAudio(const std::filesystem::path model_path, const std::filesystem::path audio_file, const std::filesystem::path output_srt);
+int transcribeAudio(const std::string model_path, const std::string audio_file, const std::string output_srt);
 }
 #endif

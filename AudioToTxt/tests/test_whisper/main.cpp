@@ -22,10 +22,10 @@ int main() {
         << "Model path: "<< modelPath << std::endl 
         <<  "Input file: " << inputVideo << std::endl 
         << "subtitle file: " << subtitleFile << std::endl;
-    if (!extractAudio(inputVideo, audioFile)){
+    if (!extractAudio(inputVideo.string(), audioFile.string())){
         std::cout << "Failed to generate formated audio file" << std::endl;
     }
-    if (Captions::transcribeAudio(modelPath, audioFile, subtitleFile) != 0){
+    if (Captions::transcribeAudio(modelPath.string(), audioFile.string(), subtitleFile.string()) != 0){
         std::cout << "Failed to generate subtitles" << std::endl;
     }
     return 0;

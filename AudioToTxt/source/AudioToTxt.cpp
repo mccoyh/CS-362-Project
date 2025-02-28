@@ -7,10 +7,10 @@
 #include "whisper.h"
 
 namespace Captions{
-    int transcribeAudio(const std::filesystem::path model_path, const std::filesystem::path audio_file, const std::filesystem::path output_srt) {
+    int transcribeAudio(const std::string model_path, const std::string audio_file, const std::string output_srt) {
         std::cout << "in function  " << std::endl;
         whisper_full_params params = whisper_full_default_params(WHISPER_SAMPLING_GREEDY);
-        whisper_context* ctx = whisper_init_from_file(model_path.string().c_str());
+        whisper_context* ctx = whisper_init_from_file(model_path.c_str());
         if (!ctx) {
             std::cerr << "Failed to initialize Whisper model from file: " << model_path << std::endl;
             return -1;
