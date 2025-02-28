@@ -32,6 +32,10 @@ cd build
 ```bash
 cmake ..
 ```
+```For Mac
+brew install cmake
+cmake ..
+```
 
 4. Compile the project using your preferred build system:
 
@@ -52,6 +56,8 @@ cd bin
 - For a simple setup on Windows and Linux, use prebuilt binaries:  
   [BtbN FFmpeg Builds](https://github.com/BtbN/FFmpeg-Builds/releases)
     - Download the `gpl-shared` version correlating to your machine
+- For Macbook install ffmpeg using brew.
+	-brew install ffmpeg
 
 ### 2. Extract Files
 Extract the downloaded archive to a location of your choice.
@@ -66,6 +72,8 @@ Add the following directories to your system's `PATH` environment variable:
 ### 1. Download the Vulkan SDK
 - Official website: [Vulkan SDK Download](https://www.lunarg.com/vulkan-sdk/)
 - Choose the appropriate version for your operating system (Windows, Linux, or macOS).
+- Alternatively, you can install on macbook using brew
+
 
 ### 2. Install the SDK
 After downloading, run the installer and follow the on-screen instructions. Alternatively, you can install it manually by following the platform-specific setup guide provided on the Vulkan SDK website.  
