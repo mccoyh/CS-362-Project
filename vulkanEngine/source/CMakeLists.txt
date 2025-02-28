@@ -41,6 +41,8 @@ add_library(${PROJECT_NAME}
   components/ImGuiInstance.h
   pipelines/custom/VideoPipeline.cpp
   pipelines/custom/VideoPipeline.h
+  pipelines/UniformBuffer.cpp
+  pipelines/UniformBuffer.h
 )
 
 # Shaders
