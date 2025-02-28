@@ -1,6 +1,7 @@
 #include "VideoPipeline.h"
 #include "GraphicsPipelineStates.h"
 #include "../RenderPass.h"
+#include "../UniformBuffer.h"
 #include "../../components/LogicalDevice.h"
 #include "../../components/PhysicalDevice.h"
 #include <stdexcept>
@@ -14,6 +15,8 @@ namespace VkEngine {
                                const std::shared_ptr<RenderPass>& renderPass)
     : GraphicsPipeline(physicalDevice, logicalDevice)
   {
+    createUniforms();
+
     createDescriptorSetLayout();
 
     createDescriptorPool();
@@ -31,7 +34,8 @@ namespace VkEngine {
   }
 
   void VideoPipeline::render(const VkCommandBuffer& commandBuffer, const VkExtent2D swapChainExtent,
-                             const VkDescriptorImageInfo* imageInfo,  const uint32_t currentFrame) const
+                             const VkDescriptorImageInfo* imageInfo,  const uint32_t currentFrame,
+                             const float imageAspectRatio) const
   {
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 
@@ -50,6 +54,13 @@ namespace VkEngine {
       .extent = swapChainExtent
     };
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
+    const ScreenSizeUniform screenSizeUBO {
+      .width = static_cast<float>(swapChainExtent.width),
+      .height = static_cast<float>(swapChainExtent.height),
+      .imageAspectRatio = imageAspectRatio
+    };
+    screenSizeUniform->update(currentFrame, &screenSizeUBO, sizeof(ScreenSizeUniform));
 
     const std::array<VkWriteDescriptorSet, 1> descriptorWrites{{
       {
@@ -92,8 +103,16 @@ namespace VkEngine {
       .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT
     };
 
+    constexpr VkDescriptorSetLayoutBinding screenSizeLayout {
+      .binding = 2,
+      .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+      .descriptorCount = 1,
+      .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT
+    };
+
     constexpr std::array objectBindings {
-      textureLayout
+      textureLayout,
+      screenSizeLayout
     };
 
     const VkDescriptorSetLayoutCreateInfo objectLayoutCreateInfo {
@@ -124,6 +143,22 @@ namespace VkEngine {
     {
       throw std::runtime_error("failed to allocate descriptor sets!");
     }
+
+    for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+    {
+      std::array<VkWriteDescriptorSet, 1> descriptorWrites{{
+        screenSizeUniform->getDescriptorSet(2, descriptorSets[i], i)
+      }};
+
+      vkUpdateDescriptorSets(logicalDevice->getDevice(), descriptorWrites.size(),
+                             descriptorWrites.data(), 0, nullptr);
+    }
+  }
+
+  void VideoPipeline::createUniforms()
+  {
+    screenSizeUniform = std::make_unique<UniformBuffer>(logicalDevice, physicalDevice, MAX_FRAMES_IN_FLIGHT,
+                                                        sizeof(ScreenSizeUniform));
   }
 
   void VideoPipeline::defineStates()

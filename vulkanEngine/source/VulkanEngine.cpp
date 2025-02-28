@@ -222,7 +222,9 @@ namespace VkEngine {
 
       videoRenderPass->begin(videoFramebuffer->getFramebuffer(imgIndex), videoViewportExtent, cmdBuffer);
 
-      videoPipeline->render(cmdBuffer, videoViewportExtent, &videoTextureImageInfos[currentFrame], currentFrame);
+      const auto imageAspectRatio = static_cast<float>(videoExtent.width) / static_cast<float>(videoExtent.height);
+      videoPipeline->render(cmdBuffer, videoViewportExtent, &videoTextureImageInfos[currentFrame], currentFrame,
+                            imageAspectRatio);
 
       RenderPass::end(cmdBuffer);
     });
