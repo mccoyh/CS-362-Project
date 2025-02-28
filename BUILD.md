@@ -7,7 +7,7 @@ Before building the Media Player, ensure you have the following dependencies ins
 1. **Git** (for cloning the repository)
 2. **CMake** (version 3.2 or higher)
 3. **FFmpeg** (latest version recommended)\
-   See the [FFmpeg Setup](#ffmpeg-setup) section for setup details.
+   See the [FFmpeg Setup](#ffmpeg-setup-windowslinux) section for setup details.
 4. **Vulkan SDK** (latest version recommended)\
    Refer to the [Vulkan Setup](#vulkan-setup) section for installation instructions.
 
