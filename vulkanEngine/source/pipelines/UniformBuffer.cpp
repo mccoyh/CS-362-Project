@@ -7,7 +7,7 @@
 namespace VkEngine {
   UniformBuffer::UniformBuffer(const std::shared_ptr<LogicalDevice>& logicalDevice,
                                const std::shared_ptr<PhysicalDevice>& physicalDevice,
-                               uint32_t MAX_FRAMES_IN_FLIGHT, VkDeviceSize bufferSize)
+                               const uint32_t MAX_FRAMES_IN_FLIGHT, const VkDeviceSize bufferSize)
     : logicalDevice(logicalDevice), MAX_FRAMES_IN_FLIGHT(MAX_FRAMES_IN_FLIGHT)
   {
     uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
