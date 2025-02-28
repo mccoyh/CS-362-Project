@@ -4,6 +4,7 @@
 #include <string>
 #include <filesystem>
 
+namespace Captions{
 int transcribeAudio(const std::filesystem::path model_path, const std::filesystem::path audio_file, const std::filesystem::path output_srt);
-
+}
 #endif

@@ -68,7 +68,7 @@ bool extractAudio(const std::filesystem::path& mp4File, const std::filesystem::p
     SwrContext* swrContext = swr_alloc();
     if (!swrContext) {
         std::cout << "Error: Could not allocate SwrContext" << std::endl;
-        exit(1);
+        return false;
     }
 
     //def output channel layout
@@ -86,7 +86,7 @@ bool extractAudio(const std::filesystem::path& mp4File, const std::filesystem::p
     if (swr_init(swrContext) < 0) {
         std::cout << "Error: Could not initialize SwrContext" << std::endl;
         swr_free(&swrContext);
-        exit(1);
+        return false;
     }
 
     //open output
@@ -111,7 +111,7 @@ bool extractAudio(const std::filesystem::path& mp4File, const std::filesystem::p
                                                         16000, codecContext->sample_rate, AV_ROUND_UP);
                     av_samples_alloc(&out_data, nullptr, 1, out_samples, AV_SAMPLE_FMT_S16, 0);
                     int samples_converted = swr_convert(swrContext, &out_data, out_samples,
-                                                        (const uint8_t**)frame->data, frame->nb_samples);
+                                                        static_cast<uint8_t**>(frame->data), frame->nb_samples);
                     if (samples_converted > 0) {
                         outFile.write(reinterpret_cast<char*>(out_data), samples_converted * 2);
                     }
@@ -130,36 +130,3 @@ bool extractAudio(const std::filesystem::path& mp4File, const std::filesystem::p
 
     return true;
 }
-
-
-// int add_subtitles(const char* input_video, const char* subtitle_file, const char* output_video) {
-//     AVFormatContext* format_ctx = nullptr;
-    
-//     // Open video file
-//     if (avformat_open_input(&format_ctx, input_video, nullptr, nullptr) != 0) {
-//         std::cerr << "Could not open video file!" << std::endl;
-//         return -1;
-//     }
-
-//     // Initialize FFmpeg filter to apply subtitles
-//     AVFilterGraph* filter_graph = avfilter_graph_alloc();
-//     AVFilterContext* buffer_src_ctx = nullptr;
-//     AVFilterContext* buffer_sink_ctx = nullptr;
-
-//     // Create filter to overlay subtitles
-//     const char* filter_desc = "subtitles=subtitles.srt";
-//     AVFilterInOut* inputs = avfilter_inout_alloc();
-//     AVFilterInOut* outputs = avfilter_inout_alloc();
-    
-//     avfilter_graph_parse_ptr(filter_graph, filter_desc, &inputs, &outputs, nullptr);
-//     avfilter_graph_config(filter_graph, nullptr);
-
-//     // Process video and apply filter (pseudo-code for brevity)
-//     // Iterate frames and encode video with subtitles applied
-//     // ...
-
-//     // Cleanup
-//     avfilter_graph_free(&filter_graph);
-//     avformat_close_input(&format_ctx);
-//     return 0;
-// }

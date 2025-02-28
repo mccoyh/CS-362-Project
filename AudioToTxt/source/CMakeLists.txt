@@ -4,7 +4,7 @@ include(FetchContent)
 set(BUILD_SHARED_LIBS ON)
 
 # User option to enable/disable Vulkan (default: ON)
-option(WHISPER_USE_VULKAN "Enable Vulkan support for Whisper" OFF)
+option(WHISPER_USE_VULKAN "Enable Vulkan support for Whisper" ON)
 
 add_library(${PROJECT_NAME}
     AudioToTxt.h
@@ -18,8 +18,8 @@ set(MODEL_URLS
 )
 
 set(MODEL_PATHS
-    "${CMAKE_BINARY_DIR}/models/ggml-large-v3-turbo-q5_0.bin"
-    "${CMAKE_BINARY_DIR}/models/ggml-base.bin"
+    "${CMAKE_BINARY_DIR}/bin/models/ggml-large-v3-turbo-q5_0.bin"
+    "${CMAKE_BINARY_DIR}/bin/models/ggml-base.bin"
 )
 list(LENGTH MODEL_URLS num_models)
 math(EXPR num_models_minus_one "${num_models} - 1")
@@ -40,14 +40,24 @@ if (WHISPER_USE_VULKAN)
     find_package(Vulkan)
 
     if (Vulkan_FOUND)
-        message(STATUS "Vulkan found, enabling Vulkan support for Whisper")
-        # Set GGML_VULKAN and other related flags to ON
-        set(GGML_USE_VULKAN ON CACHE BOOL "Enable Vulkan in GGML" FORCE)
-        set(GGML_VULKAN ON CACHE BOOL "Enable Vulkan in GGML" FORCE)
-        
-        # Set Whisper backend to Vulkan
-        set(WHISPER_BACKEND "Vulkan" CACHE STRING "Set Whisper backend" FORCE)
-        target_link_libraries(${PROJECT_NAME} PUBLIC Vulkan::Vulkan)
+        message(STATUS "Vulkan found")
+        find_program(GLSLC_EXECUTABLE NAMES glslc HINTS ENV VULKAN_SDK PATH_SUFFIXES bin)
+        if (GLSLC_EXECUTABLE)
+            message(STATUS "GLSLC found, Enabling Vulkan on whisper")
+            # Set GGML_VULKAN and other related flags to ON
+            set(GGML_USE_VULKAN ON CACHE BOOL "Enable Vulkan in GGML" FORCE)
+            set(GGML_VULKAN ON CACHE BOOL "Enable Vulkan in GGML" FORCE)
+            
+            # Set Whisper backend to Vulkan
+            set(WHISPER_BACKEND "Vulkan" CACHE STRING "Set Whisper backend" FORCE)
+            target_link_libraries(${PROJECT_NAME} PUBLIC Vulkan::Vulkan)
+        else()
+            message(WARNING "GLSLC not found, building Whisper without Vulkan support")
+            set(GGML_VULKAN OFF CACHE BOOL "Disable Vulkan in GGML" FORCE)
+            set(GGML_USE_VULKAN OFF CACHE BOOL "Disable Vulkan in GGML" FORCE)
+            set(WHISPER_BACKEND "CPU" CACHE STRING "Set Whisper backend" FORCE)
+            set(WHISPER_USE_VULKAN OFF)
+        endif()
     else()
         message(WARNING "Vulkan not found, building Whisper without Vulkan support")
         set(GGML_VULKAN OFF CACHE BOOL "Disable Vulkan in GGML" FORCE)
