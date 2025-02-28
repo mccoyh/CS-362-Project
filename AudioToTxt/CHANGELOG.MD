@@ -2,4 +2,8 @@
 All notable changes to this project will be documented in this file
 
 
-## 
+## [0.0.1] - 2/27/2025
+### Added 
+- Made library in namespace Captions
+- Fixed paths for assets and models in cmake (now in bin)
+- Fixed Spacing Styling

@@ -1,5 +1,5 @@
-#ifndef AudioToTxt_H
-#define AudioTotxt_H
+#ifndef audioDecoding_H
+#define audioDecoding_H
 
 #include <string>
 

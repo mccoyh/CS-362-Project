@@ -18,8 +18,8 @@ set(MODEL_URLS
 )
 
 set(MODEL_PATHS
-    "${CMAKE_BINARY_DIR}/bin/models/ggml-large-v3-turbo-q5_0.bin"
-    "${CMAKE_BINARY_DIR}/bin/models/ggml-base.bin"
+    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/models/ggml-large-v3-turbo-q5_0.bin"
+    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/models/ggml-base.bin"
 )
 list(LENGTH MODEL_URLS num_models)
 math(EXPR num_models_minus_one "${num_models} - 1")
@@ -33,7 +33,6 @@ foreach(i RANGE 0 ${num_models_minus_one})
         file(DOWNLOAD ${model_url} ${model_path} SHOW_PROGRESS)
     endif()
 endforeach()
-
 
 # Check for Vulkan if enabled
 if (WHISPER_USE_VULKAN)
