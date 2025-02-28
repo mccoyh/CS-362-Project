@@ -33,10 +33,6 @@ namespace Audio {
     }
 
     AudioData playAudio(const char* input_wav) {   
-        //initizalize SDL
-        SDL_Init(SDL_INIT_AUDIO);
-
-        //SDL_AudioSpec spec;
 
         uint8_t *audio; //audio data
         uint32_t len; //audio data length, not duration of audio file
@@ -49,28 +45,14 @@ namespace Audio {
         }
 
         ad.stream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &ad.spec, NULL, NULL);
-        //ad.spec = spec;
         SDL_PutAudioStreamData(ad.stream, audio, sizeof(uint8_t)*len);
         SDL_ResumeAudioStreamDevice(ad.stream); // Start playback
         
         //Duration of wav file in milliseconds
         ad.duration = ((((len/(SDL_AUDIO_BITSIZE(ad.spec.format)/8)) / ad.spec.channels) / ad.spec.freq) * 1000) + 150; // extra 150 ms for buffer
 
-        // while(duration > 0){
-        //     SDL_Delay(10); // check for more inputs every 10 ms
-
-        //     // add any input checks
-
-        //     duration -= 10;
-        // }
-
         // Cleanup
-        // SDL_ClearAudioStream(stream);
-        // SDL_DestroyAudioStream(stream);
         SDL_free(audio);
-        // SDL_QuitSubSystem(SDL_INIT_AUDIO);
-        // SDL_QuitSubSystem(SDL_INIT_EVENTS);
-        // SDL_Quit();
 
         return ad;
     }
@@ -95,11 +77,11 @@ namespace Audio {
     }
 
     void pauseAudio(SDL_AudioStream* stream){
-        if (SDL_AudioStreamDevicePaused(stream)){
-            SDL_PauseAudioStreamDevice(stream);
-        } else {
-            SDL_ResumeAudioStreamDevice(stream);
-        }
+        SDL_PauseAudioStreamDevice(stream);
+    }
+
+    void resumeAudio(SDL_AudioStream* stream){
+        SDL_ResumeAudioStreamDevice(stream);
     }
 
     bool isPaused(SDL_AudioStream* stream){

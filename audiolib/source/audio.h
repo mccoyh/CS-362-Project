@@ -32,6 +32,8 @@ namespace Audio {
 
     void pauseAudio(SDL_AudioStream* stream);
 
+    void resumeAudio(SDL_AudioStream* stream);
+
     bool isPaused(SDL_AudioStream* stream);
 }
 
