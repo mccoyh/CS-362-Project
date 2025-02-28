@@ -112,7 +112,7 @@ namespace AVParser {
 
     if (avcodec_open2(videoCodecContext, videoCodec, nullptr) < 0)
     {
-      throw std::runtime_error("Failed to open codec!");
+      throw std::runtime_error("Failed to open video codec!");
     }
 
     swsContext = sws_getContext(videoCodecContext->width, videoCodecContext->height,
@@ -123,6 +123,19 @@ namespace AVParser {
 
   void AVParser::setupAudio()
   {
+    audioCodec = avcodec_find_decoder(formatContext->streams[audioStreamIndex]->codecpar->codec_id);
+    if (!audioCodec)
+    {
+      throw std::runtime_error("Failed to find audio decoder!");
+    }
+
+    audioCodecContext = avcodec_alloc_context3(audioCodec);
+    avcodec_parameters_to_context(audioCodecContext, formatContext->streams[audioStreamIndex]->codecpar);
+
+    if (avcodec_open2(audioCodecContext, audioCodec, nullptr) < 0)
+    {
+      throw std::runtime_error("Failed to open audio codec!");
+    }
   }
 
   void AVParser::validateVideoContext() const
