@@ -327,7 +327,7 @@ namespace VkEngine {
     ImGui::Image(reinterpret_cast<ImTextureID>(videoFramebuffer->getFramebufferImageDescriptorSet(imageIndex)),
                  { static_cast<float>(videoExtent.width), static_cast<float>(videoExtent.height) });
 
-    if (captionText != "")
+    if (strcmp(captionText, "") != 0)
     {
       renderCaption(imagePosition);
     }
