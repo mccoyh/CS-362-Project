@@ -37,6 +37,8 @@ public:
 
   void loadVideoFrame(std::shared_ptr<std::vector<uint8_t>> frameData, int width, int height);
 
+  void loadCaption(const char* caption);
+
 private:
   VulkanEngineOptions vulkanEngineOptions;
 
@@ -76,6 +78,8 @@ private:
   VkSampler videoTextureSampler = VK_NULL_HANDLE;
   std::vector<VkDescriptorImageInfo> videoTextureImageInfos{};
 
+  const char* captionText = "";
+
   void initVulkan();
   void createCommandPool();
   void allocateCommandBuffers(std::vector<VkCommandBuffer>& commandBuffers) const;
@@ -94,6 +98,8 @@ private:
   void createNewFrame() const;
 
   void renderVideoWidget(uint32_t imageIndex) const;
+
+  void renderCaption(const ImVec2& imagePos) const;
 
   void loadVideoFrameToImage(int imageIndex) const;
 
