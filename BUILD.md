@@ -57,7 +57,7 @@ cd bin
   [BtbN FFmpeg Builds](https://github.com/BtbN/FFmpeg-Builds/releases)
     - Download the `gpl-shared` version correlating to your machine
 - For Macbook install ffmpeg using brew.
-	-brew install ffmpeg
+	- Run `brew install ffmpeg`
 
 ### 2. Extract Files
 Extract the downloaded archive to a location of your choice.
