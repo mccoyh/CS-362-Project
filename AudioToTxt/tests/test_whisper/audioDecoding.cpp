@@ -21,7 +21,7 @@ bool extractAudio(const std::string mp4File, const std::string audioFile){
         std::cout << "Error: Could not open input file " << mp4File << std::endl;
         return false;
     }
-    
+
     //get streams
     if (avformat_find_stream_info(formatContext, nullptr) < 0){
         std::cout << "Error: Could not find stream info" << std::endl;
@@ -114,8 +114,9 @@ bool extractAudio(const std::string mp4File, const std::string audioFile){
                     int out_samples = av_rescale_rnd(swr_get_delay(swrContext, codecContext->sample_rate) + frame->nb_samples,
                                                         16000, codecContext->sample_rate, AV_ROUND_UP);
                     av_samples_alloc(&out_data, nullptr, 1, out_samples, AV_SAMPLE_FMT_S16, 0);
+                    uint8_t** frame_data = frame->data;
                     int samples_converted = swr_convert(swrContext, &out_data, out_samples,
-                                                        static_cast<uint8_t**>(frame->data), frame->nb_samples);
+                                                        static_cast<const uint8_t**>(frame_data), frame->nb_samples);
                     if (samples_converted > 0){
                         outFile.write(reinterpret_cast<char*>(out_data), samples_converted * 2);
                     }
