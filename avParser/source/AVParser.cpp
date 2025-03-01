@@ -3,7 +3,7 @@
 
 namespace AVParser {
   MediaParser::MediaParser(const std::string& mediaFile)
-    : currentFrame(0), currentAudioData(nullptr), currentVideoData(nullptr)
+    : currentFrame(0), currentVideoData(nullptr), currentAudioData(nullptr)
   {
     if (avformat_open_input(&formatContext, mediaFile.c_str(), nullptr, nullptr) < 0)
     {
