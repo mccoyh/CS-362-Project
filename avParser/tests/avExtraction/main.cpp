@@ -1,6 +1,6 @@
-#include <iostream>
 #include <source/AVParser.h>
 #include <VulkanEngine.h>
+#include <iostream>
 
 int main()
 {
@@ -12,6 +12,23 @@ int main()
 
     std::cout << "Frame Width: " << frameData.frameWidth << "\n"
               << "Frame Height: " << frameData.frameHeight << std::endl;
+
+    constexpr VkEngine::VulkanEngineOptions vulkanEngineOptions {
+      .WINDOW_WIDTH = 600,
+      .WINDOW_HEIGHT = 400,
+      .WINDOW_TITLE = "Video Decoding"
+    };
+
+    auto vulkanEngine = VkEngine::VulkanEngine(vulkanEngineOptions);
+
+    while (vulkanEngine.isActive())
+    {
+      const auto frame = parser.getCurrentFrame();
+
+      vulkanEngine.loadVideoFrame(frame.videoData, frame.frameWidth, frame.frameHeight);
+
+      vulkanEngine.render();
+    }
   }
   catch (const std::exception& e)
   {

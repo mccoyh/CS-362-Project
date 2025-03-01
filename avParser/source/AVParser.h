@@ -8,12 +8,13 @@ extern "C" {
 }
 #include <vector>
 #include <string>
+#include <memory>
 
 namespace AVParser {
 
 struct AVFrameData {
-  std::vector<uint8_t> videoData;
-  std::vector<uint8_t> audioData;
+  std::shared_ptr<std::vector<uint8_t>> videoData;
+  std::shared_ptr<std::vector<uint8_t>> audioData;
   int frameWidth;
   int frameHeight;
 };
