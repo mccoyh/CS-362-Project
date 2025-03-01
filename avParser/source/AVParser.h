@@ -46,6 +46,9 @@ private:
 
   uint32_t currentFrame;
 
+  std::shared_ptr<std::vector<uint8_t>> currentVideoData;
+  std::shared_ptr<std::vector<uint8_t>> currentAudioData;
+
   [[nodiscard]] int getFrameWidth() const;
 
   [[nodiscard]] int getFrameHeight() const;

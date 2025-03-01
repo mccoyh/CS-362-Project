@@ -38,6 +38,8 @@ namespace AVParser {
   AVFrameData MediaParser::getCurrentFrame() const
   {
     return {
+      .videoData = currentVideoData,
+      .audioData = currentAudioData,
       .frameWidth = getFrameWidth(),
       .frameHeight = getFrameHeight()
     };
