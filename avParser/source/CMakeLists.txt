@@ -6,7 +6,6 @@ set(BUILD_SHARED_LIBS ON)
 add_library(${PROJECT_NAME}
   AVParser.cpp
   AVParser.h
-  ../tests/avExtraction/main.cpp
 )
 
 # Specify the components FFmpeg should have available
