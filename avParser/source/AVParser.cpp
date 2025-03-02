@@ -196,8 +196,12 @@ namespace AVParser {
                                 videoCodecContext->height, AV_PIX_FMT_RGBA, SWS_BILINEAR,
                                 nullptr, nullptr, nullptr);
 
-    // Load keyframes
-    AVStream* videoStream = formatContext->streams[videoStreamIndex];
+    loadVideoKeyframes();
+  }
+
+  void MediaParser::loadVideoKeyframes()
+  {
+    const AVStream* videoStream = formatContext->streams[videoStreamIndex];
 
     // Read packets and store keyframe positions
     AVPacket packet;

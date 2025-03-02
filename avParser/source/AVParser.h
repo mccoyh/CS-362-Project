@@ -90,6 +90,8 @@ private:
 
   void setupVideo();
 
+  void loadVideoKeyframes();
+
   void setupAudio();
 
   void validateVideoContext() const;
