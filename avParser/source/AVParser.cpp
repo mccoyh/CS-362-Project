@@ -256,8 +256,8 @@ namespace AVParser {
     const AVStream* stream = formatContext->streams[videoStreamIndex];
 
     // Calculate timestamp for the target frame
-    int64_t targetPts = av_rescale_q(targetFrame, av_inv_q(stream->r_frame_rate), stream->time_base)
-                        + stream->start_time;
+    const int64_t targetPts = av_rescale_q(targetFrame, av_inv_q(stream->r_frame_rate), stream->time_base)
+                              + stream->start_time;
 
     // Seek to the nearest keyframe before the target
     if (av_seek_frame(formatContext, videoStreamIndex, targetPts, AVSEEK_FLAG_BACKWARD) < 0)
@@ -271,6 +271,16 @@ namespace AVParser {
 
   void MediaParser::loadFrame(const uint32_t targetFrame) const
   {
+    if (frame == nullptr)
+    {
+      throw std::runtime_error("No video frame found!");
+    }
+
+    if (packet == nullptr)
+    {
+      throw std::runtime_error("No video packet found!");
+    }
+
     const AVStream* stream = formatContext->streams[videoStreamIndex];
     const AVRational frameDuration = av_inv_q(stream->avg_frame_rate);
     const int64_t targetPts = av_rescale_q(targetFrame, frameDuration, stream->time_base);
