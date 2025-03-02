@@ -319,7 +319,7 @@ namespace AVParser {
     sws_scale(swsContext, frame->data, frame->linesize, 0, frame->height, dst, dstStride);
   }
 
-  bool MediaParser::useCachedFrame(const uint32_t targetFrame)
+  void MediaParser::useCachedFrame(const uint32_t targetFrame)
   {
     auto it = keyFrameMap.upper_bound(targetFrame);
     if (it == keyFrameMap.begin())
@@ -346,7 +346,6 @@ namespace AVParser {
 
     // Set currentVideoData to the frame
     currentVideoData = std::make_shared<std::vector<uint8_t>>(frameIt->second);
-    return true;
   }
 
   void MediaParser::loadFrames(const uint32_t targetFrame)

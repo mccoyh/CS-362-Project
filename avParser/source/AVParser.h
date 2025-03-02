@@ -78,9 +78,6 @@ private:
 
   MediaState state = MediaState::AUTO_PLAYING;
 
-  // std::deque<std::pair<uint32_t, std::vector<uint8_t>>> frameCache;
-  // static constexpr int CACHE_SIZE = 300;
-
   std::map<int, bool> keyFrameMap;
 
   std::unordered_map<uint32_t, std::unordered_map<uint32_t, std::vector<uint8_t>>> cache;
@@ -103,7 +100,7 @@ private:
 
   void convertVideoFrame() const;
 
-  bool useCachedFrame(uint32_t targetFrame);
+  void useCachedFrame(uint32_t targetFrame);
 
   void loadFrames(uint32_t targetFrame);
 };
