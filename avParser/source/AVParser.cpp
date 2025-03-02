@@ -281,13 +281,13 @@ namespace AVParser {
         {
           while (avcodec_receive_frame(videoCodecContext, frame) == 0)
           {
-            if (frame->pts >= targetPts)
-            {
+            // if (frame->pts >= targetPts)
+            // {
               convertVideoFrame();
               currentFrame = targetFrame;
               av_packet_unref(packet);
               return;
-            }
+            // }
           }
         }
       }
