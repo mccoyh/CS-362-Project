@@ -19,29 +19,25 @@ namespace Audio {
     }
 
     // Converts mp4 to wav, pulls audio from video
-    void convertWav(const std::string& input) {
-        if(exists(input))
-        {
-            //checks for any existing output.wav files that already exist
-            int num = 0;
-            while(exists("output" + std::to_string(num) + ".wav"))
-            {
-                num++;
-            }
-            system(("ffmpeg -i " + input + " output" + std::to_string(num) + ".wav").c_str());
+    void convertWav(const std::string& input, const std::string& output) {
+        if(exists(input)){
+            system(("ffmpeg -i " + input + " " + output + ".wav").c_str());
         }
     }
 
     AudioData playAudio(const char* input_wav) {   
 
+        if(!exists(input_wav)){
+            throw std::runtime_error("File not found");
+        }
+        
         uint8_t *audio; //audio data
         uint32_t len; //audio data length, not duration of audio file
         AudioData ad;
 
         //load wav file
         if (SDL_LoadWAV(input_wav, &ad.spec, &audio, &len) == NULL){
-            std::cout << "Error loading file" << std::endl;
-            return ad;
+            throw std::runtime_error("Error loading file");
         }
 
         ad.stream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &ad.spec, NULL, NULL);
@@ -86,5 +82,9 @@ namespace Audio {
 
     bool isPaused(SDL_AudioStream* stream){
         return SDL_AudioStreamDevicePaused(stream);
+    }
+
+    void changeSpeed(SDL_AudioStream* stream, float speed){
+        SDL_SetAudioStreamFrequencyRatio(stream, speed);
     }
 } // namespace Audio

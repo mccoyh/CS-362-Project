@@ -16,7 +16,7 @@ namespace Audio {
     bool exists(const std::string& name);
 
     // Converts any video or audio file to wav
-    void convertWav(const std::string& input);
+    void convertWav(const std::string& input, const std::string& output);
 
     // Plays audio file, must be wav format, convert if necessary
     // returns audiodata struct containing audio stream, audiospec, and duration
@@ -35,6 +35,8 @@ namespace Audio {
     void resumeAudio(SDL_AudioStream* stream);
 
     bool isPaused(SDL_AudioStream* stream);
+
+    void changeSpeed(SDL_AudioStream* stream, float speed);
 }
 
 #endif
