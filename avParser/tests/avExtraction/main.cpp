@@ -1,12 +1,15 @@
 #include <source/AVParser.h>
 #include <VulkanEngine.h>
+#include <components/ImGuiInstance.h>
 #include <iostream>
+
+void displayControls(AVParser::MediaParser& parser);
 
 int main()
 {
   try
   {
-    const auto parser = AVParser::MediaParser("assets/CS_test.mp4");
+    auto parser = AVParser::MediaParser("assets/sample_720.mp4");
 
     const auto frameData = parser.getCurrentFrame();
 
@@ -20,9 +23,19 @@ int main()
     };
 
     auto vulkanEngine = VkEngine::VulkanEngine(vulkanEngineOptions);
+    ImGui::SetCurrentContext(VkEngine::VulkanEngine::getImGuiContext());
+    const auto gui = vulkanEngine.getImGuiInstance();
 
     while (vulkanEngine.isActive())
     {
+      gui->dockBottom("AV Controls");
+
+      gui->setBottomDockPercent(0.2);
+
+      displayControls(parser);
+
+      parser.update();
+
       const auto frame = parser.getCurrentFrame();
 
       vulkanEngine.loadVideoFrame(frame.videoData, frame.frameWidth, frame.frameHeight);
@@ -37,4 +50,28 @@ int main()
   }
 
   return EXIT_SUCCESS;
+}
+
+void displayControls(AVParser::MediaParser& parser)
+{
+  ImGui::Begin("AV Controls");
+
+  switch (parser.getState())
+  {
+    case AVParser::MediaState::AUTO_PLAYING:
+      if (ImGui::Button("Pause"))
+      {
+        parser.pause();
+      }
+      break;
+    case AVParser::MediaState::PAUSED:
+      if (ImGui::Button("Play"))
+      {
+        parser.play();
+      }
+      break;
+    default: break;
+  }
+
+  ImGui::End();
 }

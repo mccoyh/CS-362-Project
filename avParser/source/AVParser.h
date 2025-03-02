@@ -9,6 +9,7 @@ extern "C" {
 #include <vector>
 #include <string>
 #include <memory>
+#include <chrono>
 
 namespace AVParser {
 
@@ -17,6 +18,12 @@ struct AVFrameData {
   std::shared_ptr<std::vector<uint8_t>> audioData;
   int frameWidth;
   int frameHeight;
+};
+
+enum class MediaState {
+  AUTO_PLAYING,
+  PAUSED,
+  MANUAL
 };
 
 class MediaParser {
@@ -28,6 +35,18 @@ public:
   [[nodiscard]] AVFrameData getCurrentFrame() const;
 
   [[nodiscard]] double getFrameRate() const;
+
+  void loadNextFrame() const;
+
+  void update();
+
+  void play();
+
+  void pause();
+
+  void setManual(bool manual);
+
+  [[nodiscard]] MediaState getState() const;
 
 private:
   AVFormatContext* formatContext = nullptr;
@@ -49,6 +68,11 @@ private:
   std::shared_ptr<std::vector<uint8_t>> currentVideoData;
   std::shared_ptr<std::vector<uint8_t>> currentAudioData;
 
+  float timeAccumulator = 0;
+  std::chrono::time_point<std::chrono::steady_clock> previousTime;
+
+  MediaState state = MediaState::AUTO_PLAYING;
+
   [[nodiscard]] int getFrameWidth() const;
 
   [[nodiscard]] int getFrameHeight() const;
@@ -61,7 +85,6 @@ private:
 
   void validateVideoContext() const;
 };
-
 } // AVParser
 
 #endif //AVPARSER_H

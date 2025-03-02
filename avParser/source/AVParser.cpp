@@ -1,9 +1,12 @@
 #include "AVParser.h"
+#include <iostream>
+#include <ostream>
 #include <stdexcept>
 
 namespace AVParser {
   MediaParser::MediaParser(const std::string& mediaFile)
-    : currentFrame(0), currentVideoData(nullptr), currentAudioData(nullptr)
+    : currentFrame(0), currentVideoData(std::make_shared<std::vector<uint8_t>>()),
+      currentAudioData(std::make_shared<std::vector<uint8_t>>()), previousTime(std::chrono::steady_clock::now())
   {
     if (avformat_open_input(&formatContext, mediaFile.c_str(), nullptr, nullptr) < 0)
     {
@@ -23,6 +26,8 @@ namespace AVParser {
 
     frame = av_frame_alloc();
     packet = av_packet_alloc();
+
+    loadNextFrame();
   }
 
   MediaParser::~MediaParser()
@@ -55,6 +60,80 @@ namespace AVParser {
     const AVRational fps = formatContext->streams[videoStreamIndex]->r_frame_rate;
 
     return av_q2d(fps);
+  }
+
+  void MediaParser::loadNextFrame() const
+  {
+    while (av_read_frame(formatContext, packet) >= 0)
+    {
+      if (packet->stream_index == videoStreamIndex)
+      {
+        if (avcodec_send_packet(videoCodecContext, packet) == 0)
+        {
+          if (avcodec_receive_frame(videoCodecContext, frame) == 0)
+          {
+            int outWidth = frame->width;
+            int outHeight = frame->height;
+            currentVideoData->resize(outWidth * outHeight * 4);
+
+            uint8_t* dst[1] = { currentVideoData->data() };
+            const int dstStride[1] = { outWidth * 4 };
+            sws_scale(swsContext, frame->data, frame->linesize, 0, frame->height, dst, dstStride);
+
+            av_packet_unref(packet);
+            return;
+          }
+        }
+      }
+
+      av_packet_unref(packet);
+    }
+  }
+
+  void MediaParser::update()
+  {
+    const float fixedUpdateDt = 1.0f / static_cast<float>(getFrameRate());
+    const auto currentTime = std::chrono::steady_clock::now();
+    const float dt = std::chrono::duration<float>(currentTime - previousTime).count();
+    previousTime = currentTime;
+    timeAccumulator += dt;
+
+    if (state == MediaState::AUTO_PLAYING)
+    {
+      while (timeAccumulator >= fixedUpdateDt)
+      {
+        loadNextFrame();
+
+        timeAccumulator -= fixedUpdateDt;
+      }
+    }
+    else if (state == MediaState::PAUSED || state == MediaState::MANUAL)
+    {
+      while (timeAccumulator >= fixedUpdateDt)
+      {
+        timeAccumulator -= fixedUpdateDt;
+      }
+    }
+  }
+
+  void MediaParser::play()
+  {
+    state = MediaState::AUTO_PLAYING;
+  }
+
+  void MediaParser::pause()
+  {
+    state = MediaState::PAUSED;
+  }
+
+  void MediaParser::setManual(const bool manual)
+  {
+    state = manual ? MediaState::MANUAL : MediaState::AUTO_PLAYING;
+  }
+
+  MediaState MediaParser::getState() const
+  {
+    return state;
   }
 
   int MediaParser::getFrameWidth() const
