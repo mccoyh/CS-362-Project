@@ -230,7 +230,7 @@ namespace AVParser {
   {
     if (!videoCodecContext)
     {
-      throw std::runtime_error("Codec context not initialized!");
+      throw std::runtime_error("Video codec context not initialized!");
     }
   }
 
