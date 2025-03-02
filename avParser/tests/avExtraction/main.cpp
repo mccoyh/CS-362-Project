@@ -59,17 +59,32 @@ void displayControls(AVParser::MediaParser& parser)
   switch (parser.getState())
   {
     case AVParser::MediaState::AUTO_PLAYING:
+      if (ImGui::Button("MANUAL"))
+      {
+        parser.setManual(true);
+      }
+      ImGui::SameLine();
       if (ImGui::Button("Pause"))
       {
         parser.pause();
       }
       break;
     case AVParser::MediaState::PAUSED:
+      if (ImGui::Button("MANUAL"))
+      {
+        parser.setManual(true);
+      }
+      ImGui::SameLine();
       if (ImGui::Button("Play"))
       {
         parser.play();
       }
       break;
+    case AVParser::MediaState::MANUAL:
+      if (ImGui::Button("AUTOMATIC"))
+      {
+        parser.setManual(false);
+      }
     default: break;
   }
 
