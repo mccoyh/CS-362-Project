@@ -28,6 +28,16 @@ int main() {
     if (Captions::transcribeAudio(modelPath.string(), audioFile.string(), subtitleFile.string()) != 0){
         std::cout << "Failed to generate subtitles" << std::endl;
     }
+    int frame = 200; 
+    std::string caption = Captions::getSubtitleForFrame(frame, subtitleFile.string());
+    if (caption.at(0) == '['){
+        std::cout << "Failed to find subtitle at frame. message: "<< caption << std::endl;
+    }
+    else{
+        std::cout << "Caption at frame " << frame << ": " << caption << std::endl;
+    }
+
+
     return 0;
 }
 

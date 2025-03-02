@@ -3,10 +3,13 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
+#include <cstdlib>
 
 #include "whisper.h"
 
 namespace Captions{
+    constexpr float AUDIO_NORM = 32768.0f; //max size of a 16 bit signed int to normalize audio between -1 and 1
+
     int transcribeAudio(const std::string model_path, const std::string audio_file, const std::string output_srt){
         std::cout << "in function  " << std::endl;
         whisper_full_params params = whisper_full_default_params(WHISPER_SAMPLING_GREEDY);
@@ -38,7 +41,7 @@ namespace Captions{
 
         // Convert PCM data (16-bit signed) to floating point
         for (size_t i = 0; i < pcm_short_data.size(); ++i){
-            pcm_data[i] = pcm_short_data[i] / 32768.0f; // Convert to float in the range of -1.0 to 1.0
+            pcm_data[i] = pcm_short_data[i] / AUDIO_NORM; // Convert to float in the range of -1.0 to 1.0
         }
 
         // Transcribe audio
@@ -69,4 +72,40 @@ namespace Captions{
         whisper_free(ctx);
         return 0;
     }
-}
+    
+    // Find the subtitle for a given frame by parsing the file directly
+    std::string getSubtitleForFrame(int frame_number, const std::string& filename){
+        std::ifstream file(filename);
+        if (!file.is_open()){
+            std::cerr << "Failed to open file: " << filename << std::endl;
+            return "[Error: File not found]";
+        }
+    
+        std::string line;
+        int start_frame, end_frame;
+        std::string text;
+    
+        while (std::getline(file, line)){
+            std::istringstream iss(line);
+            if (iss >> start_frame){  // Read subtitle index (ignored)
+                if (std::getline(file, line)){  // Read frame range line
+                    std::istringstream time_stream(line);
+                    std::string arrow; // To capture '-->'
+                    if (time_stream >> start_frame >> arrow >> end_frame){
+                        text.clear();
+                        while (std::getline(file, line) && !line.empty()){
+                            text += (text.empty() ? "" : " ") + line;
+                        }
+                        // Check if the frame number is within this range
+                        if (frame_number >= start_frame && frame_number <= end_frame){
+                            return text;
+                        }
+                    }
+                }
+            }
+        }
+    
+        return "";
+    }
+
+} //captions namespace
