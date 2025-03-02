@@ -101,10 +101,7 @@ namespace AVParser {
     }
     else if (state == MediaState::PAUSED || state == MediaState::MANUAL)
     {
-      while (timeAccumulator >= fixedUpdateDt)
-      {
-        timeAccumulator -= fixedUpdateDt;
-      }
+      timeAccumulator = std::fmod(timeAccumulator, fixedUpdateDt);
     }
   }
 
