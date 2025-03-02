@@ -79,8 +79,10 @@ private:
   MediaState state = MediaState::AUTO_PLAYING;
 
   std::map<int, bool> keyFrameMap;
-
-  std::unordered_map<uint32_t, std::unordered_map<uint32_t, std::vector<uint8_t>>> cache;
+  struct FrameCache {
+    std::unordered_map<uint32_t, std::vector<uint8_t>> frames;
+  };
+  std::unordered_map<uint32_t, FrameCache> cache;
 
   [[nodiscard]] int getFrameWidth() const;
 

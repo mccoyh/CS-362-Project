@@ -352,9 +352,9 @@ namespace AVParser {
     }
 
     // Access the keyframe map from the cache
-    const auto& keyFrame = keyFrameIt->second;
-    const auto frameIt = keyFrame.find(targetFrame);
-    if (frameIt == keyFrame.end())
+    const auto& [frames] = keyFrameIt->second;
+    const auto frameIt = frames.find(targetFrame);
+    if (frameIt == frames.end())
     {
       throw std::runtime_error("Target frame not found in key frame.");
     }
@@ -374,16 +374,16 @@ namespace AVParser {
     --it;
     const auto targetKeyFrame = it->first;
 
-    cache[targetKeyFrame] = {};
-
-    auto& keyFrame = cache[targetKeyFrame];
+    FrameCache frameCache;
 
     seekToFrame(targetKeyFrame);
 
-    for (size_t i = targetKeyFrame; i < nextKeyFrame; ++i)
+    for (uint32_t i = targetKeyFrame; i < nextKeyFrame; ++i)
     {
       loadFrame(i);
-      keyFrame[i] = *currentVideoData;
+      frameCache.frames[i] = *currentVideoData;
     }
+
+    cache[targetKeyFrame] = std::move(frameCache);
   }
 } // AVParser
