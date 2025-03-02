@@ -14,7 +14,8 @@ int main()
     const auto frameData = parser.getCurrentFrame();
 
     std::cout << "Frame Width: " << frameData.frameWidth << "\n"
-              << "Frame Height: " << frameData.frameHeight << std::endl;
+              << "Frame Height: " << frameData.frameHeight << "\n"
+              << "Total Frames: " << parser.getTotalFrames() << std::endl;
 
     constexpr VkEngine::VulkanEngineOptions vulkanEngineOptions {
       .WINDOW_WIDTH = 600,
@@ -55,6 +56,8 @@ int main()
 void displayControls(AVParser::MediaParser& parser)
 {
   ImGui::Begin("AV Controls");
+
+  int currentFrameIndex = static_cast<int>(parser.getCurrentFrameIndex());
 
   switch (parser.getState())
   {
@@ -98,6 +101,13 @@ void displayControls(AVParser::MediaParser& parser)
       {
         parser.loadNextFrame();
       }
+
+      if (ImGui::SliderInt("Frames", &currentFrameIndex, 0, parser.getTotalFrames()))
+      {
+        parser.loadFrameAt(currentFrameIndex);
+      }
+
+
     default: break;
   }
 

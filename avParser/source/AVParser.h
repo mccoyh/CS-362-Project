@@ -41,9 +41,13 @@ public:
 
   [[nodiscard]] uint32_t getTotalFrames() const;
 
+  [[nodiscard]] uint32_t getCurrentFrameIndex() const;
+
   void loadNextFrame();
 
   void loadPreviousFrame();
+
+  void loadFrameAt(uint32_t targetFrame);
 
   void update();
 
