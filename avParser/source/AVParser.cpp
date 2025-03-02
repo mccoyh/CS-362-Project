@@ -51,10 +51,7 @@ namespace AVParser {
 
   double MediaParser::getFrameRate() const
   {
-    if (videoStreamIndex == -1)
-    {
-      throw std::runtime_error("No video stream available!");
-    }
+    validateVideoStream();
 
     const AVRational fps = formatContext->streams[videoStreamIndex]->r_frame_rate;
 
@@ -164,15 +161,9 @@ namespace AVParser {
       }
     }
 
-    if (videoStreamIndex == -1)
-    {
-      throw std::runtime_error("No video stream found!");
-    }
+    validateVideoStream();
 
-    if (audioStreamIndex == -1)
-    {
-      throw std::runtime_error("No audio stream found!");
-    }
+    validateAudioStream();
   }
 
   void MediaParser::setupVideo()
@@ -246,12 +237,25 @@ namespace AVParser {
     }
   }
 
-  void MediaParser::seekToFrame(const int64_t targetFrame) const
+  void MediaParser::validateVideoStream() const
   {
     if (videoStreamIndex == -1)
     {
-      return;
+      throw std::runtime_error("No video stream found!");
     }
+  }
+
+  void MediaParser::validateAudioStream() const
+  {
+    if (audioStreamIndex == -1)
+    {
+      throw std::runtime_error("No audio stream found!");
+    }
+  }
+
+  void MediaParser::seekToFrame(const int64_t targetFrame) const
+  {
+    validateVideoStream();
 
     const AVStream* stream = formatContext->streams[videoStreamIndex];
 

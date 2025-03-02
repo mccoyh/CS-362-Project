@@ -96,6 +96,10 @@ private:
 
   void validateVideoContext() const;
 
+  void validateVideoStream() const;
+
+  void validateAudioStream() const;
+
   void seekToFrame(int64_t targetFrame) const;
 
   void loadFrame(uint32_t targetFrame) const;
