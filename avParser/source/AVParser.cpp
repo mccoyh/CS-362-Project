@@ -65,7 +65,7 @@ namespace AVParser {
       return;
     }
 
-    useCachedFrame(currentFrame + 1);
+    loadFrameFromCache(currentFrame + 1);
 
     currentFrame++;
   }
@@ -77,7 +77,7 @@ namespace AVParser {
       return;
     }
 
-    useCachedFrame(currentFrame - 1);
+    loadFrameFromCache(currentFrame - 1);
 
     currentFrame--;
   }
@@ -334,7 +334,7 @@ namespace AVParser {
     sws_scale(swsContext, frame->data, frame->linesize, 0, frame->height, dst, dstStride);
   }
 
-  void MediaParser::useCachedFrame(const uint32_t targetFrame)
+  void MediaParser::loadFrameFromCache(const uint32_t targetFrame)
   {
     auto it = keyFrameMap.upper_bound(targetFrame);
     if (it == keyFrameMap.begin())

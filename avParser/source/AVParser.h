@@ -106,7 +106,7 @@ private:
 
   void convertVideoFrame() const;
 
-  void useCachedFrame(uint32_t targetFrame);
+  void loadFrameFromCache(uint32_t targetFrame);
 
   void loadFrames(uint32_t targetFrame);
 };
