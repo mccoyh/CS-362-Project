@@ -39,6 +39,8 @@ public:
 
   [[nodiscard]] double getFrameRate() const;
 
+  [[nodiscard]] uint32_t getTotalFrames() const;
+
   void loadNextFrame();
 
   void loadPreviousFrame();
@@ -84,6 +86,8 @@ private:
   };
   std::unordered_map<uint32_t, FrameCache> cache;
 
+  uint32_t totalFrames = 0;
+
   [[nodiscard]] int getFrameWidth() const;
 
   [[nodiscard]] int getFrameHeight() const;
@@ -93,6 +97,8 @@ private:
   void setupVideo();
 
   void loadVideoKeyframes();
+
+  void calculateTotalFrames();
 
   void setupAudio();
 
