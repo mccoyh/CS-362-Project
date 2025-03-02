@@ -297,15 +297,29 @@ namespace AVParser {
 
   void MediaParser::convertVideoFrame() const
   {
+    if (!frame || !frame->data[0])
+    {
+      throw std::runtime_error("Invalid frame data in convertVideoFrame");
+    }
+
     const int outWidth = getFrameWidth();
     const int outHeight = getFrameHeight();
-    currentVideoData->resize(outWidth * outHeight * 4);
+
+    // Resize or reallocate the buffer if needed
+    if (currentVideoData->size() != outWidth * outHeight * 4)
+    {
+      currentVideoData->resize(outWidth * outHeight * 4);
+    }
 
     uint8_t* dst[1] = { currentVideoData->data() };
     const int dstStride[1] = { outWidth * 4 };
-    sws_scale(swsContext, frame->data, frame->linesize, 0, frame->height, dst, dstStride);
 
-    av_packet_unref(packet);
+    if (!swsContext)
+    {
+      throw std::runtime_error("Invalid swsContext in convertVideoFrame");
+    }
+
+    sws_scale(swsContext, frame->data, frame->linesize, 0, frame->height, dst, dstStride);
   }
 
   bool MediaParser::useCachedFrame(uint32_t frame)
