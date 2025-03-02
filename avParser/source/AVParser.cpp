@@ -1,5 +1,4 @@
 #include "AVParser.h"
-#include <iostream>
 #include <ostream>
 #include <stdexcept>
 
@@ -62,32 +61,47 @@ namespace AVParser {
     return av_q2d(fps);
   }
 
-  void MediaParser::loadNextFrame() const
+  void MediaParser::loadNextFrame()
   {
-    while (av_read_frame(formatContext, packet) >= 0)
+    const uint32_t targetFrame = currentFrame + 1;
+    //
+    // if (useCachedFrame(targetFrame))
+    // {
+    //   currentFrame = targetFrame;
+    //   return;
+    // }
+
+    loadFrame(targetFrame);
+
+    // frameCache.emplace_back(targetFrame, *currentVideoData);
+    // if (frameCache.size() > CACHE_SIZE)
+    // {
+    //   frameCache.pop_front();
+    // }
+  }
+
+  void MediaParser::loadPreviousFrame()
+  {
+    if (currentFrame <= 0)
     {
-      if (packet->stream_index == videoStreamIndex)
-      {
-        if (avcodec_send_packet(videoCodecContext, packet) == 0)
-        {
-          if (avcodec_receive_frame(videoCodecContext, frame) == 0)
-          {
-            int outWidth = frame->width;
-            int outHeight = frame->height;
-            currentVideoData->resize(outWidth * outHeight * 4);
-
-            uint8_t* dst[1] = { currentVideoData->data() };
-            const int dstStride[1] = { outWidth * 4 };
-            sws_scale(swsContext, frame->data, frame->linesize, 0, frame->height, dst, dstStride);
-
-            av_packet_unref(packet);
-            return;
-          }
-        }
-      }
-
-      av_packet_unref(packet);
+      return;
     }
+
+    const uint32_t targetFrame = currentFrame - 1;
+
+    // if (useCachedFrame(targetFrame))
+    // {
+    // currentFrame = targetFrame;
+    // return;
+    // }
+
+    loadFrame(targetFrame);
+
+    // frameCache.emplace_front(targetFrame, *currentVideoData);
+    // if (frameCache.size() > CACHE_SIZE)
+    // {
+    //   frameCache.pop_back();
+    // }
   }
 
   void MediaParser::update()
@@ -225,5 +239,88 @@ namespace AVParser {
     {
       throw std::runtime_error("Codec context not initialized!");
     }
+  }
+
+  void MediaParser::seekToFrame(const int64_t targetFrame) const
+  {
+    if (videoStreamIndex == -1)
+    {
+      return;
+    }
+
+    const AVStream* stream = formatContext->streams[videoStreamIndex];
+
+    // Calculate timestamp for the target frame
+    int64_t targetPts = av_rescale_q(targetFrame, av_inv_q(stream->r_frame_rate), stream->time_base)
+                        + stream->start_time;
+
+    // Seek to the nearest keyframe before the target
+    if (av_seek_frame(formatContext, videoStreamIndex, targetPts, AVSEEK_FLAG_BACKWARD) < 0)
+    {
+      throw std::runtime_error("Seek failed");
+    }
+
+    // Flush the video decoder to clear internal buffers
+    avcodec_flush_buffers(videoCodecContext);
+  }
+
+  void MediaParser::loadFrame(const uint32_t targetFrame)
+  {
+    const AVStream* stream = formatContext->streams[videoStreamIndex];
+    const AVRational frameDuration = av_inv_q(stream->avg_frame_rate);
+    const int64_t targetPts = av_rescale_q(targetFrame, frameDuration, stream->time_base);
+
+    // Seeks to the keyframe before targetFrame
+    seekToFrame(targetFrame);
+
+    while (av_read_frame(formatContext, packet) >= 0)
+    {
+      if (packet->stream_index == videoStreamIndex)
+      {
+        if (avcodec_send_packet(videoCodecContext, packet) == 0)
+        {
+          while (avcodec_receive_frame(videoCodecContext, frame) == 0)
+          {
+            if (frame->pts >= targetPts)
+            {
+              convertVideoFrame();
+              currentFrame = targetFrame;
+              av_packet_unref(packet);
+              return;
+            }
+          }
+        }
+      }
+      av_packet_unref(packet);
+    }
+  }
+
+  void MediaParser::convertVideoFrame() const
+  {
+    const int outWidth = getFrameWidth();
+    const int outHeight = getFrameHeight();
+    currentVideoData->resize(outWidth * outHeight * 4);
+
+    uint8_t* dst[1] = { currentVideoData->data() };
+    const int dstStride[1] = { outWidth * 4 };
+    sws_scale(swsContext, frame->data, frame->linesize, 0, frame->height, dst, dstStride);
+
+    av_packet_unref(packet);
+  }
+
+  bool MediaParser::useCachedFrame(uint32_t frame)
+  {
+    const auto it = std::ranges::find_if(frameCache, [frame](const auto& pair)
+    {
+      return pair.first == frame;
+    });
+
+    if (it == frameCache.end())
+    {
+      return false;
+    }
+
+    currentVideoData = std::make_shared<std::vector<uint8_t>>(it->second);
+    return true;
   }
 } // AVParser

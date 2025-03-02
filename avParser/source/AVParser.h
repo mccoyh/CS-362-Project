@@ -1,5 +1,6 @@
 #ifndef AVPARSER_H
 #define AVPARSER_H
+#include <deque>
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -36,7 +37,9 @@ public:
 
   [[nodiscard]] double getFrameRate() const;
 
-  void loadNextFrame() const;
+  void loadNextFrame();
+
+  void loadPreviousFrame();
 
   void update();
 
@@ -73,6 +76,9 @@ private:
 
   MediaState state = MediaState::AUTO_PLAYING;
 
+  std::deque<std::pair<uint32_t, std::vector<uint8_t>>> frameCache;
+  static constexpr int CACHE_SIZE = 300;
+
   [[nodiscard]] int getFrameWidth() const;
 
   [[nodiscard]] int getFrameHeight() const;
@@ -84,6 +90,14 @@ private:
   void setupAudio();
 
   void validateVideoContext() const;
+
+  void seekToFrame(int64_t targetFrame) const;
+
+  void loadFrame(uint32_t targetFrame);
+
+  void convertVideoFrame() const;
+
+  bool useCachedFrame(uint32_t frame);
 };
 } // AVParser
 

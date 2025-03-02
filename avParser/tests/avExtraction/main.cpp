@@ -85,6 +85,19 @@ void displayControls(AVParser::MediaParser& parser)
       {
         parser.setManual(false);
       }
+
+      ImGui::SameLine();
+      ImGui::Button("BACKWARD");
+      if (ImGui::IsItemActive())
+      {
+        parser.loadPreviousFrame();
+      }
+      ImGui::SameLine();
+      ImGui::Button("FORWARD");
+      if (ImGui::IsItemActive())
+      {
+        parser.loadNextFrame();
+      }
     default: break;
   }
 
