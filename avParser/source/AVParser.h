@@ -1,6 +1,8 @@
 #ifndef AVPARSER_H
 #define AVPARSER_H
 #include <deque>
+#include <map>
+#include <unordered_map>
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -76,8 +78,12 @@ private:
 
   MediaState state = MediaState::AUTO_PLAYING;
 
-  std::deque<std::pair<uint32_t, std::vector<uint8_t>>> frameCache;
-  static constexpr int CACHE_SIZE = 300;
+  // std::deque<std::pair<uint32_t, std::vector<uint8_t>>> frameCache;
+  // static constexpr int CACHE_SIZE = 300;
+
+  std::map<int, bool> keyFrameMap;
+
+  std::unordered_map<uint32_t, std::unordered_map<uint32_t, std::vector<uint8_t>>> cache;
 
   [[nodiscard]] int getFrameWidth() const;
 
@@ -93,11 +99,13 @@ private:
 
   void seekToFrame(int64_t targetFrame) const;
 
-  void loadFrame(uint32_t targetFrame);
+  void loadFrame(uint32_t targetFrame) const;
 
   void convertVideoFrame() const;
 
-  bool useCachedFrame(uint32_t frame);
+  bool useCachedFrame(uint32_t targetFrame);
+
+  void loadFrames(uint32_t targetFrame);
 };
 } // AVParser
 

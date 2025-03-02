@@ -63,21 +63,14 @@ namespace AVParser {
 
   void MediaParser::loadNextFrame()
   {
-    const uint32_t targetFrame = currentFrame + 1;
-    //
-    // if (useCachedFrame(targetFrame))
-    // {
-    //   currentFrame = targetFrame;
-    //   return;
-    // }
+    if (keyFrameMap.upper_bound(currentFrame + 1) == keyFrameMap.end())
+    {
+      return;
+    }
 
-    loadFrame(targetFrame);
+    useCachedFrame(currentFrame + 1);
 
-    // frameCache.emplace_back(targetFrame, *currentVideoData);
-    // if (frameCache.size() > CACHE_SIZE)
-    // {
-    //   frameCache.pop_front();
-    // }
+    currentFrame++;
   }
 
   void MediaParser::loadPreviousFrame()
@@ -87,21 +80,9 @@ namespace AVParser {
       return;
     }
 
-    const uint32_t targetFrame = currentFrame - 1;
+    useCachedFrame(currentFrame - 1);
 
-    // if (useCachedFrame(targetFrame))
-    // {
-    // currentFrame = targetFrame;
-    // return;
-    // }
-
-    loadFrame(targetFrame);
-
-    // frameCache.emplace_front(targetFrame, *currentVideoData);
-    // if (frameCache.size() > CACHE_SIZE)
-    // {
-    //   frameCache.pop_back();
-    // }
+    currentFrame--;
   }
 
   void MediaParser::update()
@@ -214,6 +195,26 @@ namespace AVParser {
                                 videoCodecContext->pix_fmt, videoCodecContext->width,
                                 videoCodecContext->height, AV_PIX_FMT_RGBA, SWS_BILINEAR,
                                 nullptr, nullptr, nullptr);
+
+    // Load keyframes
+    AVStream* videoStream = formatContext->streams[videoStreamIndex];
+
+    // Read packets and store keyframe positions
+    AVPacket packet;
+    while (av_read_frame(formatContext, &packet) >= 0)
+    {
+      if (packet.stream_index == videoStreamIndex)
+      {
+        if (packet.flags & AV_PKT_FLAG_KEY)
+        {
+          // Convert PTS to frame number
+          int frameNumber = static_cast<int>(av_rescale_q(packet.pts, videoStream->time_base, AVRational{1, videoStream->avg_frame_rate.num}));
+
+          keyFrameMap[frameNumber] = true;
+        }
+      }
+      av_packet_unref(&packet);
+    }
   }
 
   void MediaParser::setupAudio()
@@ -264,14 +265,11 @@ namespace AVParser {
     avcodec_flush_buffers(videoCodecContext);
   }
 
-  void MediaParser::loadFrame(const uint32_t targetFrame)
+  void MediaParser::loadFrame(const uint32_t targetFrame) const
   {
     const AVStream* stream = formatContext->streams[videoStreamIndex];
     const AVRational frameDuration = av_inv_q(stream->avg_frame_rate);
     const int64_t targetPts = av_rescale_q(targetFrame, frameDuration, stream->time_base);
-
-    // Seeks to the keyframe before targetFrame
-    seekToFrame(targetFrame);
 
     while (av_read_frame(formatContext, packet) >= 0)
     {
@@ -281,13 +279,12 @@ namespace AVParser {
         {
           while (avcodec_receive_frame(videoCodecContext, frame) == 0)
           {
-            // if (frame->pts >= targetPts)
-            // {
+            if (frame->pts >= targetPts)
+            {
               convertVideoFrame();
-              currentFrame = targetFrame;
               av_packet_unref(packet);
               return;
-            // }
+            }
           }
         }
       }
@@ -322,19 +319,57 @@ namespace AVParser {
     sws_scale(swsContext, frame->data, frame->linesize, 0, frame->height, dst, dstStride);
   }
 
-  bool MediaParser::useCachedFrame(uint32_t frame)
+  bool MediaParser::useCachedFrame(const uint32_t targetFrame)
   {
-    const auto it = std::ranges::find_if(frameCache, [frame](const auto& pair)
+    auto it = keyFrameMap.upper_bound(targetFrame);
+    if (it == keyFrameMap.begin())
     {
-      return pair.first == frame;
-    });
+      throw std::runtime_error("Key frame not found!");
+    }
+    --it;
+    const auto targetKeyFrame = it->first;
 
-    if (it == frameCache.end())
+    auto keyFrameIt = cache.find(targetKeyFrame);
+    if (keyFrameIt == cache.end())
     {
-      return false;
+      loadFrames(targetFrame);  // Load frames if not found
+      keyFrameIt = cache.find(targetKeyFrame);  // Re-check after loading
     }
 
-    currentVideoData = std::make_shared<std::vector<uint8_t>>(it->second);
+    // Access the keyframe map from the cache
+    const auto& keyFrame = keyFrameIt->second;
+    const auto frameIt = keyFrame.find(targetFrame);
+    if (frameIt == keyFrame.end())
+    {
+      throw std::runtime_error("Target frame not found in key frame.");
+    }
+
+    // Set currentVideoData to the frame
+    currentVideoData = std::make_shared<std::vector<uint8_t>>(frameIt->second);
     return true;
+  }
+
+  void MediaParser::loadFrames(const uint32_t targetFrame)
+  {
+    auto it = keyFrameMap.upper_bound(targetFrame);
+    if (it == keyFrameMap.begin() || it == keyFrameMap.end())
+    {
+      throw std::runtime_error("Key frame not found!");
+    }
+    const auto nextKeyFrame = it->first;
+    --it;
+    const auto targetKeyFrame = it->first;
+
+    cache[targetKeyFrame] = {};
+
+    auto& keyFrame = cache[targetKeyFrame];
+
+    seekToFrame(targetKeyFrame);
+
+    for (size_t i = targetKeyFrame; i < nextKeyFrame; ++i)
+    {
+      loadFrame(i);
+      keyFrame[i] = *currentVideoData;
+    }
   }
 } // AVParser
