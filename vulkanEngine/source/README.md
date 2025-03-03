@@ -44,6 +44,11 @@ Loads a video frame into the engine for rendering. The frame data should contain
 
 Loads a caption text that will be rendered alongside the video frame.
 
+### `void setGrayscale(bool useGrayscale);`
+- **useGrayscale**: Whether to enable grayscale video output.
+
+Toggles between grayscale and normal color video output.
+
 ## Example Usage
 
 ```cpp
