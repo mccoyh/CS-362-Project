@@ -1,10 +1,10 @@
 #include <source/audio.h>
 
-int main() {
+int main(const int argc, char* argv[]) {
   Audio::initSDL();
 
   // create and play audio stream
-  Audio::AudioData audio = Audio::playAudio("audio.wav");
+  Audio::AudioData audio = Audio::playAudio(argc == 2 ? argv[1] : "audio.wav");
   uint32_t duration = audio.duration;
   uint32_t change = audio.duration - 10000;
   uint32_t stop = 0;

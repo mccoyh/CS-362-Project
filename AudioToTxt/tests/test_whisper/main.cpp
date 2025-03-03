@@ -5,12 +5,12 @@
 
 #include "audioDecoding.h"
 
-int main() {
+int main(const int argc, char* argv[]) {
     std::filesystem::path exePath = std::filesystem::current_path(); // Gets the current working directory (where executable runs)
 
     // Path to the assets folder relative to the executable's directory
     std::filesystem::path assetsPath =  exePath / "assets";
-    std::filesystem::path inputVideo = assetsPath / "CS_test.mp4";    
+    std::filesystem::path inputVideo = (argc == 2 ? argv[1] : "assets/CS_test.mp4");
 
     const std::filesystem::path audioFile = assetsPath / "audio.pcm";
     const std::filesystem::path subtitleFile = assetsPath / "subtitles.srt";

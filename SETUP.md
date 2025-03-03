@@ -45,6 +45,17 @@ cmake --build .
 cd bin
 ```
 
+6. To run an executable:
+ - Choose the executable (`EXE_NAME`).
+ - Ensure required media files are present relative to the executable (`PATH_TO_MEDIA`).
+
+Then run:
+```bash
+./EXE_NAME PATH_TO_MEDIA
+```
+
+Note: `PATH_TO_MEDIA` can be omitted if the executable doesn’t require external media or you choose to use built-in asset names.
+
 ## FFmpeg Setup (Windows/Linux)
 
 ### 1. Download FFmpeg
