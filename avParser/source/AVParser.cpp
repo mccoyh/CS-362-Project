@@ -454,7 +454,7 @@ namespace AVParser {
     avcodec_flush_buffers(videoCodecContext);
   }
 
-  void MediaParser::loadFrame(const uint32_t targetFrame) const
+  void MediaParser::loadFrame() const
   {
     if (frame == nullptr)
     {
@@ -557,7 +557,7 @@ namespace AVParser {
 
     for (uint32_t i = targetKeyFrame; i < nextKeyFrame; ++i)
     {
-      loadFrame(i);
+      loadFrame();
       frameCache.frames[i] = *currentVideoData;
     }
 

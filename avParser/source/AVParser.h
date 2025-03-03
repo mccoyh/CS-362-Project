@@ -114,7 +114,7 @@ private:
 
   void seekToFrame(int64_t targetFrame) const;
 
-  void loadFrame(uint32_t targetFrame) const;
+  void loadFrame() const;
 
   void convertVideoFrame() const;
 
