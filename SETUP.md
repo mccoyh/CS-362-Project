@@ -32,10 +32,6 @@ cd build
 ```bash
 cmake ..
 ```
-```For Mac
-brew install cmake
-cmake ..
-```
 
 4. Compile the project using your preferred build system:
 
@@ -49,6 +45,17 @@ cmake --build .
 cd bin
 ```
 
+6. To run an executable:
+ - Choose the executable (`EXE_NAME`).
+ - Ensure required media files are present relative to the executable (`PATH_TO_MEDIA`).
+
+Then run:
+```bash
+./EXE_NAME PATH_TO_MEDIA
+```
+
+Note: `PATH_TO_MEDIA` can be omitted if the executable doesn’t require external media or you choose to use built-in asset names.
+
 ## FFmpeg Setup (Windows/Linux)
 
 ### 1. Download FFmpeg
@@ -56,8 +63,6 @@ cd bin
 - For a simple setup on Windows and Linux, use prebuilt binaries:  
   [BtbN FFmpeg Builds](https://github.com/BtbN/FFmpeg-Builds/releases)
     - Download the `gpl-shared` version correlating to your machine
-- For Macbook install ffmpeg using brew.
-	- Run `brew install ffmpeg`
 
 ### 2. Extract Files
 Extract the downloaded archive to a location of your choice.
@@ -69,6 +74,7 @@ Add the following directories to your system's `PATH` environment variable:
 ## FFmpeg Setup (MacOS)
 
 ### 1. Download FFmpeg
+Run `brew install ffmpeg` to install ffmpeg on your machine.
 
 ### 2. Find Brew's install location
 Run `brew --prefix` to find your brew install location.
