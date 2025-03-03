@@ -10,7 +10,7 @@ A media player with support for Windows, Linux, and macOS.
 
 ## Installation
 
-For detailed build instructions, please refer to the [BUILD.md](BUILD.md).
+For detailed build instructions, please refer to the [BUILD.md](SETUP).
 
 ## Project Overview
 
