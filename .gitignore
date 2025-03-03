@@ -7,3 +7,9 @@ vulkanEngine/tests/.DS_Store
 avParser/tests/CMakeLists.txt
 vulkanEngine/.DS_Store
 vulkanEngine/tests/.DS_Store
+audiolib/.DS_Store
+audiolib/tests/.DS_Store
+avParser/.DS_Store
+cmake/.DS_Store
+AudioToTxt/.DS_Store
+AudioToTxt/tests/.DS_Store
