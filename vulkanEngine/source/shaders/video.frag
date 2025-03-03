@@ -6,6 +6,7 @@ layout(set = 0, binding = 2) uniform ScreenSize {
   float width;
   float height;
   float imageAspectRatio;
+  int grayscale;
 } screenSize;
 
 layout(location = 0) in vec3 fragPos;
@@ -42,6 +43,13 @@ void main()
   else
   {
     vec3 texColor = texture(texSampler, adjustedUV).rgb;
+
+    if (screenSize.grayscale != 0)
+    {
+      float gray = dot(texColor, vec3(0.299, 0.587, 0.114));
+      texColor = vec3(gray);
+    }
+
     outColor = vec4(texColor, 1.0);
   }
 }

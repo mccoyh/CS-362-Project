@@ -14,6 +14,7 @@ struct ScreenSizeUniform {
   float width;
   float height;
   float imageAspectRatio;
+  int grayscale;
 };
 
 class VideoPipeline final : public GraphicsPipeline {
@@ -25,7 +26,7 @@ public:
   ~VideoPipeline() override;
 
   void render(const VkCommandBuffer& commandBuffer, VkExtent2D swapChainExtent, const VkDescriptorImageInfo* imageInfo,
-              uint32_t currentFrame, float imageAspectRatio) const;
+              uint32_t currentFrame, float imageAspectRatio, bool grayscale) const;
 
 private:
   VkDescriptorPool descriptorPool = VK_NULL_HANDLE;

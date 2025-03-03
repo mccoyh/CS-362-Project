@@ -95,6 +95,11 @@ namespace VkEngine {
     captionText = caption;
   }
 
+  void VulkanEngine::setGrayscale(const bool useGrayscale)
+  {
+    grayscale = useGrayscale;
+  }
+
   void VulkanEngine::initVulkan()
   {
     instance = std::make_shared<Instance>();
@@ -224,7 +229,7 @@ namespace VkEngine {
 
       const auto imageAspectRatio = static_cast<float>(videoExtent.width) / static_cast<float>(videoExtent.height);
       videoPipeline->render(cmdBuffer, videoViewportExtent, &videoTextureImageInfos[currentFrame], currentFrame,
-                            imageAspectRatio);
+                            imageAspectRatio, grayscale);
 
       RenderPass::end(cmdBuffer);
     });

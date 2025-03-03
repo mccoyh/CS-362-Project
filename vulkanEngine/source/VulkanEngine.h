@@ -39,6 +39,8 @@ public:
 
   void loadCaption(const char* caption);
 
+  void setGrayscale(bool useGrayscale);
+
 private:
   VulkanEngineOptions vulkanEngineOptions;
 
@@ -81,6 +83,8 @@ private:
   std::vector<VkDescriptorImageInfo> videoTextureImageInfos{};
 
   const char* captionText = "";
+
+  bool grayscale = false;
 
   void initVulkan();
   void createCommandPool();
