@@ -7,11 +7,11 @@
 // Global decoder pointer for use in callback
 VideoDecoder* g_decoder = nullptr;
 
-int main()
+int main(const int argc, char* argv[])
 {
   try
   {
-    VideoDecoder decoder("assets/turtles.mp4");
+    VideoDecoder decoder(argc == 2 ? argv[1] : "assets/CS_test.mp4");
     g_decoder = &decoder;  // Set global pointer for callback
 
     const auto frameData = std::make_shared<std::vector<uint8_t>>();
@@ -20,7 +20,7 @@ int main()
     const VkEngine::VulkanEngineOptions vulkanEngineOptions {
       .WINDOW_WIDTH = static_cast<uint32_t>(decoder.getWidth()),
       .WINDOW_HEIGHT = static_cast<uint32_t>(decoder.getHeight() + 70),
-      .WINDOW_TITLE = "Video Decoding - Press 'Space' to Pause/Resume, 'Left/Right' to Seek, 'R' to Restart"
+      .WINDOW_TITLE = "Video Decoding - Press 'Space' to Pause/Resume,'R' to Restart"
     };
 
     auto vulkanEngine = VkEngine::VulkanEngine(vulkanEngineOptions);
