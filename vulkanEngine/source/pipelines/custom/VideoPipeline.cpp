@@ -35,7 +35,7 @@ namespace VkEngine {
 
   void VideoPipeline::render(const VkCommandBuffer& commandBuffer, const VkExtent2D swapChainExtent,
                              const VkDescriptorImageInfo* imageInfo,  const uint32_t currentFrame,
-                             const float imageAspectRatio) const
+                             const float imageAspectRatio, const bool grayscale) const
   {
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 
@@ -58,7 +58,8 @@ namespace VkEngine {
     const ScreenSizeUniform screenSizeUBO {
       .width = static_cast<float>(swapChainExtent.width),
       .height = static_cast<float>(swapChainExtent.height),
-      .imageAspectRatio = imageAspectRatio
+      .imageAspectRatio = imageAspectRatio,
+      .grayscale = grayscale
     };
     screenSizeUniform->update(currentFrame, &screenSizeUBO, sizeof(ScreenSizeUniform));
 

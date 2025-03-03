@@ -1,5 +1,4 @@
-project("VideoDecode")
-include(FetchContent)
+project("sfx")
 
 add_executable(${PROJECT_NAME} main.cpp
   ../VideoDecoder.cpp
