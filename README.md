@@ -1,12 +1,12 @@
 # Desktop Media Player
 
-A lightweight and cross-platform desktop media player supporting various media formats.
+A media player with support for Windows, Linux, and macOS.
 
 ## Features
 - AI generated captions
-- Basic media controls (play, pause, stop).
-- Customizable UI themes.
-- Supports common media formats (e.g., MP4, MP3, AVI).
+- Customizable UI themes
+- Basic media controls
+- Supports common media formats
 
 ## Installation
 
