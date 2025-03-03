@@ -245,12 +245,15 @@ namespace AVParser {
       if (packet.stream_index == videoStreamIndex && (packet.flags & AV_PKT_FLAG_KEY))
       {
         // Calculate frame number relative to the first keyframe
-        int64_t pts = packet.pts;
-        int64_t ptsDiff = pts - firstKeyframePts;
+        const int64_t pts = packet.pts;
+        const int64_t ptsDiff = pts - firstKeyframePts;
 
-        double frameDuration = av_q2d(AVRational{videoStream->avg_frame_rate.den,
-                                                videoStream->avg_frame_rate.num});
-        int frameNumber = static_cast<int>(ptsDiff * av_q2d(videoStream->time_base) / frameDuration);
+        const double frameDuration = av_q2d(AVRational{
+          videoStream->avg_frame_rate.den,
+          videoStream->avg_frame_rate.num
+        });
+
+        int frameNumber = static_cast<int>(static_cast<double>(ptsDiff) * av_q2d(videoStream->time_base) / frameDuration);
 
         // The first keyframe becomes frame 0
         keyFrameMap[frameNumber] = true;
@@ -281,8 +284,8 @@ namespace AVParser {
     // Otherwise calculate based on duration and frame rate
     if (stream->duration != AV_NOPTS_VALUE)
     {
-        double frameRate = getFrameRate();
-        double durationSeconds = stream->duration * av_q2d(stream->time_base);
+        const double frameRate = getFrameRate();
+        const double durationSeconds = static_cast<double>(stream->duration) * av_q2d(stream->time_base);
         totalFrames = static_cast<int>(durationSeconds * frameRate);
     }
 
@@ -463,8 +466,6 @@ namespace AVParser {
       throw std::runtime_error("No video packet found!");
     }
 
-    const AVStream* stream = formatContext->streams[videoStreamIndex];
-
     while (av_read_frame(formatContext, packet) >= 0)
     {
       if (packet->stream_index == videoStreamIndex)
@@ -485,7 +486,7 @@ namespace AVParser {
 
   void MediaParser::convertVideoFrame() const
   {
-    if (!frame || !frame->data[0])
+    if (!frame->data[0])
     {
       throw std::runtime_error("Invalid frame data in convertVideoFrame");
     }
@@ -512,7 +513,7 @@ namespace AVParser {
 
   void MediaParser::loadFrameFromCache(const uint32_t targetFrame)
   {
-    auto it = keyFrameMap.upper_bound(targetFrame);
+    auto it = keyFrameMap.upper_bound(static_cast<int>(targetFrame));
     if (it == keyFrameMap.begin())
     {
       throw std::runtime_error("Key frame not found!");
@@ -541,7 +542,7 @@ namespace AVParser {
 
   void MediaParser::loadFrames(const uint32_t targetFrame)
   {
-    auto it = keyFrameMap.upper_bound(targetFrame);
+    auto it = keyFrameMap.upper_bound(static_cast<int>(targetFrame));
     if (it == keyFrameMap.begin())
     {
       throw std::runtime_error("Key frame not found!");
