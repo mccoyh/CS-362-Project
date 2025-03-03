@@ -71,11 +71,12 @@ namespace VkEngine {
     return imGuiInstance;
   }
 
-  std::shared_ptr<Window> VulkanEngine::getWindow() const
+  bool VulkanEngine::keyIsPressed(const int key) const
   {
-    return window;
+  return window->keyIsPressed(key);
   }
 
+  
   ImGuiContext* VulkanEngine::getImGuiContext()
   {
     return ImGui::GetCurrentContext();

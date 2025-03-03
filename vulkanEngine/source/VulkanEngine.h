@@ -33,7 +33,9 @@ public:
 
   [[nodiscard]] std::shared_ptr<ImGuiInstance> getImGuiInstance() const;
   
-  [[nodiscard]] std::shared_ptr<Window> getWindow() const;
+  
+  [[nodiscard]] bool keyIsPressed(int key) const;
+
 
   static ImGuiContext* getImGuiContext();
 
@@ -117,7 +119,6 @@ private:
 
   void destroyVideoTextureSampler() const;
 
-  friend void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height);
 };
 
 } // VkEngine
