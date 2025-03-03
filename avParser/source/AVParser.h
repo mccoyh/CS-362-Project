@@ -1,6 +1,5 @@
 #ifndef AVPARSER_H
 #define AVPARSER_H
-#include <deque>
 #include <map>
 #include <unordered_map>
 

@@ -228,7 +228,7 @@ namespace AVParser {
     // First pass: find the first keyframe's PTS
     while (!firstKeyframeFound && av_read_frame(formatContext, &packet) >= 0)
     {
-      if (packet.stream_index == videoStreamIndex && (packet.flags & AV_PKT_FLAG_KEY))
+      if (packet.stream_index == videoStreamIndex && packet.flags & AV_PKT_FLAG_KEY)
       {
         firstKeyframePts = packet.pts;
         firstKeyframeFound = true;
@@ -242,7 +242,7 @@ namespace AVParser {
 
     while (av_read_frame(formatContext, &packet) >= 0)
     {
-      if (packet.stream_index == videoStreamIndex && (packet.flags & AV_PKT_FLAG_KEY))
+      if (packet.stream_index == videoStreamIndex && packet.flags & AV_PKT_FLAG_KEY)
       {
         // Calculate frame number relative to the first keyframe
         const int64_t pts = packet.pts;
@@ -339,13 +339,13 @@ namespace AVParser {
     if (!keyFrameMap.empty())
     {
         // Get the last keyframe position
-        int lastKeyframe = keyFrameMap.rbegin()->first;
+        const int lastKeyframe = keyFrameMap.rbegin()->first;
         frameCount = lastKeyframe;
 
         // Calculate PTS for the last keyframe
-        int64_t targetPts = av_rescale_q(lastKeyframe,
-                                         AVRational{videoStream->avg_frame_rate.den, videoStream->avg_frame_rate.num},
-                                         videoStream->time_base) + videoStream->start_time;
+        const int64_t targetPts = av_rescale_q(lastKeyframe,
+                                               AVRational{videoStream->avg_frame_rate.den, videoStream->avg_frame_rate.num},
+                                               videoStream->time_base) + videoStream->start_time;
 
         // Seek to the last keyframe
         if (av_seek_frame(tempFormatCtx, tempVideoStreamIndex, targetPts, AVSEEK_FLAG_BACKWARD) < 0)
