@@ -53,7 +53,10 @@ namespace AVParser {
   {
     validateVideoStream();
 
-    const AVRational fps = formatContext->streams[videoStreamIndex]->r_frame_rate;
+    const auto fps = AVRational{
+      formatContext->streams[videoStreamIndex]->avg_frame_rate.num,
+      formatContext->streams[videoStreamIndex]->avg_frame_rate.den
+    };
 
     return av_q2d(fps);
   }
@@ -215,22 +218,53 @@ namespace AVParser {
   {
     const AVStream* videoStream = formatContext->streams[videoStreamIndex];
 
+    av_seek_frame(formatContext, videoStreamIndex, 0, AVSEEK_FLAG_BACKWARD);
+
     // Read packets and store keyframe positions
     AVPacket packet;
-    while (av_read_frame(formatContext, &packet) >= 0)
-    {
-      if (packet.stream_index == videoStreamIndex)
-      {
-        if (packet.flags & AV_PKT_FLAG_KEY)
-        {
-          // Convert PTS to frame number
-          int frameNumber = static_cast<int>(av_rescale_q(packet.pts, videoStream->time_base, AVRational{1, videoStream->avg_frame_rate.num}));
+    bool firstKeyframeFound = false;
+    int64_t firstKeyframePts = 0;
 
-          keyFrameMap[frameNumber] = true;
-        }
+    // First pass: find the first keyframe's PTS
+    while (!firstKeyframeFound && av_read_frame(formatContext, &packet) >= 0)
+    {
+      if (packet.stream_index == videoStreamIndex && (packet.flags & AV_PKT_FLAG_KEY))
+      {
+        firstKeyframePts = packet.pts;
+        firstKeyframeFound = true;
+        printf("First keyframe found at PTS: %lld\n", firstKeyframePts);
       }
       av_packet_unref(&packet);
     }
+
+    // Reset to beginning
+    av_seek_frame(formatContext, videoStreamIndex, 0, AVSEEK_FLAG_BACKWARD);
+
+    while (av_read_frame(formatContext, &packet) >= 0)
+    {
+      if (packet.stream_index == videoStreamIndex && (packet.flags & AV_PKT_FLAG_KEY))
+      {
+        // Calculate frame number relative to the first keyframe
+        int64_t pts = packet.pts;
+        int64_t ptsDiff = pts - firstKeyframePts;
+
+        double frameDuration = av_q2d(AVRational{videoStream->avg_frame_rate.den,
+                                                videoStream->avg_frame_rate.num});
+        int frameNumber = static_cast<int>(ptsDiff * av_q2d(videoStream->time_base) / frameDuration);
+
+        // The first keyframe becomes frame 0
+        keyFrameMap[frameNumber] = true;
+
+        printf("Keyframe at PTS: %lld, mapped to frame: %d\n", pts, frameNumber);
+      }
+      av_packet_unref(&packet);
+    }
+
+    // Set current frame to the start
+    currentFrame = 0;
+
+    // Reset stream position
+    av_seek_frame(formatContext, videoStreamIndex, 0, AVSEEK_FLAG_BACKWARD);
   }
 
   void MediaParser::calculateTotalFrames()
@@ -282,10 +316,13 @@ namespace AVParser {
         throw std::runtime_error("No video stream found for frame counting!");
     }
 
+    // stream
+    const auto videoStream = tempFormatCtx->streams[tempVideoStreamIndex];
+
     // Set up decoder for the video stream
-    const AVCodec* tempCodec = avcodec_find_decoder(tempFormatCtx->streams[tempVideoStreamIndex]->codecpar->codec_id);
+    const AVCodec* tempCodec = avcodec_find_decoder(videoStream->codecpar->codec_id);
     AVCodecContext* tempCodecCtx = avcodec_alloc_context3(tempCodec);
-    avcodec_parameters_to_context(tempCodecCtx, tempFormatCtx->streams[tempVideoStreamIndex]->codecpar);
+    avcodec_parameters_to_context(tempCodecCtx, videoStream->codecpar);
 
     if (avcodec_open2(tempCodecCtx, tempCodec, nullptr) < 0)
     {
@@ -304,9 +341,8 @@ namespace AVParser {
 
         // Calculate PTS for the last keyframe
         int64_t targetPts = av_rescale_q(lastKeyframe,
-                                         av_inv_q(tempFormatCtx->streams[tempVideoStreamIndex]->r_frame_rate),
-                                         tempFormatCtx->streams[tempVideoStreamIndex]->time_base)
-                           + tempFormatCtx->streams[tempVideoStreamIndex]->start_time;
+                                         AVRational{videoStream->avg_frame_rate.den, videoStream->avg_frame_rate.num},
+                                         videoStream->time_base) + videoStream->start_time;
 
         // Seek to the last keyframe
         if (av_seek_frame(tempFormatCtx, tempVideoStreamIndex, targetPts, AVSEEK_FLAG_BACKWARD) < 0)
@@ -401,8 +437,9 @@ namespace AVParser {
     const AVStream* stream = formatContext->streams[videoStreamIndex];
 
     // Calculate timestamp for the target frame
-    const int64_t targetPts = av_rescale_q(targetFrame, av_inv_q(stream->r_frame_rate), stream->time_base)
-                              + stream->start_time;
+    const int64_t targetPts = av_rescale_q(targetFrame,
+                              AVRational{stream->avg_frame_rate.den, stream->avg_frame_rate.num},
+                              stream->time_base) + stream->start_time;
 
     // Seek to the nearest keyframe before the target
     if (av_seek_frame(formatContext, videoStreamIndex, targetPts, AVSEEK_FLAG_BACKWARD) < 0)
@@ -427,8 +464,6 @@ namespace AVParser {
     }
 
     const AVStream* stream = formatContext->streams[videoStreamIndex];
-    const AVRational frameDuration = av_inv_q(stream->avg_frame_rate);
-    const int64_t targetPts = av_rescale_q(targetFrame, frameDuration, stream->time_base);
 
     while (av_read_frame(formatContext, packet) >= 0)
     {
@@ -438,12 +473,9 @@ namespace AVParser {
         {
           while (avcodec_receive_frame(videoCodecContext, frame) == 0)
           {
-            if (frame->pts >= targetPts)
-            {
-              convertVideoFrame();
-              av_packet_unref(packet);
-              return;
-            }
+            convertVideoFrame();
+            av_packet_unref(packet);
+            return;
           }
         }
       }
