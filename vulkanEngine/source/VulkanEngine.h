@@ -32,6 +32,8 @@ public:
   void render();
 
   [[nodiscard]] std::shared_ptr<ImGuiInstance> getImGuiInstance() const;
+  
+  [[nodiscard]] std::shared_ptr<Window> getWindow() const;
 
   static ImGuiContext* getImGuiContext();
 

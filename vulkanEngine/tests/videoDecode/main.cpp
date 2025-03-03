@@ -7,7 +7,7 @@ int main()
 {
   try
   {
-    const VideoDecoder decoder("assets/sample_1080.mp4");
+    const VideoDecoder decoder("assets/turtles.mp4");
     const auto frameData = std::make_shared<std::vector<uint8_t>>();
     int frameWidth, frameHeight;
 

@@ -71,6 +71,11 @@ namespace VkEngine {
     return imGuiInstance;
   }
 
+  std::shared_ptr<Window> VulkanEngine::getWindow() const
+  {
+    return window;
+  }
+
   ImGuiContext* VulkanEngine::getImGuiContext()
   {
     return ImGui::GetCurrentContext();

@@ -9,7 +9,7 @@ int main()
 {
   try
   {
-    auto parser = AVParser::MediaParser("assets/sample_720.mp4");
+    auto parser = AVParser::MediaParser("assets/turtles.mp4");
 
     const auto frameData = parser.getCurrentFrame();
 
