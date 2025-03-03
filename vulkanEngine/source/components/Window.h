@@ -34,8 +34,6 @@ public:
   void initImGui() const;
 
   [[nodiscard]] double getScroll() const;
-  
-  [[nodiscard]] GLFWwindow* getGlfwWindow() const { return window; }
 
   static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 

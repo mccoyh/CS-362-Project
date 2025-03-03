@@ -71,12 +71,6 @@ namespace VkEngine {
     return imGuiInstance;
   }
 
-  bool VulkanEngine::keyIsPressed(const int key) const
-  {
-  return window->keyIsPressed(key);
-  }
-
-  
   ImGuiContext* VulkanEngine::getImGuiContext()
   {
     return ImGui::GetCurrentContext();
@@ -342,6 +336,11 @@ namespace VkEngine {
     }
 
     ImGui::End();
+  }
+
+  bool VulkanEngine::keyIsPressed(const int key) const
+  {
+  return window->keyIsPressed(key);
   }
 
   void VulkanEngine::renderCaption(const ImVec2& imagePos) const

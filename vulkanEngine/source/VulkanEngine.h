@@ -32,11 +32,7 @@ public:
   void render();
 
   [[nodiscard]] std::shared_ptr<ImGuiInstance> getImGuiInstance() const;
-  
-  
   [[nodiscard]] bool keyIsPressed(int key) const;
-
-
   static ImGuiContext* getImGuiContext();
 
   void loadVideoFrame(std::shared_ptr<std::vector<uint8_t>> frameData, int width, int height);
@@ -119,6 +115,7 @@ private:
 
   void destroyVideoTextureSampler() const;
 
+  friend void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height);
 };
 
 } // VkEngine
