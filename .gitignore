@@ -5,3 +5,5 @@ build
 vulkanEngine/.DS_Store
 vulkanEngine/tests/.DS_Store
 avParser/tests/CMakeLists.txt
+vulkanEngine/.DS_Store
+vulkanEngine/tests/.DS_Store
