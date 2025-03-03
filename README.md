@@ -1,6 +1,6 @@
 # Desktop Media Player
 
-A lightweight desktop media player with support for Windows, Linux, and macOS.
+A media player with support for Windows, Linux, and macOS.
 
 ## Features
 - AI generated captions
