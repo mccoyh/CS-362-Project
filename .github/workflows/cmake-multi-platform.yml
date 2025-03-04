@@ -77,7 +77,7 @@ jobs:
       - name: Install Dependencies (macOS)
         if: ${{ matrix.os == 'macos-latest' }}
         run: |
-          echo "TODO: Install Dependencies"
+          brew install ffmpeg
 
       - name: Prepare Vulkan SDK
         uses: humbletim/install-vulkan-sdk@main
