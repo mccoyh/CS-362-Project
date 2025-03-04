@@ -15,3 +15,7 @@ For detailed build instructions, please refer to [SETUP.md](SETUP.md).
 ## Project Overview
 
 For more information about the project, check the [Proposal.md](Proposal.md).
+
+## Tests
+
+For information about project tests, refer to [TEST.md](TEST.md).
