@@ -1,4 +1,4 @@
-project("VideoDecode")
+project("videoDecode")
 include(FetchContent)
 
 add_executable(${PROJECT_NAME} main.cpp
