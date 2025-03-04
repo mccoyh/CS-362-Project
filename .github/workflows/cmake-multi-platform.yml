@@ -73,7 +73,8 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           choco install ffmpeg-shared -y
-          echo "C:\ProgramData\chocolatey\bin" >> $env:GITHUB_PATH
+          echo "C:\ProgramData\chocolatey\lib\ffmpeg-shared\tools\ffmpeg-7.1-full_build-shared" >> $env:GITHUB_PATH
+          echo "C:\ProgramData\chocolatey\lib\ffmpeg-shared\tools\ffmpeg-7.1-full_build-shared\bin" >> $env:GITHUB_PATH
 
       - name: Install Dependencies (macOS)
         if: ${{ matrix.os == 'macos-latest' }}
