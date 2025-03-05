@@ -50,6 +50,6 @@ add_subdirectory(audiolib)
 
 add_subdirectory(AudioToTxt)
 
-#add_subdirectory(avParser)
-#
-#add_subdirectory(source)
+add_subdirectory(avParser)
+
+add_subdirectory(source)
