@@ -62,40 +62,25 @@ jobs:
         run: |
           echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
-      - name: Install dependencies (Ubuntu)
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+      - name: Install Dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev libgl1-mesa-dev
-          sudo apt-get install -y ffmpeg libavcodec-dev libavformat-dev libswscale-dev libavutil-dev
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            sudo apt-get update
+            sudo apt-get install -y libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev \
+                                    libxkbcommon-dev libgl1-mesa-dev ffmpeg libavcodec-dev libavformat-dev \
+                                    libswscale-dev libavutil-dev
+          elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            Invoke-WebRequest -Uri "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl-shared.zip" -OutFile "ffmpeg.zip"
+            Expand-Archive -Path "ffmpeg.zip" -DestinationPath "C:\ffmpeg"
+            $ffmpegFolder = Get-ChildItem -Path "C:\ffmpeg" -Directory | Select-Object -First 1
+            echo "C:\ffmpeg\$($ffmpegFolder.Name)" >> $env:GITHUB_PATH
+            echo "C:\ffmpeg\$($ffmpegFolder.Name)\bin" >> $env:GITHUB_PATH
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            brew install ffmpeg
+          fi
+        shell: bash
 
-      - name: Install Dependencies (Windows)
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          # Download FFmpeg
-          Invoke-WebRequest -Uri "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl-shared.zip" -OutFile "ffmpeg.zip"
-          
-          # Extract FFmpeg
-          Expand-Archive -Path "ffmpeg.zip" -DestinationPath "C:\ffmpeg"
-          
-          # Find the extracted folder (it might have a version-specific name)
-          $ffmpegFolder = Get-ChildItem -Path "C:\ffmpeg" -Directory | Select-Object -First 1
-          
-          echo "C:\ffmpeg\$($ffmpegFolder.Name)\bin" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH
-          
-          # Add FFmpeg to PATH
-          echo "C:\ffmpeg\$($ffmpegFolder.Name)" >> $env:GITHUB_PATH
-          echo "C:\ffmpeg\$($ffmpegFolder.Name)\bin" >> $env:GITHUB_PATH
-          
-          # Optional: Verify FFmpeg installation
-          & "C:\ffmpeg\$($ffmpegFolder.Name)\bin\ffmpeg.exe" -version
-
-      - name: Install Dependencies (macOS)
-        if: ${{ matrix.os == 'macos-latest' }}
-        run: |
-          brew install ffmpeg
-
-      - name: Prepare Vulkan SDK
+      - name: Install Vulkan SDK
         uses: humbletim/install-vulkan-sdk@main
         with:
           version: 1.3.250.1
