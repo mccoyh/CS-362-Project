@@ -113,33 +113,11 @@ jobs:
       - name: Package Artifacts
         shell: bash
         run: |
+          # Create a directory for artifacts
           mkdir -p ${{ github.workspace }}/artifacts
           
-          # For Windows
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            echo "Searching for .exe files on Windows"
-            find ${{ steps.strings.outputs.build-output-dir }} -type f -name "*.exe" | while read -r file; do
-              cp "$file" "${{ github.workspace }}/artifacts/project-${{ matrix.artifact_name }}-${{ matrix.build_type }}.exe"
-            done
-          
-          # For macOS
-          elif [ "${{ matrix.os }}" == "macos-latest" ]; then
-            echo "Searching for executables on macOS"
-            find ${{ steps.strings.outputs.build-output-dir }} -type f -perm +111 | while read -r file; do
-              cp "$file" "${{ github.workspace }}/artifacts/project-${{ matrix.artifact_name }}-${{ matrix.build_type }}"
-            done
-          
-          # For Linux
-          else
-            echo "Searching for executables on Linux"
-            find ${{ steps.strings.outputs.build-output-dir }} -type f -executable | while read -r file; do
-              cp "$file" "${{ github.workspace }}/artifacts/project-${{ matrix.artifact_name }}-${{ matrix.build_type }}"
-            done
-          fi
-          
-          # List artifacts to verify
-          echo "Artifacts found:"
-          ls -l ${{ github.workspace }}/artifacts
+          # Find and copy executables (adjust the find command based on your project's output)
+          find ${{ steps.strings.outputs.build-output-dir }} -type f -executable -exec cp {} ${{ github.workspace }}/artifacts/project-${{ matrix.artifact_name }}-${{ matrix.build_type }} \;
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
