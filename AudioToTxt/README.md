@@ -50,19 +50,24 @@ This function searches the subtitle file for subtitles at a specific frame. The 
 
 # Classes
 ## CaptionCache
-### Members
-#### numCaptions
-- int : number of captions in caption file.
 ### Constructor
 #### CaptionCache(const std::string& caption_srt)
 - caption_srt : The path to a caption file.
 
 ### Methods
 #### loadCaptions(const std::string& caption_srt)
+This function loads a subtitle file into a map for quicker searching and accessing.
 ##### Parameters
 - caption_srt : The path to a caption file.
 #### getCaptionAtFrame(int frame)
+This function returns the subtitle for a given frame.
+##### Parameters
 - frame : The frame to retrieve a subtitle.
+#### getNumCaptions()
+This function gets the number of subtitle blocks stored in the class.
+##### Returns
+- int : The number of subtitle blocks.
+
 
 
 # Example Usage
@@ -106,7 +111,7 @@ int main(const int argc, char* argv[]) {
 
     std::string captionFromCache = cache.getCaptionAtFrame(frame);
     std::cout << "Cached caption at frame " << frame << ": " << captionFromCache << std::endl;
-    std::cout << "Number of captions: " << cache.numCaptions << std::endl;
+    std::cout << "Number of captions: " << cache.getNumCaptions() << std::endl;
 
     return 0;
 }

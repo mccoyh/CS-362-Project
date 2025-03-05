@@ -10,27 +10,27 @@ int transcribeAudio(const std::string& model_path, const std::string& audio_file
 std::string getSubtitleForFrame(int frame_number, const std::string& filename);
 
 struct Subtitle {
-    int startFrame;  // Start frame
-    int endFrame;    // End frame
-    std::string text;  // Subtitle text
+    int startFrame = -1;  // Start frame
+    int endFrame = -1;    // End frame
+    std::string text = "";  // Subtitle text
 
-    Subtitle() 
-        : startFrame(-1), endFrame(-1), text(""){}
+    Subtitle()
+         : startFrame(-1), endFrame(-1), text(""){}
 
     Subtitle(int start, int end, const std::string& txt)
-        : startFrame(start), endFrame(end), text(txt){}
+         : startFrame(start), endFrame(end), text(txt){}
 };
 
 class CaptionCache{
-    private:
-        std::map<double, Subtitle> captionMap;
-    
     public:
-    int numCaptions;
     explicit CaptionCache(const std::string& caption_srt);
     void loadCaptions(const std::string& caption_srt);
     std::string getCaptionAtFrame(int frame);
+    int getNumCaptions();
+    
+    private:
+        std::map<double, Subtitle> captionMap;
+        int numCaptions;
 };
-
 }
 #endif

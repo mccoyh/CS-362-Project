@@ -40,7 +40,7 @@ int main(const int argc, char* argv[]) {
 
     std::string captionFromCache = cache.getCaptionAtFrame(frame);
     std::cout << "Cached caption at frame " << frame << ": " << captionFromCache << std::endl;
-    std::cout << "Number of captions: " << cache.numCaptions << std::endl;
+    std::cout << "Number of captions: " << cache.getNumCaptions() << std::endl;
 
     return 0;
 }

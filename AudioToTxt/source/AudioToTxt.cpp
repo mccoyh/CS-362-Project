@@ -120,7 +120,7 @@ namespace Captions{
         }
         std::string line;
         int index;
-        int start, end;
+        int startFrame, endFrame;
         std::string text, frameRange;
 
         while(std::getline(file, line)){
@@ -135,13 +135,13 @@ namespace Captions{
             }
             std::istringstream frame_stream(frameRange);
             std::string arrow;
-            if(frame_stream >> start >> arrow >> end){
+            if(frame_stream >> startFrame >> arrow >> endFrame){
                 text.clear();
                 while (std::getline(file, line) && !line.empty()){
                     text += (text.empty() ? "" : " ") + line;
                 }
             }
-            captionMap[start] = Subtitle(start, end, text);
+            captionMap[startFrame] = Subtitle(startFrame, endFrame, text);
         }
         numCaptions = index;
     }
@@ -160,6 +160,10 @@ namespace Captions{
         }
 
         return "";  // No valid caption for the frame
+    }
+
+    int CaptionCache::getNumCaptions(){
+        return numCaptions;
     }
 
 } //captions namespace
