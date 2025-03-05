@@ -109,3 +109,19 @@ jobs:
         # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
         run: ctest --build-config ${{ matrix.build_type }}
+
+      - name: Package Artifacts
+        shell: bash
+        run: |
+          # Create a directory for artifacts
+          mkdir -p ${{ github.workspace }}/artifacts
+          
+          # Find and copy executables (adjust the find command based on your project's output)
+          find ${{ steps.strings.outputs.build-output-dir }} -type f -executable -exec cp {} ${{ github.workspace }}/artifacts/project-${{ matrix.artifact_name }}-${{ matrix.build_type }} \;
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-${{ matrix.c_compiler }}-${{ matrix.build_type }}
+          path: ${{ github.workspace }}/artifacts/*
+          retention-days: 7
