@@ -48,7 +48,7 @@ add_subdirectory(vulkanEngine)
 
 add_subdirectory(audiolib)
 
-add_subdirectory(AudioToTxt)
+#add_subdirectory(AudioToTxt)
 
 add_subdirectory(avParser)
 
