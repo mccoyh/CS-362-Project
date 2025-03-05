@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file
 
+## [0.0.3] - 3/4/2025
+- Added CaptionCache Class for faster access of subtitle at specific frames
+- Turned WHISPER_USE_VULKAN to ON by default
 
 ## [0.0.2] - 3/2/2025
 ### Added 

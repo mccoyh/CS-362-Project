@@ -1,7 +1,6 @@
 #include <source/AudioToTxt.h>
 #include <filesystem>
 #include <iostream>
-#include <cstdlib>
 
 #include "audioDecoding.h"
 
@@ -37,6 +36,11 @@ int main(const int argc, char* argv[]) {
         std::cout << "Caption at frame " << frame << ": " << caption << std::endl;
     }
 
+    Captions::CaptionCache cache(subtitleFile.string());
+
+    std::string captionFromCache = cache.getCaptionAtFrame(frame);
+    std::cout << "Cached caption at frame " << frame << ": " << captionFromCache << std::endl;
+    std::cout << "Number of captions: " << cache.numCaptions << std::endl;
 
     return 0;
 }
