@@ -70,11 +70,11 @@ jobs:
                                     libxkbcommon-dev libgl1-mesa-dev ffmpeg libavcodec-dev libavformat-dev \
                                     libswscale-dev libavutil-dev
           elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            Invoke-WebRequest -Uri "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl-shared.zip" -OutFile "ffmpeg.zip"
-            Expand-Archive -Path "ffmpeg.zip" -DestinationPath "C:\ffmpeg"
-            $ffmpegFolder = Get-ChildItem -Path "C:\ffmpeg" -Directory | Select-Object -First 1
-            echo "C:\ffmpeg\$($ffmpegFolder.Name)" >> $env:GITHUB_PATH
-            echo "C:\ffmpeg\$($ffmpegFolder.Name)\bin" >> $env:GITHUB_PATH
+            curl -L "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl-shared.zip" -o ffmpeg.zip
+            unzip ffmpeg.zip -d /c/ffmpeg
+            ffmpeg_folder=$(ls /c/ffmpeg)
+            echo "/c/ffmpeg/$ffmpeg_folder" >> $GITHUB_PATH
+            echo "/c/ffmpeg/$ffmpeg_folder/bin" >> $GITHUB_PATH
           elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
             brew install ffmpeg
           fi
