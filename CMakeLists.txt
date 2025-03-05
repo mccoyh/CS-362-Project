@@ -46,7 +46,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 add_subdirectory(vulkanEngine)
 
-#add_subdirectory(audiolib)
+add_subdirectory(audiolib)
 
 add_subdirectory(AudioToTxt)
 
