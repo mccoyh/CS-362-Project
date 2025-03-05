@@ -78,6 +78,8 @@ jobs:
             $ffmpegFolder = Get-ChildItem -Path "C:\ffmpeg" -Directory | Select-Object -First 1
             "C:\ffmpeg\$($ffmpegFolder.Name)" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
             "C:\ffmpeg\$($ffmpegFolder.Name)\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          
+            & "C:\ffmpeg\$($ffmpegFolder.Name)\bin\ffmpeg.exe" -version
           }
           elseif ("${{ matrix.os }}" -eq "macos-latest")
           {
