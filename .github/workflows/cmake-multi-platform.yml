@@ -64,21 +64,26 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+          if ("${{ matrix.os }}" -eq "ubuntu-latest")
+          {
             sudo apt-get update
-            sudo apt-get install -y libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev \
-                                    libxkbcommon-dev libgl1-mesa-dev ffmpeg libavcodec-dev libavformat-dev \
+            sudo apt-get install -y libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev `
+                                    libxkbcommon-dev libgl1-mesa-dev ffmpeg libavcodec-dev libavformat-dev `
                                     libswscale-dev libavutil-dev
-          elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            curl -L "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl-shared.zip" -o ffmpeg.zip
-            unzip ffmpeg.zip -d /c/ffmpeg
-            ffmpeg_folder=$(ls /c/ffmpeg)
-            echo "/c/ffmpeg/$ffmpeg_folder" >> $GITHUB_PATH
-            echo "/c/ffmpeg/$ffmpeg_folder/bin" >> $GITHUB_PATH
-          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+          }
+          elseif ("${{ matrix.os }}" -eq "windows-latest")
+          {
+            Invoke-WebRequest -Uri "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl-shared.zip" -OutFile "ffmpeg.zip"
+            Expand-Archive -Path "ffmpeg.zip" -DestinationPath "C:\ffmpeg"
+            $ffmpegFolder = Get-ChildItem -Path "C:\ffmpeg" -Directory | Select-Object -First 1
+            "C:\ffmpeg\$($ffmpegFolder.Name)" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+            "C:\ffmpeg\$($ffmpegFolder.Name)\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          }
+          elseif ("${{ matrix.os }}" -eq "macos-latest")
+          {
             brew install ffmpeg
-          fi
-        shell: bash
+          }
+        shell: pwsh
 
       - name: Install Vulkan SDK
         uses: humbletim/install-vulkan-sdk@main
