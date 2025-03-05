@@ -10,9 +10,9 @@ int transcribeAudio(const std::string& model_path, const std::string& audio_file
 std::string getSubtitleForFrame(int frame_number, const std::string& filename);
 
 struct Subtitle {
-    int startFrame = -1;  // Start frame
-    int endFrame = -1;    // End frame
-    std::string text = "";  // Subtitle text
+    int startFrame;  // Start frame
+    int endFrame;    // End frame
+    std::string text;  // Subtitle text
 
     Subtitle()
          : startFrame(-1), endFrame(-1), text(""){}
