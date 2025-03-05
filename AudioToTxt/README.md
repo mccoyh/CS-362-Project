@@ -8,7 +8,7 @@ When running whisper for the first time with vulkan, the vulkan shaders are comp
 If vulkan is not enabled, use smaller models such as base, tiny, or small.
 
 # Build Options
-- WHISPER_USE_VULKAN - Default ON: This flag can be used to turn on or off building the library with vulkan support. Vulkan provides GPU acceleration lowering the runtime of models. It is recommended to have Vulkan on for any large models.  
+- WHISPER_USE_VULKAN - Default OFF: This flag can be used to turn on or off building the library with vulkan support. Vulkan provides GPU acceleration lowering the runtime of models. It is recommended to have Vulkan on for any large models.  
 
 
 # Functions
