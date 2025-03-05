@@ -111,35 +111,58 @@ jobs:
         run: ctest --build-config ${{ matrix.build_type }}
 
       - name: Package Artifacts
-        shell: bash
+        shell: pwsh
         run: |
-          mkdir -p ${{ github.workspace }}/artifacts
+          # Create artifacts directory
+          New-Item -Path "${{ github.workspace }}/artifacts" -ItemType Directory -Force
           
-          # For Windows
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            echo "Searching for .exe files on Windows"
-            find ${{ steps.strings.outputs.build-output-dir }} -type f -name "*.exe" | while read -r file; do
-              cp "$file" "${{ github.workspace }}/artifacts/project-${{ matrix.artifact_name }}-${{ matrix.build_type }}.exe"
-            done
+          # Function to copy files matching a pattern
+          function Copy-MatchingFiles {
+            param (
+              [string]$Pattern,
+              [string]$Destination
+            )
           
-          # For macOS
-          elif [ "${{ matrix.os }}" == "macos-latest" ]; then
-            echo "Searching for executables on macOS"
-            find ${{ steps.strings.outputs.build-output-dir }} -type f -perm +111 | while read -r file; do
-              cp "$file" "${{ github.workspace }}/artifacts/project-${{ matrix.artifact_name }}-${{ matrix.build_type }}"
-            done
+            if (-not [string]::IsNullOrWhiteSpace($Pattern)) {
+              Get-ChildItem -Path "${{ steps.strings.outputs.build-output-dir }}" -Recurse -Include $Pattern | 
+              ForEach-Object {
+                Copy-Item $_.FullName -Destination $Destination
+              }
+            }
+          }
           
-          # For Linux
-          else
-            echo "Searching for executables on Linux"
-            find ${{ steps.strings.outputs.build-output-dir }} -type f -executable | while read -r file; do
-              cp "$file" "${{ github.workspace }}/artifacts/project-${{ matrix.artifact_name }}-${{ matrix.build_type }}"
-            done
-          fi
+          # Executables
+          if ("${{ matrix.os }}" -eq "windows-latest") {
+            # For Windows, look for .exe files
+            Copy-MatchingFiles -Pattern "*.exe" -Destination "${{ github.workspace }}/artifacts"
+          }
+          elseif ("${{ matrix.os }}" -eq "macos-latest") {
+            # For macOS, use Get-ChildItem with ExecutableOnly filter
+            Get-ChildItem -Path "${{ steps.strings.outputs.build-output-dir }}" -Recurse -File | 
+            Where-Object { $_.Attributes -band [System.IO.FileAttributes]::Normal } |
+            ForEach-Object {
+              Copy-Item $_.FullName -Destination "${{ github.workspace }}/artifacts"
+            }
+          }
+          else {
+            # For Linux, similar to macOS but with executable bit check
+            Get-ChildItem -Path "${{ steps.strings.outputs.build-output-dir }}" -Recurse -File | 
+            Where-Object { 
+              $fullPath = $_.FullName
+              (Get-Acl $fullPath).Access | 
+              Where-Object { $_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::ExecuteFile }
+            } |
+            ForEach-Object {
+              Copy-Item $_.FullName -Destination "${{ github.workspace }}/artifacts"
+            }
+          }
           
-          # List artifacts to verify
-          echo "Artifacts found:"
-          ls -l ${{ github.workspace }}/artifacts
+          # Shared Libraries
+          Copy-MatchingFiles -Pattern "${{ matrix.shared_lib_pattern }}" -Destination "${{ github.workspace }}/artifacts"
+          
+          # List Artifacts to Verify
+          Write-Host "Artifacts found:"
+          Get-ChildItem "${{ github.workspace }}/artifacts" | Format-Table Name, Length
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
