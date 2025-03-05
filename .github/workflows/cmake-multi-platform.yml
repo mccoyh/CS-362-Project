@@ -81,6 +81,8 @@ jobs:
           # Find the extracted folder (it might have a version-specific name)
           $ffmpegFolder = Get-ChildItem -Path "C:\ffmpeg" -Directory | Select-Object -First 1
           
+          echo "C:\ffmpeg\$($ffmpegFolder.Name)\bin" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH
+          
           # Add FFmpeg to PATH
           echo "C:\ffmpeg\$($ffmpegFolder.Name)" >> $env:GITHUB_PATH
           echo "C:\ffmpeg\$($ffmpegFolder.Name)\bin" >> $env:GITHUB_PATH
