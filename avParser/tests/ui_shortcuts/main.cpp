@@ -167,7 +167,7 @@ void displayControls(AVParser::MediaParser& parser)
   // Transport control buttons
   ImGui::Separator();
 
-  const float buttonSize = 80.0f; // Adjusted button size to fit text
+  const float buttonSize = 100.0f; // Adjusted button size to fit text
   const float smallButtonSize = 50.0f; // Adjusted small button size to fit text
 
   // Center the main playback controls
@@ -212,7 +212,7 @@ void displayControls(AVParser::MediaParser& parser)
   ImGui::AlignTextToFramePadding();
   ImGui::Text("Volume:");
   ImGui::SameLine();
-  if (ImGui::Button(volume <= 0.01f ? "Mute" : "Unmute", ImVec2(60, 0))) // Adjusted button size to fit text
+  if (ImGui::Button(volume <= 0.01f ? "Mute" : "Unmute", ImVec2(buttonSize, 0))) 
   {
     // Toggle mute
     volume = (volume <= 0.01f) ? 1.0f : 0.0f;
