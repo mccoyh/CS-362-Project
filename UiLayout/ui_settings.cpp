@@ -1,5 +1,5 @@
 #include "ui_settings.h"
-#include "../include/config.h"
+#include "config.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
