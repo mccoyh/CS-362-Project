@@ -345,7 +345,7 @@ namespace VkEngine {
 
   bool VulkanEngine::keyIsPressed(const int key) const
   {
-  return window->keyIsPressed(key);
+    return window->keyIsPressed(key);
   }
 
   void VulkanEngine::renderCaption(const ImVec2& imagePos) const
