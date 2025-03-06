@@ -247,9 +247,85 @@ bool UISubtitleControls::parseAssSubtitles(const std::filesystem::path& filepath
         return false;
     }
 
-    // TODO: Implement Advanced SubStation Alpha (ASS) subtitle parsing
-    std::cerr << "ASS subtitle parsing not yet implemented" << std::endl;
-    return false;
+    // Simple ASS subtitle parsing
+    std::string line;
+    bool inDialogueSection = false;
+    SubtitleEntry currentSubtitle;
+    
+    while (std::getline(file, line)) {
+        // Check for dialogue section
+        if (line.find("[Events]") != std::string::npos) {
+            inDialogueSection = true;
+            continue;
+        }
+        
+        // Process dialogue lines
+        if (inDialogueSection && line.find("Dialogue:") == 0) {
+            // Extract parts using string operations
+            std::istringstream iss(line);
+            std::string dummy;
+            std::getline(iss, dummy, ':'); // Skip "Dialogue:"
+            
+            // Format is: Dialogue: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+            std::string layer, start, end, style, name, marginL, marginR, marginV, effect, text;
+            
+            std::getline(iss, layer, ',');
+            std::getline(iss, start, ',');
+            std::getline(iss, end, ',');
+            std::getline(iss, style, ',');
+            std::getline(iss, name, ',');
+            std::getline(iss, marginL, ',');
+            std::getline(iss, marginR, ',');
+            std::getline(iss, marginV, ',');
+            std::getline(iss, effect, ',');
+            std::getline(iss, text); // The rest is the text
+            
+            // Parse times (h:mm:ss.cc format)
+            currentSubtitle.startTime = parseAssTime(start);
+            currentSubtitle.endTime = parseAssTime(end);
+            
+            // Clean up text - remove style codes
+            text = removeStyleCodes(text);
+            currentSubtitle.text = text;
+            
+            // Add subtitle if valid
+            if (currentSubtitle.startTime >= 0 && currentSubtitle.endTime > currentSubtitle.startTime && !text.empty()) {
+                subtitles.push_back(currentSubtitle);
+                currentSubtitle = SubtitleEntry();
+            }
+        }
+    }
+    
+    return !subtitles.empty();
+}
+
+// Add these helper functions after parseAssSubtitles
+double UISubtitleControls::parseAssTime(const std::string& timeStr) {
+    // Format: h:mm:ss.cc
+    std::regex timeRegex("(\\d):(\\d{2}):(\\d{2})\\.(\\d{2})");
+    std::smatch matches;
+    
+    if (std::regex_search(timeStr, matches, timeRegex)) {
+        int hours = std::stoi(matches[1]);
+        int minutes = std::stoi(matches[2]);
+        int seconds = std::stoi(matches[3]);
+        int centiseconds = std::stoi(matches[4]);
+        
+        return hours * 3600.0 + minutes * 60.0 + seconds + centiseconds / 100.0;
+    }
+    
+    return -1.0; // Invalid time
+}
+
+std::string UISubtitleControls::removeStyleCodes(const std::string& text) {
+    // Remove common ASS style codes like {\an8}, {\i1}, etc.
+    std::string result = text;
+    
+    // Replace all occurrences of style codes
+    std::regex styleCode("\\{\\\\[^}]*\\}");
+    result = std::regex_replace(result, styleCode, "");
+    
+    return result;
 }
 
 void UISubtitleControls::renderSubtitlesForVideo(double currentVideoTime) {
@@ -319,13 +395,45 @@ std::string UISubtitleControls::detectLanguage(const std::string& text) const {
 std::string UISubtitleControls::translateSubtitle(const std::string& text, 
                                                  const std::string& sourceLanguage, 
                                                  const std::string& targetLanguage) const {
-    // Placeholder translation logic
-    // In a real implementation, this would use a translation API or library
+    // Skip translation if languages are the same
     if (sourceLanguage == targetLanguage) {
         return text;
     }
+    
+    #ifdef USE_TRANSLATION_API
+        // Create request to translation service
+        CURL* curl = curl_easy_init();
+        if (!curl) {
+            return "Error: Could not initialize curl";
+        }
+        
+        // Set up request parameters for a hypothetical translation API
+        std::string apiUrl = "https://libretranslate.de/translate";
+        std::string postData = "text=" + curl_easy_escape(curl, text.c_str(), text.length()) + 
+                              "&source=" + sourceLanguage + 
+                              "&target=" + targetLanguage + 
+                              "&apiKey=YOUR_API_KEY";
+        
+        curl_easy_setopt(curl, CURLOPT_URL, apiUrl.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
+        
+        // Set up response handling
+        std::string response;
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+        
+        // Perform request
+        CURLcode res = curl_easy_perform(curl);
+        curl_easy_cleanup(curl);
+        
+        if (res != CURLE_OK) {
+            return "Error: Translation request failed";
+        }
+        
+        
+    #endif
 
-    // Very basic "translation" simulation
+    // Fallback for development/testing - just mark the text
     std::string translatedText = "[" + targetLanguage + "] " + text;
     return translatedText;
 }
