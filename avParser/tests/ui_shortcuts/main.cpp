@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 void displayControls(AVParser::MediaParser& parser);
+void navigateFrames(AVParser::MediaParser& parser, const uint32_t,int);
 
 int main(const int argc, char* argv[])
 {
@@ -30,20 +31,19 @@ int main(const int argc, char* argv[])
 
     // For debouncing key presses
     bool spaceWasPressed = false;
-    bool rightWasPressed = false;
-    bool leftWasPressed = false;
+    const bool rightWasPressed = false;
+    const bool leftWasPressed = false;
     bool rWasPressed = false;
-    bool mWasPressed = false;
   
     vulkanEngine.loadCaption("Press SPACE to pause/resume, R to restart, LEFT/RIGHT to navigate.");
 
     while (vulkanEngine.isActive())
     {
-      uint32_t currentframe = parser.getCurrentFrameIndex();
+      uint32_t currentFrameIndex = parser.getCurrentFrameIndex();
       // Handle keyboard input using keyIsPressed
-      bool spaceIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_SPACE);
+      const bool spaceIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_SPACE);
       if (spaceIsPressed && !spaceWasPressed) {
-        if (parser.getState() == AVParser::MediaState::PAUSED  ) {
+        if (parser.getState() == AVParser::MediaState::PAUSED) {
           parser.play();
          
         } else if (parser.getState() == AVParser::MediaState::AUTO_PLAYING) {
@@ -53,11 +53,11 @@ int main(const int argc, char* argv[])
       }
       spaceWasPressed = spaceIsPressed;
 
-      bool rightIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_RIGHT);
+      const bool rightIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_RIGHT);
       if (rightIsPressed) {
         if (!rightWasPressed) {
           // Key was just pressed (first frame)
-          parser.loadFrameAt(currentframe+10);
+          navigateFrames(parser, currentFrameIndex, 1);
           
         } else {
           // Key is being held down
@@ -66,8 +66,7 @@ int main(const int argc, char* argv[])
             if (parser.getState() != AVParser::MediaState::MANUAL) {
               parser.pause();
             }
-            parser.loadFrameAt(currentframe+5);
-            
+            navigateFrames(parser, currentFrameIndex, 1);
           }
         }
       } else {
@@ -79,13 +78,12 @@ int main(const int argc, char* argv[])
          
         }
       }
-      rightWasPressed = rightIsPressed;
-
-      bool leftIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_LEFT);
+ 
+      const bool leftIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_LEFT);
       if (leftIsPressed) {
         if (!leftWasPressed) {
           // Key was just pressed (first frame)
-          parser.loadFrameAt(currentframe-5);
+          navigateFrames(parser, currentFrameIndex, -1);
           
         } else {
           // Key is being held down
@@ -94,7 +92,7 @@ int main(const int argc, char* argv[])
             if (parser.getState() != AVParser::MediaState::MANUAL) {
               parser.pause();
             }
-            parser.loadFrameAt(currentframe-5);
+            navigateFrames(parser, currentFrameIndex, -1);
            
           }
         }
@@ -107,17 +105,12 @@ int main(const int argc, char* argv[])
       
         }
       }
-      leftWasPressed = leftIsPressed;
-
-      bool rIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_R);
+      const bool rIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_R);
       if (rIsPressed && !rWasPressed) {
         parser.loadFrameAt(0);
        
       }
       rWasPressed = rIsPressed;
-
-      
-
       gui->dockBottom("Media Player Controls");
 
       gui->setBottomDockPercent(0.25);
@@ -151,15 +144,13 @@ void displayControls(AVParser::MediaParser& parser)
 
   // Media player time information
   uint32_t currentFrameIndex = parser.getCurrentFrameIndex();
-  int totalFrames = parser.getTotalFrames();
-  float currentTime = currentFrameIndex / 30.0f; // Assuming 30fps, adjust if needed
-  float totalTime = totalFrames / 30.0f;
+  const uint32_t totalFrames = parser.getTotalFrames();
 
   // Center the seek bar
   ImGui::SetCursorPosX((windowWidth - ImGui::CalcItemWidth()) * 0.5f);
 
   // Seek bar (progress bar)
-  if (ImGui::SliderInt("##timeline", reinterpret_cast<int*>(&currentFrameIndex), 0, totalFrames, ""))
+  if (ImGui::SliderInt("##timeline", reinterpret_cast<int*>(&currentFrameIndex), 0, totalFrames,""))
   {
     parser.loadFrameAt(currentFrameIndex);
   }
@@ -167,17 +158,17 @@ void displayControls(AVParser::MediaParser& parser)
   // Transport control buttons
   ImGui::Separator();
 
-  const float buttonSize = 100.0f; // Adjusted button size to fit text
-  const float smallButtonSize = 50.0f; // Adjusted small button size to fit text
+  constexpr float buttonSize = 100.0f; // Adjusted button size to fit text
+  constexpr float smallButtonSize = 50.0f; // Adjusted small button size to fit text
 
   // Center the main playback controls
-  float centerPos = (windowWidth - (buttonSize * 3 + smallButtonSize * 2)) / 2.0f;
+  const float centerPos = (windowWidth - (buttonSize * 3 + smallButtonSize * 2)) / 2.0f;
   ImGui::SetCursorPosX(centerPos);
 
   // Rewind button (10 seconds)
   if (ImGui::Button("<<", ImVec2(smallButtonSize, 0)))
   {
-    parser.loadFrameAt(currentFrameIndex-30);
+    navigateFrames(parser, currentFrameIndex, -30);
   }
   ImGui::SameLine();
 
@@ -201,9 +192,8 @@ void displayControls(AVParser::MediaParser& parser)
   // Fast Forward button (10 seconds)
   if (ImGui::Button(">>", ImVec2(smallButtonSize, 0)))
   {
-    parser.loadFrameAt(currentFrameIndex+30);
+    navigateFrames(parser, currentFrameIndex, 30);     
   }
-
   ImGui::Separator();
 
   // Bottom row with additional controls
@@ -221,7 +211,15 @@ void displayControls(AVParser::MediaParser& parser)
   ImGui::PushItemWidth(150);
   ImGui::SliderFloat("##volume", &volume, 0.0f, 1.0f, "%.2f");
   ImGui::PopItemWidth();
-
   ImGui::PopStyleVar();
   ImGui::End();
+}
+
+void navigateFrames(AVParser::MediaParser& parser, const uint32_t currentframe, int n){
+  uint32_t maxframes = parser.getTotalFrames();
+  if (n > 0) {
+    parser.loadFrameAt((currentframe + n > maxframes) ? maxframes : (currentframe + n));
+  } else {
+    parser.loadFrameAt((currentframe + n <= 1) ? 1 : (currentframe + n));
+  }
 }

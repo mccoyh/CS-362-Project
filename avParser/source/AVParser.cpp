@@ -83,9 +83,6 @@ namespace AVParser {
     currentFrame++;
   }
 
-
-  
-
   void MediaParser::loadPreviousFrame()
   {
     if (currentFrame <= 0)
@@ -98,17 +95,8 @@ namespace AVParser {
     currentFrame--;
   }
 
-  void MediaParser::loadFrameAt(uint32_t targetFrame)
+  void MediaParser::loadFrameAt(const uint32_t targetFrame)
   {
-    if (targetFrame > getTotalFrames())
-    {
-      targetFrame = getTotalFrames();
-    }
-    else if (targetFrame < 0)
-    {
-      targetFrame = 0;
-    }
-
     loadFrameFromCache(targetFrame);
 
     currentFrame = targetFrame;
