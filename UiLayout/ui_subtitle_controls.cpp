@@ -1,5 +1,5 @@
 #include "ui_subtitle_controls.h"
-#include "../include/config.h"
+#include "config.h"
 #include <fstream>
 #include <sstream>
 #include <regex>
