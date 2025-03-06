@@ -99,9 +99,10 @@ namespace AVParser {
   {
     if (currentFrame - n <= 0)
     {
+      
       n = 0;
       currentFrame = 0;
-      loadFrameFromCache(0);
+      loadFrameFromCache(1);
       return;
     }
 
