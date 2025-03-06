@@ -68,17 +68,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev \
                                   libxkbcommon-dev libgl1-mesa-dev
-      
-          # Install build dependencies for FFmpeg
-          sudo apt-get install -y yasm nasm pkg-config
-      
-          # Download and build FFmpeg 5.1.3
-          wget https://ffmpeg.org/releases/ffmpeg-5.1.3.tar.xz
-          tar -xf ffmpeg-5.1.3.tar.xz
-          cd ffmpeg-5.1.3
-          ./configure --prefix=/usr --enable-shared --disable-static
-          make -j$(nproc)
-          sudo make install
+          
+          # Download and install pre-built FFmpeg binaries
+          wget https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl-shared.tar.xz
+          tar -xf ffmpeg-master-latest-linux64-gpl-shared.tar.xz
+          sudo cp -r ffmpeg-master-latest-linux64-gpl-shared/include/* /usr/include/
+          sudo cp -r ffmpeg-master-latest-linux64-gpl-shared/lib/* /usr/lib/
+          sudo cp ffmpeg-master-latest-linux64-gpl-shared/bin/* /usr/bin/
+          
+          # Update the dynamic linker cache
+          sudo ldconfig
           
           # Verify FFmpeg installation
           echo "Installed FFmpeg version:"
