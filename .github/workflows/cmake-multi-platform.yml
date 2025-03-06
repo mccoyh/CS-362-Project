@@ -67,8 +67,18 @@ jobs:
           # Install basic dependencies
           sudo apt-get update
           sudo apt-get install -y libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev \
-                                  libxkbcommon-dev libgl1-mesa-dev ffmpeg libavcodec-dev libavformat-dev \
-                                  libavutil-dev libswscale-dev
+                                  libxkbcommon-dev libgl1-mesa-dev
+      
+          # Install build dependencies for FFmpeg
+          sudo apt-get install -y yasm nasm pkg-config
+      
+          # Download and build FFmpeg 5.1.3
+          wget https://ffmpeg.org/releases/ffmpeg-5.1.3.tar.xz
+          tar -xf ffmpeg-5.1.3.tar.xz
+          cd ffmpeg-5.1.3
+          ./configure --prefix=/usr --enable-shared --disable-static
+          make -j$(nproc)
+          sudo make install
           
           # Verify FFmpeg installation
           echo "Installed FFmpeg version:"
