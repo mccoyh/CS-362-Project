@@ -1,5 +1,5 @@
 #include "ui_video_editor.h"
-#include "../include/config.h"
+#include "config.h"
 #include <iostream>
 #include <sstream>
 #include <iomanip>
