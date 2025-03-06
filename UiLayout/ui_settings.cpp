@@ -14,7 +14,7 @@ UISettings::UISettings() {
     #endif
 
     // Ensure config directory exists
-    std::filesystem::create_directories(configFilePath.parent_path());
+   std::filesystem::create_directories(configFilePath.parent_path());
 
     // Initialize default settings
     currentSettings = {
@@ -331,14 +331,6 @@ std::vector<std::string> UISettings::getAvailableThemes() {
 }
 
 // Configuration Manager Implementation
-bool ConfigurationManager::saveConfiguration(const std::filesystem::path& filepath, 
-                                             const std::string& configData) {
-    try
-        std::ofstream configFile(filepath);
-        if (!configFile.is_open()) {
-            throw std::runtime_error("Could not open config file for writing");
-        }
-        // Continuation of Configuration Manager Implementation
 bool ConfigurationManager::saveConfiguration(const std::filesystem::path& filepath, 
                                              const std::string& configData) {
     try {
