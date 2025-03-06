@@ -1,5 +1,5 @@
 #include "ui_playlist.h"
-#include "../include/config.h"
+#include "config.h"
 #include <algorithm>
 #include <fstream>
 #include <random>
