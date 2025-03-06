@@ -35,7 +35,7 @@ if(UNIX)
   if(APPLE)
     set(CMAKE_INSTALL_RPATH "@executable_path")
   else()
-    set(CMAKE_INSTALL_RPATH "$ORIGIN")
+    set(CMAKE_INSTALL_RPATH "\$ORIGIN")
   endif()
 
   # Ensure that the build executable works like the installed one
