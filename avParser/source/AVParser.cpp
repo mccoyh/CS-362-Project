@@ -83,6 +83,35 @@ namespace AVParser {
     currentFrame++;
   }
 
+  void MediaParser::loadNFrame(int n)
+  {
+    if (currentFrame + n > getTotalFrames())
+    {
+      return;
+    }
+
+    loadFrameFromCache(currentFrame + 1);
+
+    currentFrame++;
+  }
+
+  void MediaParser::loadPreviousNFrame(int n)
+  {
+    if (currentFrame <= 0)
+    {
+      return;
+    }
+
+    loadFrameFromCache(currentFrame - n);
+    if (currentFrame - n >= 0)
+    {
+      currentFrame -= n;
+    }else{currentFrame = 0;}
+  }
+
+
+  
+
   void MediaParser::loadPreviousFrame()
   {
     if (currentFrame <= 0)

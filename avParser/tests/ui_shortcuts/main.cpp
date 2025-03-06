@@ -34,6 +34,7 @@ int main(const int argc, char* argv[])
     bool leftWasPressed = false;
     bool rWasPressed = false;
     bool mWasPressed = false;
+    vulkanEngine.loadCaption("Press SPACE to pause/resume, R to restart, LEFT/RIGHT to navigate.");
 
     while (vulkanEngine.isActive())
     {
@@ -52,14 +53,14 @@ int main(const int argc, char* argv[])
 
       bool rightIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_RIGHT);
       if (rightIsPressed && !rightWasPressed) {
-        parser.loadNextFrame();
+        parser.loadNFrame(5);
         std::cout << "Next frame" << std::endl;
       }
       rightWasPressed = rightIsPressed;
 
       bool leftIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_LEFT);
       if (leftIsPressed && !leftWasPressed) {
-        parser.loadPreviousFrame();
+        parser.loadPreviousNFrame(5);
         std::cout << "Previous frame" << std::endl;
       }
       leftWasPressed = leftIsPressed;
@@ -71,14 +72,7 @@ int main(const int argc, char* argv[])
       }
       rWasPressed = rIsPressed;
 
-      // Toggle between manual and automatic modes
-      bool mIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_M);
-      if (mIsPressed && !mWasPressed) {
-        bool isManual = parser.getState() == AVParser::MediaState::MANUAL;
-        parser.setManual(!isManual);
-        std::cout << "Toggled to " << (!isManual ? "manual" : "automatic") << " mode" << std::endl;
-      }
-      mWasPressed = mIsPressed;
+      
 
       gui->dockBottom("AV Controls");
 
