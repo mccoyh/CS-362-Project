@@ -1,40 +1,41 @@
-cmake_minimum_required(VERSION 3.2)
-project(CS_362_Project)
+cmake_minimum_required(VERSION 3.12)
+project(DesktopMediaPlayer)
 
-if(APPLE)
-  enable_language(OBJC)
-endif()
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(BUILD_SHARED_LIBS ON)
 
-set(CMAKE_CXX_STANDARD 23)
+# Find required packages
+find_package(FFmpeg REQUIRED COMPONENTS avcodec avformat swscale avutil)
+find_package(VulkanEngine REQUIRED)
+find_package(ImGui REQUIRED)
 
-if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin)
-endif()
+# Add executable
+add_executable(${PROJECT_NAME}
+    main.cpp
+    ui_file_explorer.cpp
+    ui_file_explorer.h
+    ui_main_window.cpp
+    ui_main_window.h
+    ui_playlist.cpp
+    ui_playlist.h
+    ui_settings.cpp
+    ui_settings.h
+    ui_subtitle_controls.cpp
+    ui_subtitle_controls.h
+    ui_video_player.cpp
+    ui_video_player.h
+)
 
-if (NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-endif()
+# Link libraries
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+    VulkanEngine 
+    ${FFMPEG_LIBRARIES}
+    ImGui
+)
 
-if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin)
-endif()
-
-if (NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-endif()
-
-if (MSVC)
-  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS 1)
-endif()
-
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
-
-add_subdirectory(vulkanEngine)
-
-add_subdirectory(audiolib)
-
-add_subdirectory(source)
+# Include directories
+target_include_directories(${PROJECT_NAME} PRIVATE 
+    ${VulkanEngine_INCLUDE_DIRS} 
+    ${FFMPEG_INCLUDE_DIRS}
+)
