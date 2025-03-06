@@ -83,35 +83,6 @@ namespace AVParser {
     currentFrame++;
   }
 
-  void MediaParser::loadNFrame(int n)
-  {
-    if (currentFrame + n > getTotalFrames())
-    {
-      n = getTotalFrames() - currentFrame;
-    }
-
-    loadFrameFromCache(currentFrame + n);
-
-    currentFrame += n;
-  }
-
-  void MediaParser::loadPreviousNFrame(int n)
-  {
-    if (currentFrame - n <= 0)
-    {
-      
-      n = 0;
-      currentFrame = 0;
-      loadFrameFromCache(1);
-      return;
-    }
-
-    loadFrameFromCache(currentFrame - n);
-    
-    currentFrame -= n;
-    
-  }
-
 
   
 
@@ -127,11 +98,15 @@ namespace AVParser {
     currentFrame--;
   }
 
-  void MediaParser::loadFrameAt(const uint32_t targetFrame)
+  void MediaParser::loadFrameAt(uint32_t targetFrame)
   {
     if (targetFrame > getTotalFrames())
     {
-      throw std::out_of_range("Target frame is out of range!");
+      targetFrame = getTotalFrames();
+    }
+    else if (targetFrame < 0)
+    {
+      targetFrame = 0;
     }
 
     loadFrameFromCache(targetFrame);

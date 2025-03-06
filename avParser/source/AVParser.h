@@ -44,11 +44,7 @@ public:
 
   void loadNextFrame();
 
-  void loadNFrame(int n);
-
   void loadPreviousFrame();
-
-  void loadPreviousNFrame(int n);
 
   void loadFrameAt(uint32_t targetFrame);
 

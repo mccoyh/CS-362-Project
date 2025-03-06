@@ -34,20 +34,21 @@ int main(const int argc, char* argv[])
     bool leftWasPressed = false;
     bool rWasPressed = false;
     bool mWasPressed = false;
-    uint32_t currentframe = parser.getCurrentFrameIndex
+  
     vulkanEngine.loadCaption("Press SPACE to pause/resume, R to restart, LEFT/RIGHT to navigate.");
 
     while (vulkanEngine.isActive())
     {
+      uint32_t currentframe = parser.getCurrentFrameIndex();
       // Handle keyboard input using keyIsPressed
       bool spaceIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_SPACE);
       if (spaceIsPressed && !spaceWasPressed) {
         if (parser.getState() == AVParser::MediaState::PAUSED  ) {
           parser.play();
-          std::cout << "Video resumed" << std::endl;
+         
         } else if (parser.getState() == AVParser::MediaState::AUTO_PLAYING) {
           parser.pause();
-          std::cout << "Video paused" << std::endl;
+          
         }
       }
       spaceWasPressed = spaceIsPressed;
@@ -57,7 +58,7 @@ int main(const int argc, char* argv[])
         if (!rightWasPressed) {
           // Key was just pressed (first frame)
           parser.loadFrameAt(currentframe+10);
-          std::cout << "Right arrow pressed - Next frame" << std::endl;
+          
         } else {
           // Key is being held down
           static int holdCounter = 0;
@@ -66,7 +67,7 @@ int main(const int argc, char* argv[])
               parser.pause();
             }
             parser.loadFrameAt(currentframe+5);
-            std::cout << "Right arrow held - Advancing frame" << std::endl;
+            
           }
         }
       } else {
@@ -75,7 +76,7 @@ int main(const int argc, char* argv[])
           if (parser.getState() != AVParser::MediaState::MANUAL) {
             parser.play();
           }
-          std::cout << "Right arrow released" << std::endl;
+         
         }
       }
       rightWasPressed = rightIsPressed;
@@ -85,7 +86,7 @@ int main(const int argc, char* argv[])
         if (!leftWasPressed) {
           // Key was just pressed (first frame)
           parser.loadFrameAt(currentframe-5);
-          std::cout << "Left arrow pressed - Previous frame" << std::endl;
+          
         } else {
           // Key is being held down
           static int holdCounter = 0;
@@ -94,7 +95,7 @@ int main(const int argc, char* argv[])
               parser.pause();
             }
             parser.loadFrameAt(currentframe-5);
-            std::cout << "Left arrow held - Rewinding frame" << std::endl;
+           
           }
         }
       } else {
@@ -103,7 +104,7 @@ int main(const int argc, char* argv[])
           if (parser.getState() != AVParser::MediaState::MANUAL) {
             parser.play();
           }
-          std::cout << "Left arrow released" << std::endl;
+      
         }
       }
       leftWasPressed = leftIsPressed;
@@ -111,7 +112,7 @@ int main(const int argc, char* argv[])
       bool rIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_R);
       if (rIsPressed && !rWasPressed) {
         parser.loadFrameAt(0);
-        std::cout << "Restarting video" << std::endl;
+       
       }
       rWasPressed = rIsPressed;
 
@@ -154,12 +155,11 @@ void displayControls(AVParser::MediaParser& parser)
   float currentTime = currentFrameIndex / 30.0f; // Assuming 30fps, adjust if needed
   float totalTime = totalFrames / 30.0f;
 
-
-
+  // Center the seek bar
+  ImGui::SetCursorPosX((windowWidth - ImGui::CalcItemWidth()) * 0.5f);
 
   // Seek bar (progress bar)
-
-  if (ImGui::SliderInt("##timeline", &currentFrameIndex, 0, totalFrames, ""))
+  if (ImGui::SliderInt("##timeline", reinterpret_cast<int*>(&currentFrameIndex), 0, totalFrames, ""))
   {
     parser.loadFrameAt(currentFrameIndex);
   }
@@ -167,8 +167,8 @@ void displayControls(AVParser::MediaParser& parser)
   // Transport control buttons
   ImGui::Separator();
 
-  const float buttonSize = 75.0f;
-  const float smallButtonSize = 40.0f;
+  const float buttonSize = 80.0f; // Adjusted button size to fit text
+  const float smallButtonSize = 50.0f; // Adjusted small button size to fit text
 
   // Center the main playback controls
   float centerPos = (windowWidth - (buttonSize * 3 + smallButtonSize * 2)) / 2.0f;
@@ -177,7 +177,7 @@ void displayControls(AVParser::MediaParser& parser)
   // Rewind button (10 seconds)
   if (ImGui::Button("<<", ImVec2(smallButtonSize, 0)))
   {
-    parser.loadFrameAt(currentFrameIndex-30)
+    parser.loadFrameAt(currentFrameIndex-30);
   }
   ImGui::SameLine();
 
@@ -198,12 +198,10 @@ void displayControls(AVParser::MediaParser& parser)
   }
   ImGui::SameLine();
 
-  
-
   // Fast Forward button (10 seconds)
   if (ImGui::Button(">>", ImVec2(smallButtonSize, 0)))
   {
-    parser.loadFrameAt(currentFrameIndex+30)
+    parser.loadFrameAt(currentFrameIndex+30);
   }
 
   ImGui::Separator();
@@ -214,7 +212,7 @@ void displayControls(AVParser::MediaParser& parser)
   ImGui::AlignTextToFramePadding();
   ImGui::Text("Volume:");
   ImGui::SameLine();
-  if (ImGui::Button(volume <= 0.01f ? "Mute" : "Unmute", ImVec2(50, 0)))
+  if (ImGui::Button(volume <= 0.01f ? "Mute" : "Unmute", ImVec2(60, 0))) // Adjusted button size to fit text
   {
     // Toggle mute
     volume = (volume <= 0.01f) ? 1.0f : 0.0f;
@@ -223,12 +221,6 @@ void displayControls(AVParser::MediaParser& parser)
   ImGui::PushItemWidth(150);
   ImGui::SliderFloat("##volume", &volume, 0.0f, 1.0f, "%.2f");
   ImGui::PopItemWidth();
-
-  // Manual mode toggle on the right
-  ImGui::SameLine();
-  ImGui::SetCursorPosX(windowWidth - 120);
-  
-  
 
   ImGui::PopStyleVar();
   ImGui::End();
