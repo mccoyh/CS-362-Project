@@ -34,6 +34,7 @@ int main(const int argc, char* argv[])
     bool leftWasPressed = false;
     bool rWasPressed = false;
     bool mWasPressed = false;
+    uint32_t currentframe = parser.getCurrentFrameIndex
     vulkanEngine.loadCaption("Press SPACE to pause/resume, R to restart, LEFT/RIGHT to navigate.");
 
     while (vulkanEngine.isActive())
@@ -55,7 +56,7 @@ int main(const int argc, char* argv[])
       if (rightIsPressed) {
         if (!rightWasPressed) {
           // Key was just pressed (first frame)
-          parser.loadNFrame(5);
+          parser.loadFrameAt(currentframe+10);
           std::cout << "Right arrow pressed - Next frame" << std::endl;
         } else {
           // Key is being held down
@@ -64,7 +65,7 @@ int main(const int argc, char* argv[])
             if (parser.getState() != AVParser::MediaState::MANUAL) {
               parser.pause();
             }
-            parser.loadNFrame(5);
+            parser.loadFrameAt(currentframe+5);
             std::cout << "Right arrow held - Advancing frame" << std::endl;
           }
         }
@@ -83,7 +84,7 @@ int main(const int argc, char* argv[])
       if (leftIsPressed) {
         if (!leftWasPressed) {
           // Key was just pressed (first frame)
-          parser.loadPreviousNFrame(5);
+          parser.loadFrameAt(currentframe-5);
           std::cout << "Left arrow pressed - Previous frame" << std::endl;
         } else {
           // Key is being held down
@@ -92,7 +93,7 @@ int main(const int argc, char* argv[])
             if (parser.getState() != AVParser::MediaState::MANUAL) {
               parser.pause();
             }
-            parser.loadPreviousNFrame(5);
+            parser.loadFrameAt(currentframe-5);
             std::cout << "Left arrow held - Rewinding frame" << std::endl;
           }
         }
@@ -148,7 +149,7 @@ void displayControls(AVParser::MediaParser& parser)
   ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 6));
 
   // Media player time information
-  int currentFrameIndex = static_cast<int>(parser.getCurrentFrameIndex());
+  uint32_t currentFrameIndex = parser.getCurrentFrameIndex();
   int totalFrames = parser.getTotalFrames();
   float currentTime = currentFrameIndex / 30.0f; // Assuming 30fps, adjust if needed
   float totalTime = totalFrames / 30.0f;
@@ -176,7 +177,7 @@ void displayControls(AVParser::MediaParser& parser)
   // Rewind button (10 seconds)
   if (ImGui::Button("<<", ImVec2(smallButtonSize, 0)))
   {
-    parser.loadPreviousNFrame(30); 
+    parser.loadFrameAt(currentFrameIndex-30)
   }
   ImGui::SameLine();
 
@@ -202,7 +203,7 @@ void displayControls(AVParser::MediaParser& parser)
   // Fast Forward button (10 seconds)
   if (ImGui::Button(">>", ImVec2(smallButtonSize, 0)))
   {
-    parser.loadNFrame(30); // 10 seconds at 30fps
+    parser.loadFrameAt(currentFrameIndex+30)
   }
 
   ImGui::Separator();
