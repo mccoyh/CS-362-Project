@@ -67,7 +67,7 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev `
                                     libxkbcommon-dev libgl1-mesa-dev ffmpeg libavcodec-dev libavformat-dev `
-                                    libswscale-dev libavutil-dev wayland-protocols libwayland-bin `
+                                    libswscale-dev libavutil-dev
           }
           elseif ("${{ matrix.os }}" -eq "windows-latest")
           {
@@ -109,37 +109,43 @@ jobs:
         run: ctest --build-config ${{ matrix.build_type }}
 
       - name: Copy Shared Libraries
-        shell: bash
+        shell: pwsh
         run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            cp -L $VULKAN_SDK/lib/libvulkan* ${{ steps.strings.outputs.build-output-dir }}/bin/
-          
-            cp -L /usr/lib/x86_64-linux-gnu/libstdc++.so.6 ${{ steps.strings.outputs.build-output-dir }}/bin/
-            cp -L /lib/x86_64-linux-gnu/libgcc_s.so.1 ${{ steps.strings.outputs.build-output-dir }}/bin/
-          
-            cp -L /usr/lib/x86_64-linux-gnu/libavcodec.so.* ${{ steps.strings.outputs.build-output-dir }}/bin/
-            cp -L /usr/lib/x86_64-linux-gnu/libavformat.so.* ${{ steps.strings.outputs.build-output-dir }}/bin/
-            cp -L /usr/lib/x86_64-linux-gnu/libswscale.so.* ${{ steps.strings.outputs.build-output-dir }}/bin/
-            cp -L /usr/lib/x86_64-linux-gnu/libavutil.so.* ${{ steps.strings.outputs.build-output-dir }}/bin/
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            cp $VULKAN_SDK/lib/libMoltenVK.dylib ${{ steps.strings.outputs.build-output-dir }}/bin/
-            cp $VULKAN_SDK/lib/libvulkan.* ${{ steps.strings.outputs.build-output-dir }}/bin/
-          
-            for lib in libavcodec libavformat libswscale libavutil; do
-              cp $(brew --prefix ffmpeg)/lib/$lib.dylib ${{ steps.strings.outputs.build-output-dir }}/bin/
-            done
-          elif [ "$RUNNER_OS" == "Windows" ]; then
-            ffmpeg_dir=$(dirname $(where.exe ffmpeg.exe))
-            cp "$ffmpeg_dir"/*.dll ${{ steps.strings.outputs.build-output-dir }}/bin/
-          fi
+          $buildOutputDir = "${{ steps.strings.outputs.build-output-dir }}/bin"
+
+          if ($env:RUNNER_OS -eq "Linux") {
+            Copy-Item -Path "$env:VULKAN_SDK/lib/libvulkan*" -Destination $buildOutputDir -Force
+
+            Copy-Item -Path "/usr/lib/x86_64-linux-gnu/libstdc++.so.6" -Destination $buildOutputDir -Force
+            Copy-Item -Path "/lib/x86_64-linux-gnu/libgcc_s.so.1" -Destination $buildOutputDir -Force
+
+            Copy-Item -Path "/usr/lib/x86_64-linux-gnu/libavcodec.so.*" -Destination $buildOutputDir -Force
+            Copy-Item -Path "/usr/lib/x86_64-linux-gnu/libavformat.so.*" -Destination $buildOutputDir -Force
+            Copy-Item -Path "/usr/lib/x86_64-linux-gnu/libswscale.so.*" -Destination $buildOutputDir -Force
+            Copy-Item -Path "/usr/lib/x86_64-linux-gnu/libavutil.so.*" -Destination $buildOutputDir -Force
+          }
+          elseif ($env:RUNNER_OS -eq "macOS") {
+            Copy-Item -Path "$env:VULKAN_SDK/lib/libMoltenVK.dylib" -Destination $buildOutputDir -Force
+            Copy-Item -Path "$env:VULKAN_SDK/lib/libvulkan.*" -Destination $buildOutputDir -Force
+
+            $ffmpegPrefix = & brew --prefix ffmpeg
+            $libs = @("libavcodec", "libavformat", "libswscale", "libavutil")
+            foreach ($lib in $libs) {
+              Copy-Item -Path "$ffmpegPrefix/lib/$lib.dylib" -Destination $buildOutputDir -Force
+            }
+          }
+          elseif ($env:RUNNER_OS -eq "Windows") {
+            $ffmpegDir = (Get-Command ffmpeg.exe).Source | Split-Path -Parent
+            Copy-Item -Path "$ffmpegDir/*.dll" -Destination $buildOutputDir -Force
+          }
 
       - name: Zip Artifacts
         shell: pwsh
         run: |
           $buildDir = "${{ steps.strings.outputs.build-output-dir }}/bin"
           $zipName = "${{ matrix.os }}-${{ matrix.c_compiler }}-release.zip"
-          
-          cd $buildDir
+
+          Set-Location $buildDir
           if ($IsWindows) {
               # Use 7-zip on Windows
               7z a -tzip $zipName ./*
