@@ -141,10 +141,10 @@ jobs:
             Copy-Item -Path "/usr/lib/x86_64-linux-gnu/libstdc++.so.6" -Destination $buildOutputDir -Force
             Copy-Item -Path "/lib/x86_64-linux-gnu/libgcc_s.so.1" -Destination $buildOutputDir -Force
 
-            Copy-Item -Path "/usr/lib/x86_64-linux-gnu/libavcodec.so.*" -Destination $buildOutputDir -Force
-            Copy-Item -Path "/usr/lib/x86_64-linux-gnu/libavformat.so.*" -Destination $buildOutputDir -Force
-            Copy-Item -Path "/usr/lib/x86_64-linux-gnu/libswscale.so.*" -Destination $buildOutputDir -Force
-            Copy-Item -Path "/usr/lib/x86_64-linux-gnu/libavutil.so.*" -Destination $buildOutputDir -Force
+            Copy-Item -Path "/usr/lib/libavcodec*.so*" -Destination $buildOutputDir -Force
+            Copy-Item -Path "/usr/lib/libavformat*.so*" -Destination $buildOutputDir -Force
+            Copy-Item -Path "/usr/lib/libswscale*.so*" -Destination $buildOutputDir -Force
+            Copy-Item -Path "/usr/lib/libavutil*.so*" -Destination $buildOutputDir -Force
           }
           elseif ($env:RUNNER_OS -eq "macOS") {
             Copy-Item -Path "$env:VULKAN_SDK/lib/libMoltenVK.dylib" -Destination $buildOutputDir -Force
