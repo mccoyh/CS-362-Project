@@ -234,8 +234,14 @@ void UIVideoEditor::cropVideo(int x, int y, int width, int height) {
     if (currentVideoIndex < 0 || currentVideoIndex >= editQueue.size()) return;
 
     auto& video = editQueue[currentVideoIndex];
-    // TODO: Implement actual video cropping logic
-    std::cout << "Cropping video: " 
+    
+    // Store crop parameters
+    video.cropX = x;
+    video.cropY = y;
+    video.cropWidth = width;
+    video.cropHeight = height;
+    
+    std::cout << "Crop parameters set: " 
               << width << "x" << height 
               << " at (" << x << ", " << y << ")" << std::endl;
 }
@@ -302,5 +308,93 @@ void UIVideoEditor::resetVideoParameters(EditableVideo& video) {
 }
 
 bool UIVideoEditor::isVideoSelected() const {
-    return currentVideoIndex >= 0 && currentVideoIndex
+    return currentVideoIndex >= 0 && currentVideoIndex < editQueue.size();
+}
+
+EditableVideo& UIVideoEditor::getCurrentVideo() {
+    if (!isVideoSelected()) {
+        throw std::runtime_error("No video selected");
+    }
+    return editQueue[currentVideoIndex];
+}
+// VideoFileUtils implementation
+
+bool VideoFileUtils::isValidVideoFile(const std::string& filepath) {
+    // Check if file exists
+    if (!std::filesystem::exists(filepath)) {
+        return false;
+    }
     
+    // Get file extension
+    std::string extension = std::filesystem::path(filepath).extension().string();
+    std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+    
+    // List of supported video extensions
+    const std::vector<std::string> supportedExtensions = {
+        ".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".m4v", ".mpg", ".mpeg"
+    };
+    
+    return std::find(supportedExtensions.begin(), supportedExtensions.end(), extension) != supportedExtensions.end();
+}
+
+bool VideoFileUtils::getVideoMetadata(const std::string& filepath, int& width, int& height, double& duration) {
+    AVFormatContext* formatContext = nullptr;
+    
+    // Open input file
+    if (avformat_open_input(&formatContext, filepath.c_str(), nullptr, nullptr) != 0) {
+        std::cerr << "Could not open input file: " << filepath << std::endl;
+        return false;
+    }
+    
+    // Retrieve stream information
+    if (avformat_find_stream_info(formatContext, nullptr) < 0) {
+        avformat_close_input(&formatContext);
+        std::cerr << "Could not find stream information: " << filepath << std::endl;
+        return false;
+    }
+    
+    // Find the first video stream
+    int videoStreamIndex = -1;
+    for (unsigned int i = 0; i < formatContext->nb_streams; i++) {
+        if (formatContext->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
+            videoStreamIndex = i;
+            break;
+        }
+    }
+    
+    if (videoStreamIndex == -1) {
+        avformat_close_input(&formatContext);
+        std::cerr << "Could not find video stream: " << filepath << std::endl;
+        return false;
+    }
+    
+    // Get video dimensions
+    width = formatContext->streams[videoStreamIndex]->codecpar->width;
+    height = formatContext->streams[videoStreamIndex]->codecpar->height;
+    
+    // Get duration
+    duration = formatContext->duration / static_cast<double>(AV_TIME_BASE);
+    
+    // Clean up
+    avformat_close_input(&formatContext);
+    
+    return true;
+}
+
+std::string VideoFileUtils::generateUniqueFilename(const std::string& originalPath) {
+    // Extract the filename without extension
+    std::filesystem::path path(originalPath);
+    std::string stem = path.stem().string();
+    std::string extension = path.extension().string();
+    
+    // Create a timestamp string
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&time), "%Y%m%d_%H%M%S");
+    
+    // Build the new filename
+    std::filesystem::path outputPath = path.parent_path() / (stem + "_edited_" + ss.str() + extension);
+    
+    return outputPath.string();
+}    
