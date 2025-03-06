@@ -97,6 +97,10 @@ namespace AVParser {
 
   void MediaParser::loadFrameAt(const uint32_t targetFrame)
   {
+    if (targetFrame > getTotalFrames())
+    {
+      throw std::out_of_range("Target frame is out of range!");
+    }
     loadFrameFromCache(targetFrame);
 
     currentFrame = targetFrame;
