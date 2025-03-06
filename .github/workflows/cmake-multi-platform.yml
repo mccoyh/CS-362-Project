@@ -145,6 +145,7 @@ jobs:
             Copy-Item -Path "/usr/lib/libavformat*.so*" -Destination $buildOutputDir -Force
             Copy-Item -Path "/usr/lib/libswscale*.so*" -Destination $buildOutputDir -Force
             Copy-Item -Path "/usr/lib/libavutil*.so*" -Destination $buildOutputDir -Force
+            Copy-Item -Path "/usr/lib/libswresample*.so*" -Destination $buildOutputDir -Force
           }
           elseif ($env:RUNNER_OS -eq "macOS") {
             Copy-Item -Path "$env:VULKAN_SDK/lib/libMoltenVK.dylib" -Destination $buildOutputDir -Force
