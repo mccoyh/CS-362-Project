@@ -8,9 +8,9 @@
 UISettings::UISettings() {
     // Determine config file path
     #ifdef _WIN32
-        configFilePath = std::filesystem::path(std::getenv("APPDATA")) / "DesktopMediaPlayer" / "config.json";
+    configFilePath = std::filesystem::path(std::getenv("APPDATA")) / "DesktopMediaPlayer" / "config.json";
     #else
-        configFilePath = std::filesystem::path(std::getenv("HOME")) / ".config" / "desktop-media-player" / "config.json";
+    configFilePath = std::filesystem::path(std::getenv("HOME")) / ".config" / "desktop-media-player" / "config.json";
     #endif
 
     // Ensure config directory exists
