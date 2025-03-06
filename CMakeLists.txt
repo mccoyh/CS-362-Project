@@ -36,6 +36,9 @@ if(UNIX)
     set(CMAKE_INSTALL_RPATH "@executable_path")
   else()
     set(CMAKE_INSTALL_RPATH "\$ORIGIN")
+    set(CMAKE_BUILD_RPATH "\$ORIGIN")
+
+    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
   endif()
 
   # Ensure that the build executable works like the installed one
