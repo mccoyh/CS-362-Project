@@ -10,7 +10,7 @@
 namespace Captions{
     constexpr float AUDIO_NORM = 32768.0f; //max size of a 16 bit signed int to normalize audio between -1 and 1
 
-    int transcribeAudio(const std::string model_path, const std::string audio_file, const std::string output_srt){
+    int transcribeAudio(const std::string& model_path, const std::string& audio_file, const std::string& output_srt){
         std::cout << "in function  " << std::endl;
         whisper_full_params params = whisper_full_default_params(WHISPER_SAMPLING_GREEDY);
         whisper_context* ctx = whisper_init_from_file(model_path.c_str());
@@ -106,6 +106,64 @@ namespace Captions{
         }
     
         return "";
+    }
+    CaptionCache::CaptionCache(const std::string& caption_srt){
+        loadCaptions(caption_srt);
+    }
+
+
+    void CaptionCache::loadCaptions(const std::string& caption_srt){
+        std::ifstream file(caption_srt);
+        if (!file){
+            std::cerr << "Error: Could not open file: " << caption_srt << std::endl;
+            return;
+        }
+        std::string line;
+        int index;
+        int startFrame, endFrame;
+        std::string text, frameRange;
+
+        while(std::getline(file, line)){
+            if (line.empty()){
+                continue;
+            }
+            //Read subtitle number
+            std::istringstream(line) >> index;
+            //Read Subtitle frame range
+            if(!std::getline(file, frameRange)){
+                break;
+            }
+            std::istringstream frame_stream(frameRange);
+            std::string arrow;
+            if(frame_stream >> startFrame >> arrow >> endFrame){
+                text.clear();
+                while (std::getline(file, line) && !line.empty()){
+                    text += (text.empty() ? "" : " ") + line;
+                }
+            }
+            captionMap[startFrame] = Subtitle(startFrame, endFrame, text);
+        }
+        numCaptions = index;
+    }
+
+    std::string CaptionCache::getCaptionAtFrame(int frame){
+        // Binary search: find the subtitle with the largest start Frame <= frame
+        auto it = captionMap.lower_bound(frame);
+
+        // Check if there is a valid caption and if the frame is inside the caption's range
+        if (it != captionMap.begin()){
+            --it;  // Go to the previous subtitle (largest startFrame <= frame)
+
+            if (frame >= it->second.startFrame && frame <= it->second.endFrame){
+                return it->second.text;
+            }
+        }
+
+        return "";  // No valid caption for the frame
+    }
+
+    int CaptionCache::getNumCaptions(){
+        return numCaptions;
     }
 
 } //captions namespace
