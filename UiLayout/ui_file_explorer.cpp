@@ -1,5 +1,5 @@
 #include "ui_file_explorer.h"
-#include "../include/config.h"
+#include "config.h"
 #include <iostream>
 #include <sstream>
 #include <iomanip>
