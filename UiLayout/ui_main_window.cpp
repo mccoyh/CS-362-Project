@@ -1,5 +1,5 @@
 #include "ui_main_window.h"
-#include "../include/config.h"
+#include "config.h"
 
 UIMainWindow::UIMainWindow() : 
     currentTab(ActiveTab::VideoPlayer) {
