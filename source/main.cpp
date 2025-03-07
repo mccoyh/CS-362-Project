@@ -59,8 +59,6 @@ int main(const int argc, char* argv[])
     // create and play audio stream
     const Audio::AudioData audio = Audio::playAudio("audio.wav");
     uint32_t duration = audio.duration;
-    uint32_t change = audio.duration - 10000;
-    uint32_t stop = 0;
 
     /* end audio initialization */
 
