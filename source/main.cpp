@@ -78,6 +78,16 @@ void menuBarGui()
       ImGui::EndMenu();
     }
 
+    if (ImGui::BeginMenu("Help"))
+    {
+      if (ImGui::MenuItem("Controls"))
+      {
+        // TODO: Open Controls Dialogue
+      }
+
+      ImGui::EndMenu();
+    }
+
     ImGui::EndMainMenuBar();
   }
 }
