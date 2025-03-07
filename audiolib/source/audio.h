@@ -37,6 +37,10 @@ namespace Audio {
     bool isPaused(SDL_AudioStream* stream);
 
     void changeSpeed(SDL_AudioStream* stream, float speed);
+
+    void changeVolume(SDL_AudioStream* stream, float volume);
+
+    void mute(SDL_AudioStream* stream);
 }
 
 #endif
