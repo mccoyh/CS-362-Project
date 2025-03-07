@@ -33,7 +33,12 @@ FetchContent_Declare(SDL3
 FetchContent_MakeAvailable(SDL3)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${FFMPEG_LIBRARIES} SDL3::SDL3)
-target_include_directories(${PROJECT_NAME} PUBLIC ${FFMPEG_INCLUDE_DIRS} ${SDL3_INCLUDE_DIRS})
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${FFMPEG_INCLUDE_DIRS}
+  ${SDL3_INCLUDE_DIRS}
+)
 
 # Create Include Headers
 if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL ${CMAKE_SOURCE_DIR}/audiolib/source)

@@ -4,7 +4,11 @@ include(FetchContent)
 set(BUILD_SHARED_LIBS ON)
 
 # User option to enable/disable Vulkan (default: OFF)
-option(WHISPER_USE_VULKAN "Enable Vulkan support for Whisper" OFF)
+if (NOT APPLE)
+    option(WHISPER_USE_VULKAN "Enable Vulkan support for Whisper" ON)
+else ()
+    option(WHISPER_USE_VULKAN "Enable Vulkan support for Whisper" OFF)
+endif ()
 
 add_library(${PROJECT_NAME}
     AudioToTxt.h
@@ -79,6 +83,10 @@ FetchContent_MakeAvailable(
 
 target_link_libraries(${PROJECT_NAME} PUBLIC 
     whisper
+)
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 #Create Include Headers
