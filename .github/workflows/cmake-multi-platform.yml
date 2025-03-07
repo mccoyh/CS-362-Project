@@ -114,27 +114,50 @@ jobs:
         with:
           version: 1.3.250.1
           cache: true
-        
-            # Install Vulkan SDK (including MoltenVK for macOS)
-      - name: Install Vulkan SDK with MoltenVK
+
+      - name: Set environment variables for Vulkan SDK
+        run: |
+          if [ $RUNNER_OS == 'Linux' ]; then
+            echo "VULKAN_SDK=/path/to/vulkan-sdk" >> $GITHUB_ENV
+          elif [ $RUNNER_OS == 'Windows' ]; then
+            echo "VULKAN_SDK=C:\VulkanSDK\1.3.250.1" >> $GITHUB_ENV
+
+      - name: Check Vulkan Extension Support for Ubuntu
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          # Check if GL_KHR_cooperative_matrix is supported
+          vulkaninfo | grep "GL_KHR_cooperative_matrix" || true
+          if ! vulkaninfo | grep -q "GL_KHR_cooperative_matrix"; then
+            echo "GL_KHR_cooperative_matrix not supported, disabling in build."
+            echo "COOPMAT=0" >> $GITHUB_ENV
+          else
+            echo "GL_KHR_cooperative_matrix supported."
+          fi
+
+      - name: Check Vulkan Extension Support for Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          # Check if GL_KHR_cooperative_matrix is supported
+          vulkaninfo | findstr "GL_KHR_cooperative_matrix" || true
+          if ! vulkaninfo | findstr "GL_KHR_cooperative_matrix"; then
+            echo "GL_KHR_cooperative_matrix not supported, disabling in build."
+            echo "COOPMAT=0" >> $GITHUB_ENV
+          else
+            echo "GL_KHR_cooperative_matrix supported."
+          fi
+
+      - name: Download Vulkan SDK
         if: matrix.os == 'macos-latest'
         run: |
-          # Download the Vulkan SDK (includes MoltenVK)
-          curl -L -o vulkansdk.dmg https://vulkan.lunarg.com/sdk/download/1.3.250.1/mac/vulkan-sdk-macos-1.3.250.1.dmg
-          
-          # Mount the DMG file
-          hdiutil mount vulkansdk.dmg
-          
-          # Copy the SDK to a location on the system
-          sudo cp -r /Volumes/VulkanSDK/1.3.250.1/mac/VulkanSDK /usr/local/
-          
-          # Clean up and unmount
-          hdiutil unmount /Volumes/VulkanSDK
-
-          # Create symlinks for Vulkan SDK binaries and libraries
-          sudo ln -s /usr/local/VulkanSDK/1.3.250.1/mac/bin/* /usr/local/bin/
-          sudo ln -s /usr/local/VulkanSDK/1.3.250.1/mac/lib/* /usr/local/lib/
-
+          VULKAN_SDK_VERSION="1.3.250.1"
+          SDK_URL="https://vulkan.lunarg.com/sdkhome#mac"
+          curl -LO ${SDK_URL}/mac/vulkan-sdk-${VULKAN_SDK_VERSION}-mac.dmg
+          hdiutil attach vulkan-sdk-${VULKAN_SDK_VERSION}-mac.dmg
+          sudo cp -R /Volumes/VulkanSDK/${VULKAN_SDK_VERSION}/mac/VulkanSDK /usr/local/vulkan
+          sudo ln -s /usr/local/vulkan/bin/* /usr/local/bin/
+        env:
+          VULKAN_SDK: /usr/local/vulkan
+          VULKAN_SDK_VERSION: "1.3.250.1"
 
       - name: Set Vulkan Environment Variables (macOS)
         if: matrix.os == 'macos-latest'
@@ -181,6 +204,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -S ${{ github.workspace }}
           -DWHISPER_USE_VULKAN=${{ (matrix.os == 'windows-latest' || matrix.os == 'macos-latest' || matrix.os == 'ubuntu-22.04') && 'ON' || 'OFF' }}
+          -DCOOPMAT=${{ env.COOPMAT }}
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
