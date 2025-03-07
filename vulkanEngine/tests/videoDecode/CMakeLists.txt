@@ -5,12 +5,6 @@ add_executable(${PROJECT_NAME} main.cpp
   ../VideoDecoder.h
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-  VulkanEngine
-  FFmpeg::avformat
-  FFmpeg::avcodec
-  FFmpeg::swscale
-  FFmpeg::avutil
-)
+target_link_libraries(${PROJECT_NAME} PRIVATE VulkanEngine ${FFMPEG_LIBRARIES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${FFMPEG_INCLUDE_DIRS})

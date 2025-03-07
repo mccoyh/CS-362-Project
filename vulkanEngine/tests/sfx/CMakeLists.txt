@@ -5,6 +5,6 @@ add_executable(${PROJECT_NAME} main.cpp
   ../VideoDecoder.h
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${FFMPEG_COMPONENTS})
+target_link_libraries(${PROJECT_NAME} PRIVATE VulkanEngine ${FFMPEG_COMPONENTS})
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${FFMPEG_INCLUDE_DIRS})
