@@ -54,11 +54,11 @@ set(FFMPEG_COMPONENTS avcodec avformat avutil swscale swresample)
 # Find FFmpeg package
 find_package(FFmpeg REQUIRED COMPONENTS ${FFMPEG_COMPONENTS})
 
+add_subdirectory(vulkanEngine)
+
 add_subdirectory(audiolib)
 
 add_subdirectory(AudioToTxt)
-
-add_subdirectory(vulkanEngine)
 
 add_subdirectory(avParser)
 
