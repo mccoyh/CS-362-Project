@@ -10,6 +10,7 @@ Note: `PATH_TO_MEDIA` can be omitted if the executable doesn’t require externa
 | **audiolib**      | audioplayback      | `audioplayback.exe` | Plays a .wav format audio file for 10 seconds, then speeds it up to 2x for 10 seconds. | `./audioplayback.exe PATH_TO_MEDIA`                  |
 |                   | convertwav         | `convertwav.exe`  | Converts any video or audio file to .wav format.                                 | `./convertwav.exe PATH_TO_MEDIA`                    |
 | **avParser**      | avExtraction       | `avExtraction.exe` | Creates a window for playing video with a UI.                                    | `./avExtraction.exe PATH_TO_MEDIA`                  |
+|                   | userinterface      | `ui_shortcuts.exe` | Displays UI interface for media player. Provides playback controls through keyboard shortcuts.    | `./ui_shortcuts.exe PATH_TO_MEDIA` |
 | **vulkanEngine**  | guiWidget          | `guiWidget.exe`   | Creates a window with a test widget.                                             | `./guiWidget.exe`                                   |
 |                   | sfx                | `sfx.exe`         | Plays a video file with added effects.                                           | `./sfx.exe PATH_TO_MEDIA`                           |
 |                   | videoDecode        | `videoDecode.exe` | Decodes and plays a video file.                                                 | `./videoDecode.exe PATH_TO_MEDIA`                   |
