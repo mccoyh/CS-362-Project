@@ -31,8 +31,8 @@ int main(const int argc, char* argv[])
 
     // For debouncing key presses
     bool spaceWasPressed = false;
-    const bool rightWasPressed = false;
-    const bool leftWasPressed = false;
+    bool rightWasPressed = false;
+    bool leftWasPressed = false;
     bool rWasPressed = false;
   
     vulkanEngine.loadCaption("Press SPACE to pause/resume, R to restart, LEFT/RIGHT to navigate.");
@@ -57,7 +57,7 @@ int main(const int argc, char* argv[])
       if (rightIsPressed) {
         if (!rightWasPressed) {
           // Key was just pressed (first frame)
-          navigateFrames(parser, currentFrameIndex, 1);
+          navigateFrames(parser, currentFrameIndex, 10);
           
         } else {
           // Key is being held down
@@ -66,7 +66,7 @@ int main(const int argc, char* argv[])
             if (parser.getState() != AVParser::MediaState::MANUAL) {
               parser.pause();
             }
-            navigateFrames(parser, currentFrameIndex, 1);
+            navigateFrames(parser, currentFrameIndex, 5);
           }
         }
       } else {
@@ -78,12 +78,12 @@ int main(const int argc, char* argv[])
          
         }
       }
- 
+      rightWasPressed = rightIsPressed;
       const bool leftIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_LEFT);
       if (leftIsPressed) {
         if (!leftWasPressed) {
           // Key was just pressed (first frame)
-          navigateFrames(parser, currentFrameIndex, -1);
+          navigateFrames(parser, currentFrameIndex, -10);
           
         } else {
           // Key is being held down
@@ -92,7 +92,7 @@ int main(const int argc, char* argv[])
             if (parser.getState() != AVParser::MediaState::MANUAL) {
               parser.pause();
             }
-            navigateFrames(parser, currentFrameIndex, -1);
+            navigateFrames(parser, currentFrameIndex, -5);
            
           }
         }
@@ -105,6 +105,7 @@ int main(const int argc, char* argv[])
       
         }
       }
+      leftWasPressed = leftIsPressed;
       const bool rIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_R);
       if (rIsPressed && !rWasPressed) {
         parser.loadFrameAt(0);
@@ -220,6 +221,10 @@ void navigateFrames(AVParser::MediaParser& parser, const uint32_t currentframe, 
   if (n > 0) {
     parser.loadFrameAt((currentframe + n > maxframes) ? maxframes : (currentframe + n));
   } else {
-    parser.loadFrameAt((currentframe + n <= 1) ? 1 : (currentframe + n));
+    if (currentframe <= 1 || currentframe + n <= 1){
+      parser.loadFrameAt(1);
+      return;
+    }
+    parser.loadFrameAt((currentframe + n < 1) ? 1 : (currentframe + n));
   }
 }
