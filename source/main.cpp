@@ -10,7 +10,7 @@
 constexpr VkEngine::VulkanEngineOptions vulkanEngineOptions {
   .WINDOW_WIDTH = 1000,
   .WINDOW_HEIGHT = 600,
-  .WINDOW_TITLE = "Medos Media Player"
+  .WINDOW_TITLE = "Medos"
 };
 
 void displayControls(AVParser::MediaParser& parser);
