@@ -145,7 +145,7 @@ jobs:
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -S ${{ github.workspace }}
-          -DWHISPER_USE_VULKAN=${{ (matrix.os == 'windows-latest' || matrix.os == 'macos-latest' || matrix.os == 'ubuntu-22.04') && 'ON' || 'OFF' }}
+          -DWHISPER_USE_VULKAN=${{ (matrix.os == 'windows-latest' || matrix.os == 'ubuntu-22.04') && 'ON' || 'OFF' }}
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
