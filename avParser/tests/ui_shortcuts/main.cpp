@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 
 void displayControls(AVParser::MediaParser& parser);
-void navigateFrames(AVParser::MediaParser& parser, const uint32_t,int);
+void navigateFrames(AVParser::MediaParser& parser, uint32_t, int);
 
 int main(const int argc, char* argv[])
 {
