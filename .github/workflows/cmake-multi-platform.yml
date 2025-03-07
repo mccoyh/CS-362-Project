@@ -3,6 +3,7 @@ name: CMake on multiple platforms
 on:
   push:
     branches: [ "main" ]
+    branches: ["Build-release-w/-whisper-using-vulkan"]
   pull_request:
     branches: [ "main" ]
 
