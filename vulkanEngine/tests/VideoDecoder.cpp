@@ -1,6 +1,12 @@
 #include "VideoDecoder.h"
 #include <stdexcept>
 
+extern "C" {
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libswscale/swscale.h>
+}
+
 VideoDecoder::VideoDecoder(const char *filename)
 {
   if (avformat_open_input(&fmtCtx, filename, nullptr, nullptr) < 0)
