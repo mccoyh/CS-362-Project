@@ -81,6 +81,10 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     whisper
 )
 
+target_include_directories(${PROJECT_NAME} PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
 #Create Include Headers
 IF (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL ${CMAKE_SOURCE_DIR}/AudioToTxt/source)
     file(COPY

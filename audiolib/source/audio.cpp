@@ -21,7 +21,7 @@ namespace Audio {
     // Converts mp4 to wav, pulls audio from video
     void convertWav(const std::string& input, const std::string& output) {
         if(exists(input)){
-            system(("ffmpeg -i " + input + " " + output + ".wav").c_str());
+            system(("ffmpeg -i " + input + " " + output + ".wav -y").c_str());
         }
     }
 
