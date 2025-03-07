@@ -122,9 +122,21 @@ jobs:
           echo "DYLD_LIBRARY_PATH=$VULKAN_SDK/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
           echo "VK_ICD_FILENAMES=$VULKAN_SDK/etc/vulkan/icd.d/MoltenVK_icd.json" >> $GITHUB_ENV
           echo "VK_LAYER_PATH=$VULKAN_SDK/etc/vulkan/layer.d" >> $GITHUB_ENV
-      - name: Check Vulkan SDK Version
+
+      - name: Verify Vulkan SDK version
         run: |
-          $VULKAN_SDK/bin/glslc --version
+          if [ -n "$VULKAN_SDK" ]; then
+            # For macOS/Linux
+            $VULKAN_SDK/bin/vulkaninfo | grep "Vulkan API version"
+            $VULKAN_SDK/bin/glslc --version
+          else
+            # For Windows (cmd)
+            echo "Vulkan SDK Path: %VULKAN_SDK%"
+            %VULKAN_SDK%\bin\vulkaninfo.exe | findstr "Vulkan API version"
+            %VULKAN_SDK%\bin\glslc.exe --version
+          fi
+        shell: bash
+
       - name: Configure CMake
         run: >
           cmake -B ${{ steps.strings.outputs.build-output-dir }}
@@ -132,7 +144,7 @@ jobs:
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -S ${{ github.workspace }}
-          -DWHISPER_USE_VULKAN=${{ (matrix.os == 'windows-latest' || matrix.os == 'macos-latest') && 'ON' || 'OFF' }}
+          -DWHISPER_USE_VULKAN=${{ (matrix.os == 'windows-latest' || matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest') && 'ON' || 'OFF' }}
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
