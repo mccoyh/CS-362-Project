@@ -12,4 +12,4 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     ${FFMPEG_LIBRARIES}
 )
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${FFMPEG_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PRIVATE ${FFMPEG_INCLUDE_DIRS})
