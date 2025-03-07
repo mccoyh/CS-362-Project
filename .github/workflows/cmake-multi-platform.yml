@@ -126,13 +126,28 @@ jobs:
       - name: Check Vulkan SDK Version (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          $env:VULKAN_SDK\Bin\glslc.exe --version
+           $env:VULKAN_SDK/Bin/glslc.exe --version
         shell: pwsh
 
       - name: Check Vulkan SDK Version (macOS/Linux)
         if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
         run: |
           $VULKAN_SDK/bin/glslc --version
+        shell: bash
+      # Check if GL_KHR_cooperative_matrix is supported
+      - name: Check for GL_KHR_cooperative_matrix Extension
+        id: check_extension
+        if: matrix.os == 'macos-latest' 
+        run: |
+          EXTENSIONS=$(vulkaninfo | grep "GL_KHR_cooperative_matrix" || true)
+          echo "Extensions: $EXTENSIONS"
+          if [[ -z "$EXTENSIONS" ]]; then
+            echo "GL_KHR_cooperative_matrix is not supported."
+            echo "cooperative_matrix_supported=false" >> $GITHUB_ENV
+          else
+            echo "GL_KHR_cooperative_matrix is supported."
+            echo "cooperative_matrix_supported=true" >> $GITHUB_ENV
+          fi
         shell: bash
 
       - name: Configure CMake
