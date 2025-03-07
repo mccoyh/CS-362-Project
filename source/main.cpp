@@ -89,11 +89,14 @@ void timelineGui(AVParser::MediaParser& parser)
   constexpr float buttonSize = 100.0f; // Adjusted button size to fit text
   constexpr float smallButtonSize = 50.0f; // Adjusted small button size to fit text
 
-  // Center the main playback controls
-  const float centerPos = (windowWidth - (buttonSize * 3 + smallButtonSize * 2)) / 2.0f;
+  // Calculate the total width of all controls
+  constexpr float totalControlsWidth = buttonSize + smallButtonSize * 2; // 1 main button (Play/Pause) + 2 small buttons
+
+  // Center the controls in the window
+  const float centerPos = (windowWidth - totalControlsWidth) / 2.0f;
   ImGui::SetCursorPosX(centerPos);
 
-  // Rewind button (10 seconds)
+  // Rewind button
   if (ImGui::Button("<<", ImVec2(smallButtonSize, 0)))
   {
     navigateFrames(parser, currentFrameIndex, -30);
@@ -103,21 +106,21 @@ void timelineGui(AVParser::MediaParser& parser)
   // Play/Pause button
   if (parser.getState() == AVParser::MediaState::AUTO_PLAYING)
   {
-    if (ImGui::Button("Pause", ImVec2(buttonSize, 0))) // Pause symbol
+    if (ImGui::Button("Pause", ImVec2(buttonSize, 0)))
     {
       parser.pause();
     }
   }
   else
   {
-    if (ImGui::Button("Play", ImVec2(buttonSize, 0))) // Play symbol
+    if (ImGui::Button("Play", ImVec2(buttonSize, 0)))
     {
       parser.play();
     }
   }
   ImGui::SameLine();
 
-  // Fast Forward button (10 seconds)
+  // Fast Forward button
   if (ImGui::Button(">>", ImVec2(smallButtonSize, 0)))
   {
     navigateFrames(parser, currentFrameIndex, 30);
