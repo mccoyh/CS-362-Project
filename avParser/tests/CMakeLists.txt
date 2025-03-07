@@ -1,1 +1,2 @@
 add_subdirectory(avExtraction)
+add_subdirectory(ui_shortcuts)

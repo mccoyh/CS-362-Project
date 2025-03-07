@@ -1,4 +1,4 @@
-project(avExtraction)
+project("ui_shortcuts")
 
 add_executable(${PROJECT_NAME} main.cpp)
 
