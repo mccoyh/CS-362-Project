@@ -109,10 +109,32 @@ jobs:
           ffmpeg -version
 
       - name: Install Vulkan SDK
+        if: matrix.os == 'windows-latest' || matrix.os == 'ubuntu-22.04'
         uses: humbletim/install-vulkan-sdk@main
         with:
           version: 1.3.250.1
           cache: true
+        
+            # Install Vulkan SDK (including MoltenVK for macOS)
+      - name: Install Vulkan SDK with MoltenVK
+        if: matrix.os == 'macos-latest'
+        run: |
+          # Download the Vulkan SDK (includes MoltenVK)
+          curl -L -o vulkansdk.dmg https://vulkan.lunarg.com/sdk/download/1.3.250.1/mac/vulkan-sdk-macos-1.3.250.1.dmg
+          
+          # Mount the DMG file
+          hdiutil mount vulkansdk.dmg
+          
+          # Copy the SDK to a location on the system
+          sudo cp -r /Volumes/VulkanSDK/1.3.250.1/mac/VulkanSDK /usr/local/
+          
+          # Clean up and unmount
+          hdiutil unmount /Volumes/VulkanSDK
+
+          # Create symlinks for Vulkan SDK binaries and libraries
+          sudo ln -s /usr/local/VulkanSDK/1.3.250.1/mac/bin/* /usr/local/bin/
+          sudo ln -s /usr/local/VulkanSDK/1.3.250.1/mac/lib/* /usr/local/lib/
+
 
       - name: Set Vulkan Environment Variables (macOS)
         if: matrix.os == 'macos-latest'
@@ -126,11 +148,12 @@ jobs:
       - name: Check Vulkan SDK Version (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-           $env:VULKAN_SDK/Bin/glslc.exe --version
+          $glslcPath = Join-Path -Path $env:VULKAN_SDK -ChildPath "Bin\glslc.exe"
+          & $glslcPath --version
         shell: pwsh
 
       - name: Check Vulkan SDK Version (macOS/Linux)
-        if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-22.04'
         run: |
           $VULKAN_SDK/bin/glslc --version
         shell: bash
@@ -157,7 +180,7 @@ jobs:
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -S ${{ github.workspace }}
-          -DWHISPER_USE_VULKAN=${{ (matrix.os == 'windows-latest' || matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest') && 'ON' || 'OFF' }}
+          -DWHISPER_USE_VULKAN=${{ (matrix.os == 'windows-latest' || matrix.os == 'macos-latest' || matrix.os == 'ubuntu-22.04') && 'ON' || 'OFF' }}
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
