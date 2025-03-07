@@ -20,6 +20,9 @@ void handleKeyInput(AVParser::MediaParser& parser, const VkEngine::VulkanEngine&
 
 void loadCaptions(const char* asset);
 
+void update(AVParser::MediaParser& parser, VkEngine::VulkanEngine& vulkanEngine, Captions::CaptionCache& captionCache,
+            uint32_t& audioDurationRemaining);
+
 int main(const int argc, char* argv[])
 {
   try
@@ -28,7 +31,7 @@ int main(const int argc, char* argv[])
 
     // Initialize Captions
     loadCaptions(asset);
-    Captions::CaptionCache cache("assets/subtitles.srt");
+    Captions::CaptionCache captionCache{"assets/subtitles.srt"};
 
     // Initialize Audio
     Audio::initSDL();
@@ -36,42 +39,18 @@ int main(const int argc, char* argv[])
     Audio::convertWav(asset, "audio");
 
     const Audio::AudioData audio = Audio::playAudio("audio.wav");
-    uint32_t duration = audio.duration;
+    uint32_t audioDurationRemaining = audio.duration;
 
     // Initialize Graphics
     auto vulkanEngine = VkEngine::VulkanEngine(vulkanEngineOptions);
     ImGui::SetCurrentContext(VkEngine::VulkanEngine::getImGuiContext());
-    const auto gui = vulkanEngine.getImGuiInstance();
 
     // Initialize Media Parser
     auto parser = AVParser::MediaParser(asset);
 
     while (vulkanEngine.isActive())
     {
-      handleKeyInput(parser, vulkanEngine);
-
-      gui->dockBottom("Media Player Controls");
-      gui->setBottomDockPercent(0.3);
-      displayControls(parser);
-
-      parser.update();
-
-      const std::string captionFromCache = cache.getCaptionAtFrame(parser.getCurrentFrameIndex() / parser.getFrameRate() * 100);
-
-      vulkanEngine.loadCaption(captionFromCache.c_str());
-
-      const auto frame = parser.getCurrentFrame();
-
-      vulkanEngine.loadVideoFrame(frame.videoData, frame.frameWidth, frame.frameHeight);
-
-      vulkanEngine.render();
-
-      if (duration > 0)
-      {
-        Audio::delay(1); // checks for extra input every 1 ms
-
-        duration -= 1;
-      }
+      update(parser, vulkanEngine, captionCache, audioDurationRemaining);
     }
 
     Audio::deleteStream(audio.stream);
@@ -276,5 +255,36 @@ void loadCaptions(const char* asset)
   if (Captions::transcribeAudio(modelPath, audioFile, subtitleFile) != 0)
   {
     throw std::runtime_error("Failed to generate subtitles");
+  }
+}
+
+void update(AVParser::MediaParser& parser, VkEngine::VulkanEngine& vulkanEngine, Captions::CaptionCache& captionCache,
+            uint32_t& audioDurationRemaining)
+{
+  const auto gui = vulkanEngine.getImGuiInstance();
+
+  handleKeyInput(parser, vulkanEngine);
+
+  gui->dockBottom("Media Player Controls");
+  gui->setBottomDockPercent(0.3);
+  displayControls(parser);
+
+  parser.update();
+
+  const std::string captionFromCache = captionCache.getCaptionAtFrame(parser.getCurrentFrameIndex() / parser.getFrameRate() * 100);
+
+  vulkanEngine.loadCaption(captionFromCache.c_str());
+
+  const auto frame = parser.getCurrentFrame();
+
+  vulkanEngine.loadVideoFrame(frame.videoData, frame.frameWidth, frame.frameHeight);
+
+  vulkanEngine.render();
+
+  if (audioDurationRemaining > 0)
+  {
+    Audio::delay(1); // checks for extra input every 1 ms
+
+    audioDurationRemaining -= 1;
   }
 }
