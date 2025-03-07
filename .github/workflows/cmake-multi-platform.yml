@@ -162,6 +162,34 @@ jobs:
             Copy-Item -Path "$ffmpegDir/*.dll" -Destination $buildOutputDir -Force
           }
 
+      - name: Test Executable (Graphics)
+        run: |
+          executable="${{ steps.strings.outputs.build-output-dir }}/bin/avExtraction"
+          asset="CS_test.mp4"
+          
+          # Check if the executable exists
+          if [[ ! -f "$executable"]]; then
+            echo "Executable not found!"
+            exit 1
+          fi
+          
+          # Run the executable in the background to see if it launches without crashing
+          # You can redirect any standard output or errors to capture logs
+          "$executable" "$asset" > "$GITHUB_WORKSPACE/executable_output.log" 2>&1 &
+          
+          # Wait for a few seconds to allow the executable to initialize
+          sleep 10
+
+          # Check if the process is still running (if it exits prematurely, it indicates failure)
+          if ps -p $! > /dev/null; then
+            echo "Executable ran successfully."
+            kill $!  # Kill the process after checking it's running
+          else
+            echo "Executable failed to run or crashed."
+            cat "$GITHUB_WORKSPACE/executable_output.log"  # Print logs for debugging
+            exit 1
+          fi
+
       - name: Zip Artifacts
         shell: pwsh
         run: |
