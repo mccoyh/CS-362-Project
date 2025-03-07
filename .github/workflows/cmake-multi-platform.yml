@@ -114,16 +114,6 @@ jobs:
           version: 1.3.250.1
           cache: true
 
-      - name: Set environment variables for Vulkan SDK ubuntu
-        if: matrix.os == 'ubuntu-22.04'
-        run: |
-          echo "VULKAN_SDK=/path/to/vulkan-sdk" >> $GITHUB_ENV
-    
-      - name: Set environment variable for Vulkan SDK windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          echo "VULKAN_SDK=C:\VulkanSDK\1.3.250.1" >> $GITHUB_ENV
-
       - name: Set Vulkan Environment Variables (macOS)
         if: matrix.os == 'macos-latest'
         run: |
@@ -169,7 +159,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -S ${{ github.workspace }}
           -DWHISPER_USE_VULKAN=${{ (matrix.os == 'windows-latest' || matrix.os == 'macos-latest' || matrix.os == 'ubuntu-22.04') && 'ON' || 'OFF' }}
-          -DCOOPMAT=${{ env.COOPMAT }}
+          -DCOOPMAT=1
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
