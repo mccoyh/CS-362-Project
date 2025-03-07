@@ -65,10 +65,8 @@ int main(const int argc, char* argv[])
   return EXIT_SUCCESS;
 }
 
-void displayControls(AVParser::MediaParser& parser)
+void timelineGui(AVParser::MediaParser& parser)
 {
-  ImGui::Begin("Media Player Controls");
-
   const float windowWidth = ImGui::GetContentRegionAvail().x;
   ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 6));
 
@@ -124,9 +122,12 @@ void displayControls(AVParser::MediaParser& parser)
   {
     navigateFrames(parser, currentFrameIndex, 30);
   }
-  ImGui::Separator();
+}
 
-  // Bottom row with additional controls
+void volumeGui()
+{
+  constexpr float buttonSize = 100.0f;
+
   // Volume control
   static float volume = 1.0f;
   ImGui::AlignTextToFramePadding();
@@ -135,13 +136,25 @@ void displayControls(AVParser::MediaParser& parser)
   if (ImGui::Button(volume <= 0.01f ? "Mute" : "Unmute", ImVec2(buttonSize, 0)))
   {
     // Toggle mute
-    volume = (volume <= 0.01f) ? 1.0f : 0.0f;
+    volume = volume <= 0.01f ? 1.0f : 0.0f;
   }
   ImGui::SameLine();
   ImGui::PushItemWidth(150);
   ImGui::SliderFloat("##volume", &volume, 0.0f, 1.0f, "%.2f");
   ImGui::PopItemWidth();
   ImGui::PopStyleVar();
+}
+
+void displayControls(AVParser::MediaParser& parser)
+{
+  ImGui::Begin("Media Player Controls");
+
+  timelineGui(parser);
+
+  ImGui::Separator();
+
+  volumeGui();
+
   ImGui::End();
 }
 
