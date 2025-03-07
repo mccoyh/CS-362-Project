@@ -2,6 +2,7 @@
 #define VIDEODECODER_H
 
 #include <vector>
+#include <cstdint>
 
 struct AVFormatContext;
 struct AVCodecContext;
