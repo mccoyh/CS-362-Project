@@ -123,18 +123,16 @@ jobs:
           echo "VK_ICD_FILENAMES=$VULKAN_SDK/etc/vulkan/icd.d/MoltenVK_icd.json" >> $GITHUB_ENV
           echo "VK_LAYER_PATH=$VULKAN_SDK/etc/vulkan/layer.d" >> $GITHUB_ENV
 
-      - name: Verify Vulkan SDK version
+      - name: Check Vulkan SDK Version (Windows)
+        if: matrix.os == 'windows-latest'
         run: |
-          if [ -n "$VULKAN_SDK" ]; then
-            # For macOS/Linux
-            $VULKAN_SDK/bin/vulkaninfo | grep "Vulkan API version"
-            $VULKAN_SDK/bin/glslc --version
-          else
-            # For Windows (cmd)
-            echo "Vulkan SDK Path: %VULKAN_SDK%"
-            %VULKAN_SDK%\bin\vulkaninfo.exe | findstr "Vulkan API version"
-            %VULKAN_SDK%\bin\glslc.exe --version
-          fi
+          $env:VULKAN_SDK\Bin\glslc.exe --version
+        shell: pwsh
+
+      - name: Check Vulkan SDK Version (macOS/Linux)
+        if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
+        run: |
+          $VULKAN_SDK/bin/glslc --version
         shell: bash
 
       - name: Configure CMake
