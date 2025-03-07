@@ -343,6 +343,11 @@ namespace VkEngine {
     ImGui::End();
   }
 
+  bool VulkanEngine::keyIsPressed(const int key) const
+  {
+    return window->keyIsPressed(key);
+  }
+
   void VulkanEngine::renderCaption(const ImVec2& imagePos) const
   {
     // Define padding for the box

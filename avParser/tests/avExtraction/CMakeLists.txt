@@ -1,4 +1,4 @@
-project("avExtraction")
+project(avExtraction)
 
 add_executable(${PROJECT_NAME} main.cpp)
 

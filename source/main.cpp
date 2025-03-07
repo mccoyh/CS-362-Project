@@ -107,7 +107,7 @@ void extractFrames(const std::string& inputFile) {
 
 int main() {
     try {
-        extractFrames("");  // Replace with your input file path
+        extractFrames("assets/turtles.mp4");  // Replace with your input file path
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
         return -1;
