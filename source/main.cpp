@@ -154,103 +154,102 @@ void navigateFrames(AVParser::MediaParser& parser, const uint32_t currentframe, 
 
 void handleKeyInput(AVParser::MediaParser& parser, const VkEngine::VulkanEngine& vulkanEngine)
 {
-  // For debouncing key presses
-  static bool spaceWasPressed = false;
-  static bool rightWasPressed = false;
-  static bool leftWasPressed = false;
-  static bool rWasPressed = false;
+  // Struct to track key state for each key
+  struct KeyState {
+    bool wasPressed = false;
+    int holdCounter = 0;
+  };
+
+  // Static map to track all key states
+  static std::unordered_map<int, KeyState> keyStates;
 
   const uint32_t currentFrameIndex = parser.getCurrentFrameIndex();
 
-  // Handle keyboard input using keyIsPressed
-  const bool spaceIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_SPACE);
-  if (spaceIsPressed && !spaceWasPressed)
+  // Helper functions
+  auto processKeyPress = [&](const int key, auto&& action)
   {
-    if (parser.getState() == AVParser::MediaState::PAUSED)
-    {
-      parser.play();
-    }
-    else if (parser.getState() == AVParser::MediaState::AUTO_PLAYING)
-    {
-      parser.pause();
-    }
-  }
-  spaceWasPressed = spaceIsPressed;
+    const bool isPressed = vulkanEngine.keyIsPressed(key);
+    auto&[wasPressed, holdCounter] = keyStates[key];
 
-  const bool rightIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_RIGHT);
-  if (rightIsPressed)
-  {
-    if (!rightWasPressed)
+    if (isPressed && !wasPressed)
     {
-      // Key was just pressed (first frame)
-      navigateFrames(parser, currentFrameIndex, 10);
+      // Key was just pressed
+      action(true, false, holdCounter);
     }
-    else
+    else if (isPressed)
     {
       // Key is being held down
-      static int holdCounter = 0;
-      if (++holdCounter % 10 == 0) // Every 10 frames while holding
+      holdCounter++;
+      action(false, true, holdCounter);
+    }
+    else if (!isPressed && wasPressed)
+    {
+      // Key was just released
+      action(false, false, holdCounter);
+      holdCounter = 0;
+    }
+
+    wasPressed = isPressed;
+  };
+
+  // Handle play/pause toggle (Space)
+  processKeyPress(GLFW_KEY_SPACE, [&](bool justPressed, bool held, int counter)
+  {
+    if (justPressed)
+    {
+      if (parser.getState() == AVParser::MediaState::PAUSED)
+      {
+        parser.play();
+      }
+      else if (parser.getState() == AVParser::MediaState::AUTO_PLAYING)
+      {
+        parser.pause();
+      }
+    }
+  });
+
+  // Helper function for frame navigation keys with common behavior
+  auto handleNavKey = [&](const int key, const int initialJump, const int holdJump)
+  {
+    processKeyPress(key, [&](const bool justPressed, const bool held, const int counter)
+    {
+      if (justPressed)
+      {
+        navigateFrames(parser, currentFrameIndex, initialJump);
+      }
+      else if (held && counter % 10 == 0)
       {
         if (parser.getState() != AVParser::MediaState::MANUAL)
         {
           parser.pause();
         }
-        navigateFrames(parser, currentFrameIndex, 5);
+        navigateFrames(parser, currentFrameIndex, holdJump);
       }
-    }
-  }
-  else
-  {
-    // Reset counter when key is released
-    if (rightWasPressed)
-    {
-      if (parser.getState() != AVParser::MediaState::MANUAL)
+      else if (!held && !justPressed && counter > 0)
       {
-        parser.play();
-      }
-    }
-  }
-  rightWasPressed = rightIsPressed;
-  const bool leftIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_LEFT);
-  if (leftIsPressed)
-  {
-    if (!leftWasPressed)
-    {
-      // Key was just pressed (first frame)
-      navigateFrames(parser, currentFrameIndex, -10);
-    }
-    else
-    {
-      // Key is being held down
-      static int holdCounter = 0;
-      if (++holdCounter % 10 == 0) // Every 10 frames while holding
-      {
+        // Just released after being held
         if (parser.getState() != AVParser::MediaState::MANUAL)
         {
-          parser.pause();
+          parser.play();
         }
-        navigateFrames(parser, currentFrameIndex, -5);
       }
-    }
-  }
-  else
+    });
+  };
+
+  // Handle right key (forward)
+  handleNavKey(GLFW_KEY_RIGHT, 10, 5);
+
+  // Handle left key (backward)
+  handleNavKey(GLFW_KEY_LEFT, -10, -5);
+
+  // Handle reset to beginning (R key)
+  processKeyPress(GLFW_KEY_R, [&](const bool justPressed, bool held, int counter)
   {
-    // Reset counter when key is released
-    if (leftWasPressed)
+    if (justPressed)
     {
-      if (parser.getState() != AVParser::MediaState::MANUAL)
-      {
-        parser.play();
-      }
+      parser.loadFrameAt(0);
     }
-  }
-  leftWasPressed = leftIsPressed;
-  const bool rIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_R);
-  if (rIsPressed && !rWasPressed)
-  {
-    parser.loadFrameAt(0);
-  }
-  rWasPressed = rIsPressed;
+  });
 }
 
 void loadCaptions(const char* asset)
