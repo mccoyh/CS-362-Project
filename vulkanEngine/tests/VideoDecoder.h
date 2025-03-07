@@ -1,15 +1,13 @@
 #ifndef VIDEODECODER_H
 #define VIDEODECODER_H
 
+extern "C" {
+  #include <libavformat/avformat.h>
+  #include <libavcodec/avcodec.h>
+  #include <libswscale/swscale.h>
+}
 #include <vector>
 #include <cstdint>
-
-struct AVFormatContext;
-struct AVCodecContext;
-struct AVFrame;
-struct AVPacket;
-struct SwsContext;
-struct AVCodec;
 
 class VideoDecoder {
 public:
