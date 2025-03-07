@@ -119,7 +119,7 @@ jobs:
         if: matrix.os == 'macos-latest'
         uses: humbletim/install-vulkan-sdk@main
         with:
-          version: 1.3.999.1
+          version: 1.3.250.1
           cache: true
 
       # Check if GL_KHR_cooperative_matrix is supported
