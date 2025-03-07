@@ -13,7 +13,6 @@ int main(const int argc, char* argv[]) {
 
     const std::filesystem::path audioFile = assetsPath / "audio.pcm";
     const std::filesystem::path subtitleFile = assetsPath / "subtitles.srt";
-    const std::filesystem::path outputVideo = assetsPath / "output_with_subtitles_turbo.mp4";
     const std::filesystem::path modelPath = exePath / "models" / "ggml-large-v3-turbo-q5_0.bin"; //"ggml-base.bin"
 
     std::cout <<"pwd: " << exePath << std::endl 

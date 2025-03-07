@@ -87,4 +87,12 @@ namespace Audio {
     void changeSpeed(SDL_AudioStream* stream, float speed){
         SDL_SetAudioStreamFrequencyRatio(stream, speed);
     }
+
+    void changeVolume(SDL_AudioStream* stream, float volume){
+        SDL_SetAudioStreamGain(stream, volume);
+    }
+
+    void mute(SDL_AudioStream* stream){
+        changeVolume(stream, 0);
+    }
 } // namespace Audio

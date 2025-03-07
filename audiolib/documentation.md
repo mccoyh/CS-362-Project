@@ -73,6 +73,17 @@ Checks if an audio stream is paused.
 
 Changes the playback speed and pitch of an audio stream.
 
+### `void changeVolume(SDL_AudioStream* stream, float volume);`
+- **stream**: A pointer to an SDL_AudioStream.
+- **volume**: A float value containing the volume to play audio at. 1 = no change, 0 = silence, 1< = louder output, 1> = quieter output.
+
+Changes the volume of an audio stream.
+
+### `void mute(SDL_AudioStream* stream);`
+- **stream**: A pointer to an SDL_AudioStream.
+
+Mutes an audio stream (set volume to 0).
+
 ## Example Usage
 
 ```cpp
