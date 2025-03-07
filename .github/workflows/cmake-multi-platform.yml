@@ -30,9 +30,6 @@ jobs:
             c_compiler: cl
             cpp_compiler: cl
           - os: 'ubuntu-22.04'
-            c_compiler: gcc
-            cpp_compiler: g++
-          - os: 'ubuntu-22.04'
             c_compiler: clang
             cpp_compiler: clang++
           - os: macos-latest
@@ -43,6 +40,9 @@ jobs:
             c_compiler: gcc
           - os: windows-latest
             c_compiler: clang
+          - os: 'ubuntu-22.04'
+            c_compiler: gcc
+            cpp_compiler: g++
           - os: 'ubuntu-22.04'
             c_compiler: cl
           - os: macos-latest
@@ -107,11 +107,11 @@ jobs:
           echo "Installed FFmpeg version:"
           ffmpeg -version
 
-#      - name: Install Vulkan SDK
-#        uses: humbletim/install-vulkan-sdk@main
-#        with:
-#          version: 1.3.250.1
-#          cache: true
+      - name: Install Vulkan SDK
+        uses: humbletim/install-vulkan-sdk@main
+        with:
+          version: 1.3.250.1
+          cache: true
 
       - name: Configure CMake
         run: >

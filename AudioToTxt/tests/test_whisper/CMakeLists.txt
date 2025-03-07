@@ -9,7 +9,3 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${FFMPEG_INCLUDE_DIRS})
-
-# Display all linked libraries
-get_target_property(linked_libs ${PROJECT_NAME} LINK_LIBRARIES)
-message(STATUS "Target ${PROJECT_NAME} links to: ${linked_libs}")

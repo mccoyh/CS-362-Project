@@ -1,5 +1,4 @@
 project(AVParser)
-include(FetchContent)
 
 set(BUILD_SHARED_LIBS ON)
 
@@ -8,12 +7,7 @@ add_library(${PROJECT_NAME}
   AVParser.h
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-  FFmpeg::avformat
-  FFmpeg::avcodec
-  FFmpeg::swscale
-  FFmpeg::avutil
-)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${FFMPEG_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${FFMPEG_INCLUDE_DIRS})
 
 # Create Include Headers
