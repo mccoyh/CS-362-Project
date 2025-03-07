@@ -126,11 +126,6 @@ jobs:
         shell: pwsh
         run: |
           $buildOutputDir = "${{ steps.strings.outputs.build-output-dir }}/bin"
-          
-          # Create the build output directory if it doesn't exist
-          if (-not (Test-Path $buildOutputDir)) {
-            New-Item -Path $buildOutputDir -ItemType Directory -Force
-          }
 
           if ($env:RUNNER_OS -eq "Linux") {
             Copy-Item -Path "$env:VULKAN_SDK/lib/libvulkan*" -Destination $buildOutputDir -Force
