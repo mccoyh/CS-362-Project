@@ -34,6 +34,8 @@ private:
 
   uint32_t audioDurationRemaining = 0;
 
+  uint32_t previousFrameIndex = 0;
+
   void loadCaptions() const;
 
   void update();

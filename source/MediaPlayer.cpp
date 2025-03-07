@@ -29,6 +29,9 @@ void MediaPlayer::run()
   audioData = Audio::playAudio("audio.wav");
   audioDurationRemaining = audioData.duration;
 
+  const auto frame = parser->getCurrentFrame();
+  vulkanEngine->loadVideoFrame(frame.videoData, frame.frameWidth, frame.frameHeight);
+
   while (vulkanEngine->isActive())
   {
     update();
@@ -71,9 +74,14 @@ void MediaPlayer::update()
 
   vulkanEngine->loadCaption(captionFromCache.c_str());
 
-  const auto frame = parser->getCurrentFrame();
+  if (const uint32_t currentFrameIndex = parser->getCurrentFrameIndex(); currentFrameIndex != previousFrameIndex)
+  {
+    const auto frame = parser->getCurrentFrame();
 
-  vulkanEngine->loadVideoFrame(frame.videoData, frame.frameWidth, frame.frameHeight);
+    vulkanEngine->loadVideoFrame(frame.videoData, frame.frameWidth, frame.frameHeight);
+
+    previousFrameIndex = currentFrameIndex;
+  }
 
   vulkanEngine->render();
 
