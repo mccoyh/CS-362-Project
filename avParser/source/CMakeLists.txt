@@ -9,7 +9,7 @@ add_library(${PROJECT_NAME}
 )
 
 # Specify the components FFmpeg should have available
-set(FFMPEG_COMPONENTS avcodec avformat swscale avutil swresample)
+set(FFMPEG_COMPONENTS avcodec avformat swscale avutil)
 
 # Find FFmpeg package
 find_package(FFmpeg REQUIRED COMPONENTS ${FFMPEG_COMPONENTS})
