@@ -81,7 +81,7 @@ int main(const int argc, char* argv[])
     {
       parser.update();
 
-      const std::string captionFromCache = cache.getCaptionAtFrame(parser.getCurrentFrameIndex());
+      const std::string captionFromCache = cache.getCaptionAtFrame(parser.getCurrentFrameIndex() / parser.getFrameRate() * 100);
 
       vulkanEngine.loadCaption(captionFromCache.c_str());
 
