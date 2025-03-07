@@ -65,6 +65,23 @@ int main(const int argc, char* argv[])
   return EXIT_SUCCESS;
 }
 
+void menuBarGui()
+{
+  if (ImGui::BeginMainMenuBar())
+  {
+    if (ImGui::BeginMenu("File"))
+    {
+      if (ImGui::MenuItem("Open Media", "Ctrl+O"))
+      {
+        // TODO: Open Video
+      }
+      ImGui::EndMenu();
+    }
+
+    ImGui::EndMainMenuBar();
+  }
+}
+
 void timelineGui(AVParser::MediaParser& parser)
 {
   const float windowWidth = ImGui::GetContentRegionAvail().x;
@@ -150,6 +167,8 @@ void volumeGui()
 
 void displayControls(AVParser::MediaParser& parser)
 {
+  menuBarGui();
+
   ImGui::Begin("Media Player Controls");
 
   timelineGui(parser);
