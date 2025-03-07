@@ -48,6 +48,12 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
+# Specify the components FFmpeg should have available
+set(FFMPEG_COMPONENTS avcodec avformat avutil swscale swresample)
+
+# Find FFmpeg package
+find_package(FFmpeg REQUIRED COMPONENTS ${FFMPEG_COMPONENTS})
+
 add_subdirectory(vulkanEngine)
 
 add_subdirectory(audiolib)
