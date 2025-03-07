@@ -164,74 +164,91 @@ void handleKeyInput(AVParser::MediaParser& parser, const VkEngine::VulkanEngine&
 
   // Handle keyboard input using keyIsPressed
   const bool spaceIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_SPACE);
-  if (spaceIsPressed && !spaceWasPressed) {
-    if (parser.getState() == AVParser::MediaState::PAUSED) {
+  if (spaceIsPressed && !spaceWasPressed)
+  {
+    if (parser.getState() == AVParser::MediaState::PAUSED)
+    {
       parser.play();
-
-    } else if (parser.getState() == AVParser::MediaState::AUTO_PLAYING) {
+    }
+    else if (parser.getState() == AVParser::MediaState::AUTO_PLAYING)
+    {
       parser.pause();
-
     }
   }
   spaceWasPressed = spaceIsPressed;
 
   const bool rightIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_RIGHT);
-  if (rightIsPressed) {
-    if (!rightWasPressed) {
+  if (rightIsPressed)
+  {
+    if (!rightWasPressed)
+    {
       // Key was just pressed (first frame)
       navigateFrames(parser, currentFrameIndex, 10);
-
-    } else {
+    }
+    else
+    {
       // Key is being held down
       static int holdCounter = 0;
-      if (++holdCounter % 10 == 0) {  // Every 10 frames while holding
-        if (parser.getState() != AVParser::MediaState::MANUAL) {
+      if (++holdCounter % 10 == 0) // Every 10 frames while holding
+      {
+        if (parser.getState() != AVParser::MediaState::MANUAL)
+        {
           parser.pause();
         }
         navigateFrames(parser, currentFrameIndex, 5);
       }
     }
-  } else {
+  }
+  else
+  {
     // Reset counter when key is released
-    if (rightWasPressed) {
-      if (parser.getState() != AVParser::MediaState::MANUAL) {
+    if (rightWasPressed)
+    {
+      if (parser.getState() != AVParser::MediaState::MANUAL)
+      {
         parser.play();
       }
-
     }
   }
   rightWasPressed = rightIsPressed;
   const bool leftIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_LEFT);
-  if (leftIsPressed) {
-    if (!leftWasPressed) {
+  if (leftIsPressed)
+  {
+    if (!leftWasPressed)
+    {
       // Key was just pressed (first frame)
       navigateFrames(parser, currentFrameIndex, -10);
-
-    } else {
+    }
+    else
+    {
       // Key is being held down
       static int holdCounter = 0;
-      if (++holdCounter % 10 == 0) {  // Every 10 frames while holding
-        if (parser.getState() != AVParser::MediaState::MANUAL) {
+      if (++holdCounter % 10 == 0) // Every 10 frames while holding
+      {
+        if (parser.getState() != AVParser::MediaState::MANUAL)
+        {
           parser.pause();
         }
         navigateFrames(parser, currentFrameIndex, -5);
-
       }
     }
-  } else {
+  }
+  else
+  {
     // Reset counter when key is released
-    if (leftWasPressed) {
-      if (parser.getState() != AVParser::MediaState::MANUAL) {
+    if (leftWasPressed)
+    {
+      if (parser.getState() != AVParser::MediaState::MANUAL)
+      {
         parser.play();
       }
-
     }
   }
   leftWasPressed = leftIsPressed;
   const bool rIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_R);
-  if (rIsPressed && !rWasPressed) {
+  if (rIsPressed && !rWasPressed)
+  {
     parser.loadFrameAt(0);
-
   }
   rWasPressed = rIsPressed;
 }
