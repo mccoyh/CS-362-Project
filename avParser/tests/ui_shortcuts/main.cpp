@@ -39,7 +39,7 @@ int main(const int argc, char* argv[])
 
     while (vulkanEngine.isActive())
     {
-      uint32_t currentFrameIndex = parser.getCurrentFrameIndex();
+      const uint32_t currentFrameIndex = parser.getCurrentFrameIndex();
       // Handle keyboard input using keyIsPressed
       const bool spaceIsPressed = vulkanEngine.keyIsPressed(GLFW_KEY_SPACE);
       if (spaceIsPressed && !spaceWasPressed) {
@@ -151,7 +151,7 @@ void displayControls(AVParser::MediaParser& parser)
   ImGui::SetCursorPosX((windowWidth - ImGui::CalcItemWidth()) * 0.5f);
 
   // Seek bar (progress bar)
-  if (ImGui::SliderInt("##timeline", reinterpret_cast<int*>(&currentFrameIndex), 0, totalFrames,""))
+  if (ImGui::SliderInt("##timeline", reinterpret_cast<int*>(&currentFrameIndex), 0, static_cast<int>(totalFrames),""))
   {
     parser.loadFrameAt(currentFrameIndex);
   }
