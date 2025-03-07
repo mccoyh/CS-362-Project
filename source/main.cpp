@@ -13,7 +13,7 @@ constexpr VkEngine::VulkanEngineOptions vulkanEngineOptions {
   .WINDOW_TITLE = "Medos"
 };
 
-void displayControls(AVParser::MediaParser& parser);
+void displayControls(AVParser::MediaParser& parser, const Audio::AudioData& audioData);
 void navigateFrames(AVParser::MediaParser& parser, uint32_t, int);
 
 void handleKeyInput(AVParser::MediaParser& parser, const VkEngine::VulkanEngine& vulkanEngine);
@@ -21,7 +21,7 @@ void handleKeyInput(AVParser::MediaParser& parser, const VkEngine::VulkanEngine&
 void loadCaptions(const char* asset);
 
 void update(AVParser::MediaParser& parser, VkEngine::VulkanEngine& vulkanEngine, Captions::CaptionCache& captionCache,
-            uint32_t& audioDurationRemaining);
+            uint32_t& audioDurationRemaining, const Audio::AudioData& audioData);
 
 int main(const int argc, char* argv[])
 {
@@ -38,8 +38,8 @@ int main(const int argc, char* argv[])
 
     Audio::convertWav(asset, "audio");
 
-    const Audio::AudioData audio = Audio::playAudio("audio.wav");
-    uint32_t audioDurationRemaining = audio.duration;
+    const Audio::AudioData audioData = Audio::playAudio("audio.wav");
+    uint32_t audioDurationRemaining = audioData.duration;
 
     // Initialize Graphics
     auto vulkanEngine = VkEngine::VulkanEngine(vulkanEngineOptions);
@@ -50,10 +50,10 @@ int main(const int argc, char* argv[])
 
     while (vulkanEngine.isActive())
     {
-      update(parser, vulkanEngine, captionCache, audioDurationRemaining);
+      update(parser, vulkanEngine, captionCache, audioDurationRemaining, audioData);
     }
 
-    Audio::deleteStream(audio.stream);
+    Audio::deleteStream(audioData.stream);
     Audio::quitSDL();
   }
   catch (const std::exception& e)
@@ -154,7 +154,7 @@ void timelineGui(AVParser::MediaParser& parser)
   }
 }
 
-void volumeGui()
+void volumeGui(const Audio::AudioData& audioData)
 {
   constexpr float buttonSize = 100.0f;
 
@@ -173,9 +173,11 @@ void volumeGui()
   ImGui::SliderFloat("##volume", &volume, 0.0f, 1.0f, "%.2f");
   ImGui::PopItemWidth();
   ImGui::PopStyleVar();
+
+  Audio::changeVolume(audioData.stream, volume);
 }
 
-void displayControls(AVParser::MediaParser& parser)
+void displayControls(AVParser::MediaParser& parser, const Audio::AudioData& audioData)
 {
   menuBarGui();
 
@@ -185,7 +187,7 @@ void displayControls(AVParser::MediaParser& parser)
 
   ImGui::Separator();
 
-  volumeGui();
+  volumeGui(audioData);
 
   ImGui::End();
 }
@@ -318,7 +320,7 @@ void loadCaptions(const char* asset)
 }
 
 void update(AVParser::MediaParser& parser, VkEngine::VulkanEngine& vulkanEngine, Captions::CaptionCache& captionCache,
-            uint32_t& audioDurationRemaining)
+            uint32_t& audioDurationRemaining, const Audio::AudioData& audioData)
 {
   const auto gui = vulkanEngine.getImGuiInstance();
 
@@ -326,7 +328,7 @@ void update(AVParser::MediaParser& parser, VkEngine::VulkanEngine& vulkanEngine,
 
   gui->dockBottom("Media Player Controls");
   gui->setBottomDockPercent(0.3);
-  displayControls(parser);
+  displayControls(parser, audioData);
 
   parser.update();
 
