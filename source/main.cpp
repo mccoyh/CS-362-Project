@@ -14,6 +14,7 @@ constexpr VkEngine::VulkanEngineOptions vulkanEngineOptions {
 };
 
 void displayControls(AVParser::MediaParser& parser, const Audio::AudioData& audioData);
+
 void navigateFrames(AVParser::MediaParser& parser, uint32_t, int);
 
 void handleKeyInput(AVParser::MediaParser& parser, const VkEngine::VulkanEngine& vulkanEngine);
