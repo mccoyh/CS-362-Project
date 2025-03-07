@@ -8,7 +8,7 @@ add_executable(${PROJECT_NAME}
 )
 
 # Specify the components FFmpeg should have available
-set(FFMPEG_COMPONENTS avcodec avformat swscale avutil)
+set(FFMPEG_COMPONENTS avcodec avformat swscale avutil swresample)
 
 # Find FFmpeg package
 find_package(FFmpeg REQUIRED COMPONENTS ${FFMPEG_COMPONENTS})
