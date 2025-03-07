@@ -164,21 +164,18 @@ jobs:
 
       - name: Test Executable (Graphics)
         run: |
-          executable_dir="${{ steps.strings.outputs.build-output-dir }}/bin"
-          executable="avExtraction"
-          argument="CS_test.mp4"
+          executable="${{ steps.strings.outputs.build-output-dir }}/bin/avExtraction"
+          asset="CS_test.mp4"
 
           # Check if the executable exists
-          if [[ ! -f "$executable_dir/$executable" ]]; then
+          if [[ ! -f "$executable" ]]; then
             echo "Executable not found!"
             exit 1
           fi
 
-          # Change to the bin directory
-          cd "$executable_dir" || exit 1
-
-          # Run the executable in the background with the argument
-          "./$executable" "$argument" > "$GITHUB_WORKSPACE/executable_output.log" 2>&1 &
+          # Run the executable in the background to see if it launches without crashing
+          # You can redirect any standard output or errors to capture logs
+          "$executable" "$asset" > "$GITHUB_WORKSPACE/executable_output.log" 2>&1 &
 
           # Wait for a few seconds to allow the executable to initialize
           sleep 10
