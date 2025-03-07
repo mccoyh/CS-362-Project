@@ -18,25 +18,7 @@ void navigateFrames(AVParser::MediaParser& parser, uint32_t, int);
 
 void handleKeyInput(AVParser::MediaParser& parser, const VkEngine::VulkanEngine& vulkanEngine);
 
-void loadCaptions(const char* asset)
-{
-  const std::string assetsPath = "assets/";
-
-  const std::string audioFile = assetsPath + "audio.pcm";
-  const std::string subtitleFile = assetsPath + "subtitles.srt";
-  const std::string outputVideo = assetsPath + "output_with_subtitles_turbo.mp4";
-  const std::string modelPath = "models/ggml-large-v3-turbo-q5_0.bin"; // "ggml-base.bin"
-
-  if (!extractAudio(asset, audioFile))
-  {
-    throw std::runtime_error("Failed to generate formated audio file");
-  }
-
-  if (Captions::transcribeAudio(modelPath, audioFile, subtitleFile) != 0)
-  {
-    throw std::runtime_error("Failed to generate subtitles");
-  }
-}
+void loadCaptions(const char* asset);
 
 int main(const int argc, char* argv[])
 {
@@ -275,4 +257,24 @@ void handleKeyInput(AVParser::MediaParser& parser, const VkEngine::VulkanEngine&
 
   }
   rWasPressed = rIsPressed;
+}
+
+void loadCaptions(const char* asset)
+{
+  const std::string assetsPath = "assets/";
+
+  const std::string audioFile = assetsPath + "audio.pcm";
+  const std::string subtitleFile = assetsPath + "subtitles.srt";
+  const std::string outputVideo = assetsPath + "output_with_subtitles_turbo.mp4";
+  const std::string modelPath = "models/ggml-large-v3-turbo-q5_0.bin"; // "ggml-base.bin"
+
+  if (!extractAudio(asset, audioFile))
+  {
+    throw std::runtime_error("Failed to generate formated audio file");
+  }
+
+  if (Captions::transcribeAudio(modelPath, audioFile, subtitleFile) != 0)
+  {
+    throw std::runtime_error("Failed to generate subtitles");
+  }
 }
