@@ -103,7 +103,7 @@ int main(const int argc, char* argv[])
 
       if (duration > 0)
       {
-        Audio::delay(1); // checks for extra input every 10 ms
+        Audio::delay(1); // checks for extra input every 1 ms
 
         duration -= 1;
       }
