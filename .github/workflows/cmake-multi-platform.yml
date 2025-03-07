@@ -115,13 +115,15 @@ jobs:
           version: 1.3.250.1
           cache: true
 
-      - name: Set environment variables for Vulkan SDK
+      - name: Set environment variables for Vulkan SDK ubuntu
+        if: matrix.os == 'ubuntu-22.04'
         run: |
-          if [ $RUNNER_OS == 'Linux' ]; then
-            echo "VULKAN_SDK=/path/to/vulkan-sdk" >> $GITHUB_ENV
-          elif [ $RUNNER_OS == 'Windows' ]; then
-            echo "VULKAN_SDK=C:\VulkanSDK\1.3.250.1" >> $GITHUB_ENV
-          fi
+          echo "VULKAN_SDK=/path/to/vulkan-sdk" >> $GITHUB_ENV
+    
+      - name: Set environment variable for Vulkan SDK windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          echo "VULKAN_SDK=C:\VulkanSDK\1.3.250.1" >> $GITHUB_ENV
 
       - name: Check Vulkan Extension Support for Ubuntu
         if: matrix.os == 'ubuntu-22.04'
