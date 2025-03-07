@@ -1,4 +1,4 @@
-project(DesktopMediaPlayer)
+project(Medos)
 
 add_executable(${PROJECT_NAME}
   main.cpp
