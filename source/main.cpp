@@ -18,68 +18,51 @@ void navigateFrames(AVParser::MediaParser& parser, uint32_t, int);
 
 void handleKeyInput(AVParser::MediaParser& parser, const VkEngine::VulkanEngine& vulkanEngine);
 
+void loadCaptions(const char* asset)
+{
+  const std::string assetsPath = "assets/";
+
+  const std::string audioFile = assetsPath + "audio.pcm";
+  const std::string subtitleFile = assetsPath + "subtitles.srt";
+  const std::string outputVideo = assetsPath + "output_with_subtitles_turbo.mp4";
+  const std::string modelPath = "models/ggml-large-v3-turbo-q5_0.bin"; // "ggml-base.bin"
+
+  if (!extractAudio(asset, audioFile))
+  {
+    throw std::runtime_error("Failed to generate formated audio file");
+  }
+
+  if (Captions::transcribeAudio(modelPath, audioFile, subtitleFile) != 0)
+  {
+    throw std::runtime_error("Failed to generate subtitles");
+  }
+}
+
 int main(const int argc, char* argv[])
 {
   try
   {
     const auto asset = argc == 2 ? argv[1] : "assets/CS_test.mp4";
 
-    /* begin captions initialization */
+    // Initialize Captions
+    loadCaptions(asset);
+    Captions::CaptionCache cache("assets/subtitles.srt");
 
-    // Path to the assets folder as a string
-    std::string assetsPath = "assets/";
-
-    const std::string audioFile = assetsPath + "audio.pcm";
-    const std::string subtitleFile = assetsPath + "subtitles.srt";
-    const std::string outputVideo = assetsPath + "output_with_subtitles_turbo.mp4";
-    const std::string modelPath = "models/ggml-large-v3-turbo-q5_0.bin"; // "ggml-base.bin"
-
-    std::cout << "Assests path: " << assetsPath << std::endl
-        << "Model path: "<< modelPath << std::endl
-        << "Input file: " << asset << std::endl
-        << "subtitle file: " << subtitleFile << std::endl;
-
-    if (!extractAudio(asset, audioFile))
-    {
-      std::cout << "Failed to generate formated audio file" << std::endl;
-    }
-
-    if (Captions::transcribeAudio(modelPath, audioFile, subtitleFile) != 0)
-    {
-      std::cout << "Failed to generate subtitles" << std::endl;
-    }
-
-    Captions::CaptionCache cache(subtitleFile);
-
-    /* End captions initialization */
-
-    /* begin audio initialization */
+    // Initialize Audio
+    Audio::initSDL();
 
     Audio::convertWav(asset, "audio");
 
-    auto parser = AVParser::MediaParser(asset);
-
-    Audio::initSDL();
-
-    // create and play audio stream
     const Audio::AudioData audio = Audio::playAudio("audio.wav");
     uint32_t duration = audio.duration;
 
-    /* end audio initialization */
-
-    /* Begin Video initialization */
-
-    const auto frameData = parser.getCurrentFrame();
-
-    std::cout << "Frame Width: " << frameData.frameWidth << "\n"
-              << "Frame Height: " << frameData.frameHeight << "\n"
-              << "Total Frames: " << parser.getTotalFrames() << std::endl;
-
+    // Initialize Graphics
     auto vulkanEngine = VkEngine::VulkanEngine(vulkanEngineOptions);
     ImGui::SetCurrentContext(VkEngine::VulkanEngine::getImGuiContext());
     const auto gui = vulkanEngine.getImGuiInstance();
 
-    /* end video initialization */
+    // Initialize Media Parser
+    auto parser = AVParser::MediaParser(asset);
 
     while (vulkanEngine.isActive())
     {
