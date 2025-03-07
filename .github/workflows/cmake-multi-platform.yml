@@ -111,30 +111,9 @@ jobs:
       - name: Install Vulkan SDK
         uses: humbletim/install-vulkan-sdk@main
         with:
-          version: 1.3.250.1
+          version: 1.4.304.1
           cache: true
 
-      - name: Set Vulkan Environment Variables (macOS)
-        if: matrix.os == 'macos-latest'
-        run: |
-          echo "VULKAN_SDK=$VULKAN_SDK" >> $GITHUB_ENV
-          echo "PATH=$VULKAN_SDK/bin:$PATH" >> $GITHUB_ENV
-          echo "DYLD_LIBRARY_PATH=$VULKAN_SDK/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
-          echo "VK_ICD_FILENAMES=$VULKAN_SDK/etc/vulkan/icd.d/MoltenVK_icd.json" >> $GITHUB_ENV
-          echo "VK_LAYER_PATH=$VULKAN_SDK/etc/vulkan/layer.d" >> $GITHUB_ENV
-
-      - name: Check Vulkan SDK Version (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          $glslcPath = Join-Path -Path $env:VULKAN_SDK -ChildPath "Bin\glslc.exe"
-          & $glslcPath --version
-        shell: pwsh
-
-      - name: Check Vulkan SDK Version (macOS/Linux)
-        if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-22.04'
-        run: |
-          $VULKAN_SDK/bin/glslc --version
-        shell: bash
       # Check if GL_KHR_cooperative_matrix is supported
       - name: Check for GL_KHR_cooperative_matrix Extension
         id: check_extension
@@ -159,7 +138,6 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -S ${{ github.workspace }}
           -DWHISPER_USE_VULKAN=${{ (matrix.os == 'windows-latest' || matrix.os == 'macos-latest' || matrix.os == 'ubuntu-22.04') && 'ON' || 'OFF' }}
-          -DCOOPMAT=0
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
