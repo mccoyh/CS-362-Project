@@ -145,13 +145,11 @@ void displayControls(AVParser::MediaParser& parser)
   ImGui::End();
 }
 
-void navigateFrames(AVParser::MediaParser& parser, const uint32_t currentframe, int n){
-  uint32_t maxframes = parser.getTotalFrames();
-  if (n > 0) {
-    parser.loadFrameAt((currentframe + n > maxframes) ? maxframes : (currentframe + n));
-  } else {
-    parser.loadFrameAt((static_cast<int>(currentframe) + n < 0) ? 0 : currentframe + n);
-  }
+void navigateFrames(AVParser::MediaParser& parser, const uint32_t currentframe, const int n)
+{
+  const uint32_t maxFrames = parser.getTotalFrames();
+  const uint32_t newFrame = std::clamp(static_cast<int>(currentframe) + n, 0, static_cast<int>(maxFrames));
+  parser.loadFrameAt(newFrame);
 }
 
 void handleKeyInput(AVParser::MediaParser& parser, const VkEngine::VulkanEngine& vulkanEngine)
