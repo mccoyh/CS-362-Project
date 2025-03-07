@@ -221,10 +221,6 @@ void navigateFrames(AVParser::MediaParser& parser, const uint32_t currentframe, 
   if (n > 0) {
     parser.loadFrameAt((currentframe + n > maxframes) ? maxframes : (currentframe + n));
   } else {
-    if (currentframe <= 1 || currentframe + n <= 1){
-      parser.loadFrameAt(1);
-      return;
-    }
-    parser.loadFrameAt((currentframe + n < 1) ? 1 : (currentframe + n));
+    parser.loadFrameAt((static_cast<int>(currentframe) + n < 0) ? 0 : currentframe + n);
   }
 }
