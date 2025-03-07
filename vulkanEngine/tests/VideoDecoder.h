@@ -7,7 +7,6 @@ extern "C" {
   #include <libswscale/swscale.h>
 }
 #include <vector>
-#include <cstdint>
 
 class VideoDecoder {
 public:

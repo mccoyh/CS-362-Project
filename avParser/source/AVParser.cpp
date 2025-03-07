@@ -2,12 +2,6 @@
 #include <ostream>
 #include <stdexcept>
 
-extern "C" {
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-#include <libswscale/swscale.h>
-}
-
 namespace AVParser {
   MediaParser::MediaParser(const std::string& mediaFile)
     : currentFrame(0), currentVideoData(std::make_shared<std::vector<uint8_t>>()),
