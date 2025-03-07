@@ -58,6 +58,8 @@ private:
   ImGuiID leftDock = 0;
   ImGuiID rightDock = 0;
   ImGuiID centerDock = 0;
+
+  static void setupStyles();
 };
 
 } // VkEngine
