@@ -62,4 +62,4 @@ add_subdirectory(AudioToTxt)
 
 add_subdirectory(avParser)
 
-add_subdirectory(source)
+add_subdirectory(medos)
