@@ -31,8 +31,10 @@ void MediaPlayer::run()
 {
   const auto frame = parser->getCurrentFrame();
   vulkanEngine->loadVideoFrame(frame.videoData, frame.frameWidth, frame.frameHeight);
+  parser->pause();
 
   audioData = Audio::playAudio("audio.wav");
+  Audio::pauseAudio(audioData.stream);
   audioDurationRemaining = audioData.duration;
 
   while (vulkanEngine->isActive())
@@ -181,10 +183,12 @@ void MediaPlayer::handleKeyInput()
       if (parser->getState() == AVParser::MediaState::PAUSED)
       {
         parser->play();
+        Audio::resumeAudio(audioData.stream);
       }
       else if (parser->getState() == AVParser::MediaState::AUTO_PLAYING)
       {
         parser->pause();
+        Audio::pauseAudio(audioData.stream);
       }
     }
   });
@@ -319,6 +323,7 @@ void MediaPlayer::timelineGui()
     if (ImGui::Button("Pause", ImVec2(buttonSize, 0)))
     {
       parser->pause();
+      Audio::pauseAudio(audioData.stream);
     }
   }
   else
@@ -326,6 +331,7 @@ void MediaPlayer::timelineGui()
     if (ImGui::Button("Play", ImVec2(buttonSize, 0)))
     {
       parser->play();
+      Audio::resumeAudio(audioData.stream);
     }
   }
   ImGui::SameLine();
