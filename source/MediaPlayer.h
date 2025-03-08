@@ -6,6 +6,8 @@
 #include <AVParser.h>
 #include <VulkanEngine.h>
 #include <memory>
+#include <thread>
+#include <mutex>
 
 constexpr VkEngine::VulkanEngineOptions vulkanEngineOptions {
   .WINDOW_WIDTH = 1000,
@@ -36,7 +38,17 @@ private:
 
   uint32_t previousFrameIndex = 0;
 
-  void loadCaptions() const;
+  std::thread captionsThread;
+  std::mutex captionsMutex;
+  std::condition_variable captionsCV;
+  bool captionsLoaded = false;
+  bool captionsReady = false;
+
+  void startCaptionsLoading();
+
+  bool areCaptionsLoaded();
+
+  void loadCaptions();
 
   void update();
 
