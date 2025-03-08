@@ -1,6 +1,6 @@
 # Medos Monorepo
 
-A collection of C++ libraries and a cross-platform media player
+A collection of libraries written in C++ and a cross-platform media player.
 
 ## Repository Contents
 - audiolib: A lightweight audio playback library for seamless sound rendering.
