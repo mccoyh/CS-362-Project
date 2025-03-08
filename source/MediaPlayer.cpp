@@ -37,7 +37,7 @@ void MediaPlayer::run()
 
   while (vulkanEngine->isActive())
   {
-    if (areCaptionsLoaded())
+    if (!captionsReady && areCaptionsLoaded())
     {
       if (captionsThread.joinable())
       {
