@@ -16,6 +16,11 @@ constexpr VkEngine::VulkanEngineOptions vulkanEngineOptions {
   .WINDOW_TITLE = "Medos"
 };
 
+constexpr VkEngine::VulkanEngineOptions fullscreenVulkanEngineOptions {
+  .FULLSCREEN = true,
+  .WINDOW_TITLE = "Medos"
+};
+
 class MediaPlayer {
 public:
   explicit MediaPlayer(const char* asset);
@@ -44,6 +49,14 @@ private:
   std::condition_variable captionsCV;
   bool captionsLoaded = false;
   bool captionsReady = false;
+
+  bool showMediaControls = true;
+
+  bool fullscreen = false;
+
+  bool shouldRecreateWindow = true;
+
+  void createWindow();
 
   void startCaptionsLoading();
 

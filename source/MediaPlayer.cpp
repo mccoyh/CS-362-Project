@@ -5,15 +5,14 @@
 #include <filesystem>
 
 MediaPlayer::MediaPlayer(const char* asset)
-  : asset{asset}, vulkanEngine{std::make_unique<VkEngine::VulkanEngine>(vulkanEngineOptions)},
-    parser{std::make_unique<AVParser::MediaParser>(asset)}
+  : asset{asset}, parser{std::make_unique<AVParser::MediaParser>(asset)}
 {
   startCaptionsLoading();
 
   Audio::initSDL();
   Audio::convertWav(asset, "audio");
 
-  ImGui::SetCurrentContext(VkEngine::VulkanEngine::getImGuiContext());
+  createWindow();
 }
 
 MediaPlayer::~MediaPlayer()
@@ -29,8 +28,8 @@ MediaPlayer::~MediaPlayer()
 
 void MediaPlayer::run()
 {
-  const auto frame = parser->getCurrentFrame();
-  vulkanEngine->loadVideoFrame(frame.videoData, frame.frameWidth, frame.frameHeight);
+  const auto initialFrame = parser->getCurrentFrame();
+  vulkanEngine->loadVideoFrame(initialFrame.videoData, initialFrame.frameWidth, initialFrame.frameHeight);
   parser->pause();
 
   audioData = Audio::playAudio("audio.wav");
@@ -39,6 +38,18 @@ void MediaPlayer::run()
 
   while (vulkanEngine->isActive())
   {
+    if (shouldRecreateWindow)
+    {
+      parser->pause();
+      Audio::pauseAudio(audioData.stream);
+
+      vulkanEngine.reset();
+      createWindow();
+      const auto currentFrame = parser->getCurrentFrame();
+      vulkanEngine->loadVideoFrame(currentFrame.videoData, currentFrame.frameWidth, currentFrame.frameHeight);
+      continue;
+    }
+
     if (!captionsReady && areCaptionsLoaded())
     {
       if (captionsThread.joinable())
@@ -54,6 +65,14 @@ void MediaPlayer::run()
 
     update();
   }
+}
+
+void MediaPlayer::createWindow()
+{
+  vulkanEngine = std::make_unique<VkEngine::VulkanEngine>(fullscreen ? fullscreenVulkanEngineOptions : vulkanEngineOptions);
+  ImGui::SetCurrentContext(VkEngine::VulkanEngine::getImGuiContext());
+
+  shouldRecreateWindow = false;
 }
 
 void MediaPlayer::startCaptionsLoading()
@@ -241,15 +260,18 @@ void MediaPlayer::displayGui()
 {
   menuBarGui();
 
-  ImGui::Begin("Media Player Controls");
+  if (showMediaControls)
+  {
+    ImGui::Begin("Media Player Controls");
 
-  timelineGui();
+    timelineGui();
 
-  ImGui::Separator();
+    ImGui::Separator();
 
-  volumeGui();
+    volumeGui();
 
-  ImGui::End();
+    ImGui::End();
+  }
 }
 
 void MediaPlayer::menuBarGui()
@@ -270,6 +292,23 @@ void MediaPlayer::menuBarGui()
       if (ImGui::MenuItem("Controls"))
       {
         // TODO: Open Controls Dialogue
+      }
+
+      ImGui::EndMenu();
+    }
+
+    if (ImGui::BeginMenu("Options"))
+    {
+      if (ImGui::MenuItem(showMediaControls ? "Hide Media Controls" : "Show Media Controls"))
+      {
+        showMediaControls = !showMediaControls;
+      }
+
+      if (ImGui::MenuItem(fullscreen ? "Go Windowed" : "Go Fullscreen"))
+      {
+        fullscreen = !fullscreen;
+
+        shouldRecreateWindow = true;
       }
 
       ImGui::EndMenu();
