@@ -4,18 +4,18 @@ A collection of C++ libraries and a cross-platform media player
 
 ## Repository Contents
 - audiolib: A lightweight audio playback library for seamless sound rendering.
-- AudioToTxt: A transcription library that generates accurate captions and transcripts from audio files.
-- AVParser: A media file parsing library that extracts structured data for use in other applications.
-- VulkanEngine: A Vulkan-based rendering engine that provides window creation and efficient video playback.
+- AudioToTxt: A transcription library that converts audio files into accurate captions and transcripts using AI.
+- AVParser: A media file parsing library that extracts structured data for further processing.
+- VulkanEngine: A Vulkan-based rendering engine for efficient video playback and window management.
 
 ## Installation
 
-For detailed build instructions, please refer to [SETUP.md](SETUP.md).
+To set up the project, follow the instructions in [SETUP.md](SETUP.md).
 
 ## Project Overview
 
-For more information about the project, check the [Proposal.md](Proposal.md).
+For a deeper understanding of the project’s goals and architecture, refer to [Proposal.md](Proposal.md).
 
 ## Tests
 
-For information about project tests, refer to [TEST.md](TEST.md).
+To learn about the project's testing procedures, see [TEST.md](TEST.md).
