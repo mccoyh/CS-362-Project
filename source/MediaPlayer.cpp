@@ -40,10 +40,6 @@ void MediaPlayer::run()
   {
     if (shouldRecreateWindow)
     {
-      parser->pause();
-      Audio::pauseAudio(audioData.stream);
-
-      vulkanEngine.reset();
       createWindow();
       const auto currentFrame = parser->getCurrentFrame();
       vulkanEngine->loadVideoFrame(currentFrame.videoData, currentFrame.frameWidth, currentFrame.frameHeight);
@@ -67,8 +63,23 @@ void MediaPlayer::run()
   }
 }
 
+void MediaPlayer::toggleFullscreen()
+{
+  fullscreen = !fullscreen;
+
+  shouldRecreateWindow = true;
+}
+
 void MediaPlayer::createWindow()
 {
+  if (vulkanEngine != nullptr)
+  {
+    parser->pause();
+    Audio::pauseAudio(audioData.stream);
+
+    vulkanEngine.reset();
+  }
+
   vulkanEngine = std::make_unique<VkEngine::VulkanEngine>(fullscreen ? fullscreenVulkanEngineOptions : vulkanEngineOptions);
   ImGui::SetCurrentContext(VkEngine::VulkanEngine::getImGuiContext());
 
@@ -212,6 +223,15 @@ void MediaPlayer::handleKeyInput()
     }
   });
 
+  // Handle play/pause toggle (Space)
+  processKeyPress(GLFW_KEY_F11, [&](bool justPressed, bool held, int counter)
+  {
+    if (justPressed)
+    {
+      toggleFullscreen();
+    }
+  });
+
   // Helper function for frame navigation keys with common behavior
   auto handleNavKey = [&](const int key, const int initialJump, const int holdJump)
   {
@@ -304,11 +324,9 @@ void MediaPlayer::menuBarGui()
         showMediaControls = !showMediaControls;
       }
 
-      if (ImGui::MenuItem(fullscreen ? "Go Windowed" : "Go Fullscreen"))
+      if (ImGui::MenuItem(fullscreen ? "Go Windowed" : "Go Fullscreen", "F11"))
       {
-        fullscreen = !fullscreen;
-
-        shouldRecreateWindow = true;
+        toggleFullscreen();
       }
 
       ImGui::EndMenu();

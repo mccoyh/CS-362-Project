@@ -56,6 +56,8 @@ private:
 
   bool shouldRecreateWindow = true;
 
+  void toggleFullscreen();
+
   void createWindow();
 
   void startCaptionsLoading();
