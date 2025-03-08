@@ -8,6 +8,7 @@
 #include <memory>
 #include <thread>
 #include <mutex>
+#include <condition_variable>
 
 constexpr VkEngine::VulkanEngineOptions vulkanEngineOptions {
   .WINDOW_WIDTH = 1000,
