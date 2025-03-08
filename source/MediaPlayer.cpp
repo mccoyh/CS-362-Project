@@ -5,15 +5,14 @@
 #include <filesystem>
 
 MediaPlayer::MediaPlayer(const char* asset)
-  : asset{asset}, vulkanEngine{std::make_unique<VkEngine::VulkanEngine>(vulkanEngineOptions)},
-    parser{std::make_unique<AVParser::MediaParser>(asset)}
+  : asset{asset}, parser{std::make_unique<AVParser::MediaParser>(asset)}
 {
   startCaptionsLoading();
 
   Audio::initSDL();
   Audio::convertWav(asset, "audio");
 
-  ImGui::SetCurrentContext(VkEngine::VulkanEngine::getImGuiContext());
+  createWindow();
 }
 
 MediaPlayer::~MediaPlayer()
@@ -29,8 +28,8 @@ MediaPlayer::~MediaPlayer()
 
 void MediaPlayer::run()
 {
-  const auto frame = parser->getCurrentFrame();
-  vulkanEngine->loadVideoFrame(frame.videoData, frame.frameWidth, frame.frameHeight);
+  const auto initialFrame = parser->getCurrentFrame();
+  vulkanEngine->loadVideoFrame(initialFrame.videoData, initialFrame.frameWidth, initialFrame.frameHeight);
   parser->pause();
 
   audioData = Audio::playAudio("audio.wav");
@@ -39,6 +38,14 @@ void MediaPlayer::run()
 
   while (vulkanEngine->isActive())
   {
+    if (shouldRecreateWindow)
+    {
+      createWindow();
+      const auto currentFrame = parser->getCurrentFrame();
+      vulkanEngine->loadVideoFrame(currentFrame.videoData, currentFrame.frameWidth, currentFrame.frameHeight);
+      continue;
+    }
+
     if (!captionsReady && areCaptionsLoaded())
     {
       if (captionsThread.joinable())
@@ -54,6 +61,29 @@ void MediaPlayer::run()
 
     update();
   }
+}
+
+void MediaPlayer::toggleFullscreen()
+{
+  fullscreen = !fullscreen;
+
+  shouldRecreateWindow = true;
+}
+
+void MediaPlayer::createWindow()
+{
+  if (vulkanEngine != nullptr)
+  {
+    parser->pause();
+    Audio::pauseAudio(audioData.stream);
+
+    vulkanEngine.reset();
+  }
+
+  vulkanEngine = std::make_unique<VkEngine::VulkanEngine>(fullscreen ? fullscreenVulkanEngineOptions : vulkanEngineOptions);
+  ImGui::SetCurrentContext(VkEngine::VulkanEngine::getImGuiContext());
+
+  shouldRecreateWindow = false;
 }
 
 void MediaPlayer::startCaptionsLoading()
@@ -103,6 +133,7 @@ void MediaPlayer::update()
   handleKeyInput();
 
   gui->dockBottom("Media Player Controls");
+  gui->dockBottom("Special Effects");
   gui->setBottomDockPercent(0.3);
   displayGui();
 
@@ -193,6 +224,15 @@ void MediaPlayer::handleKeyInput()
     }
   });
 
+  // Handle play/pause toggle (Space)
+  processKeyPress(GLFW_KEY_F11, [&](bool justPressed, bool held, int counter)
+  {
+    if (justPressed)
+    {
+      toggleFullscreen();
+    }
+  });
+
   // Helper function for frame navigation keys with common behavior
   auto handleNavKey = [&](const int key, const int initialJump, const int holdJump)
   {
@@ -241,15 +281,27 @@ void MediaPlayer::displayGui()
 {
   menuBarGui();
 
-  ImGui::Begin("Media Player Controls");
+  if (showControls.media)
+  {
+    ImGui::Begin("Media Player Controls");
 
-  timelineGui();
+    timelineGui();
 
-  ImGui::Separator();
+    ImGui::Separator();
 
-  volumeGui();
+    volumeGui();
 
-  ImGui::End();
+    ImGui::End();
+  }
+
+  if (showControls.sfx)
+  {
+    ImGui::Begin("Special Effects");
+
+    sfxGui();
+
+    ImGui::End();
+  }
 }
 
 void MediaPlayer::menuBarGui()
@@ -270,6 +322,26 @@ void MediaPlayer::menuBarGui()
       if (ImGui::MenuItem("Controls"))
       {
         // TODO: Open Controls Dialogue
+      }
+
+      ImGui::EndMenu();
+    }
+
+    if (ImGui::BeginMenu("Options"))
+    {
+      if (ImGui::MenuItem(showControls.media ? "Hide Media Controls" : "Show Media Controls"))
+      {
+        showControls.media = !showControls.media;
+      }
+
+      if (ImGui::MenuItem(showControls.sfx ? "Hide SFX Controls" : "Show SFX Controls"))
+      {
+        showControls.sfx = !showControls.sfx;
+      }
+
+      if (ImGui::MenuItem(fullscreen ? "Go Windowed" : "Go Fullscreen", "F11"))
+      {
+        toggleFullscreen();
       }
 
       ImGui::EndMenu();
@@ -343,7 +415,7 @@ void MediaPlayer::timelineGui()
   }
 }
 
-void MediaPlayer::volumeGui()
+void MediaPlayer::volumeGui() const
 {
   constexpr float buttonSize = 100.0f;
 
@@ -364,6 +436,14 @@ void MediaPlayer::volumeGui()
   ImGui::PopStyleVar();
 
   Audio::changeVolume(audioData.stream, volume);
+}
+
+void MediaPlayer::sfxGui()
+{
+  if (ImGui::Checkbox("Grayscale", &sfx.grayscale))
+  {
+    vulkanEngine->setGrayscale(sfx.grayscale);
+  }
 }
 
 void MediaPlayer::navigateFrames(const int numFrames) const

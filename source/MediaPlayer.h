@@ -16,6 +16,11 @@ constexpr VkEngine::VulkanEngineOptions vulkanEngineOptions {
   .WINDOW_TITLE = "Medos"
 };
 
+constexpr VkEngine::VulkanEngineOptions fullscreenVulkanEngineOptions {
+  .FULLSCREEN = true,
+  .WINDOW_TITLE = "Medos"
+};
+
 class MediaPlayer {
 public:
   explicit MediaPlayer(const char* asset);
@@ -45,6 +50,23 @@ private:
   bool captionsLoaded = false;
   bool captionsReady = false;
 
+  bool fullscreen = false;
+
+  bool shouldRecreateWindow = true;
+
+  struct ShowControls {
+    bool media = true;
+    bool sfx = true;
+  } showControls;
+
+  struct SFX {
+    bool grayscale = false;
+  } sfx;
+
+  void toggleFullscreen();
+
+  void createWindow();
+
   void startCaptionsLoading();
 
   bool areCaptionsLoaded();
@@ -61,7 +83,9 @@ private:
 
   void timelineGui();
 
-  void volumeGui();
+  void volumeGui() const;
+
+  void sfxGui();
 
   void navigateFrames(int numFrames) const;
 };
