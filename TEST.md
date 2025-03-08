@@ -1,9 +1,16 @@
 # Testing
 
-All test executables are written to the `bin` directory after building.
+A suite of tests has been established to ensure proper performance of all libraries that power Medos.
+Since there is currently no simple and accurate way to automate AV playback and AI feature testing, all tests must be run manually.
 
 ## Running Tests
-Each test corresponds to a specific library and functionality. If a test requires an external media file, provide the file path as an argument. If not, you can omit PATH_TO_MEDIA or use built-in asset names.
+Each test corresponds to a specific library and its functionality. If a test requires an external media file, provide the file path as an argument (`PATH_TO_MEDIA`). If the test does not require external media, you can omit this argument or use built-in asset names.
+
+All test executables are located in the `bin` directory after building the project.
+
+## Notes
+- Ensure all required dependencies are installed before running tests. Refer to [SETUP.md](SETUP.md) for setup instructions.
+- For troubleshooting or further details, refer to the respective library documentation.
 
 ## Test Overview
 | **Library**     | **Test Name**     | **Executable**   | **Description**                                                                 | **Run Command**                                      |
@@ -17,8 +24,3 @@ Each test corresponds to a specific library and functionality. If a test require
 |                   | sfx                | `sfx.exe`         | Plays a video file with added effects.                                           | `./sfx.exe PATH_TO_MEDIA`                           |
 |                   | videoDecode        | `videoDecode.exe` | Decodes and plays a video file.                                                 | `./videoDecode.exe PATH_TO_MEDIA`                   |
 |                   | window             | `window.exe`      | Creates an empty window.                                                        | `./window.exe`           |
-
-## Notes
-
- - Ensure all required dependencies are installed before running tests. You can refer to [SETUP.md](SETUP.md) for guidance.
- - For troubleshooting or further details, refer to the respective library documentation.
