@@ -2,9 +2,7 @@ name: CMake on multiple platforms
 
 on:
   push:
-    branches: 
-      - "main" 
-      - "Build-release-w/-whisper-using-vulkan"
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -108,7 +106,7 @@ jobs:
           echo "Installed FFmpeg version:"
           ffmpeg -version
 
-      - name: Install Vulkan SDK (windows/linux)
+      - name: Install Vulkan SDK (Windows, linux)
         if: matrix.os == 'windows-latest' || matrix.os == 'ubuntu-22.04'
         uses: humbletim/install-vulkan-sdk@main
         with:
@@ -121,22 +119,6 @@ jobs:
         with:
           version: 1.3.250.1
           cache: true
-
-      # Check if GL_KHR_cooperative_matrix is supported
-      - name: Check for GL_KHR_cooperative_matrix Extension
-        id: check_extension
-        if: matrix.os == 'macos-latest' 
-        run: |
-          EXTENSIONS=$(vulkaninfo | grep "GL_KHR_cooperative_matrix" || true)
-          echo "Extensions: $EXTENSIONS"
-          if [[ -z "$EXTENSIONS" ]]; then
-            echo "GL_KHR_cooperative_matrix is not supported."
-            echo "cooperative_matrix_supported=false" >> $GITHUB_ENV
-          else
-            echo "GL_KHR_cooperative_matrix is supported."
-            echo "cooperative_matrix_supported=true" >> $GITHUB_ENV
-          fi
-        shell: bash
 
       - name: Configure CMake
         run: >
