@@ -1,11 +1,7 @@
-# Project Proposal
-
-**GitHub Repository**: [https://github.com/mccoyh/CS-362-Project](https://github.com/mccoyh/CS-362-Project)
-
-# Desktop Media Player
+# Medos
 
 ## Abstract
-The Desktop Media Player is a lightweight and efficient video playback application designed for simplicity, performance, and accessibility. It offers essential playback features, such as play, pause, and fast-forward, while integrating advanced functionalities like simple video editing, auto-generated captions, and subtitle translation. With a focus on cross-platform compatibility, this application is designed to enhance user experience through a clean interface and seamless usability. By including stretch goals like integration with video-sharing APIs, the media player aspires to be a versatile tool for both casual users and creators.
+Medos is a lightweight and efficient video playback application designed for simplicity, performance, and accessibility. It offers essential playback features, such as play, pause, and fast-forward, while integrating advanced functionalities like simple video editing, auto-generated captions, and subtitle translation. With a focus on cross-platform compatibility, this application is designed to enhance user experience through a clean interface and seamless usability. By including stretch goals like integration with video-sharing APIs, the media player aspires to be a versatile tool for both casual users and creators.
 
 ## Goal
 The primary goal is to create a simple yet robust desktop video player that balances functionality and user-friendliness. By eliminating unnecessary complexities found in traditional players, the project aims to deliver a streamlined tool that focuses on playback efficiency, basic editing, and accessibility enhancements. The project also seeks to provide users with a consistent and familiar interface across platforms, further broadening its usability and appeal.
@@ -14,9 +10,9 @@ The primary goal is to create a simple yet robust desktop video player that bala
 Most existing video players are burdened with excessive features that overwhelm users and contribute to bloated performance. These tools often lack cross-platform consistency, requiring users to learn multiple interfaces across devices. Additionally, basic video editing is often relegated to specialized software, leaving a gap for casual users who require simple, intuitive editing tools.
 
 ## Novelty
-The Desktop Media Player stands out by blending core video playback functionality with accessibility-focused features and lightweight design. Unlike traditional video players that prioritize extensive but often cumbersome feature sets, this application emphasizes simplicity while introducing essential tools for modern media use. Auto-generated captions and real-time subtitle translation enhance accessibility, making the player inclusive for users with hearing impairments or language barriers. The inclusion of basic video editing tools, such as trimming and stitching, empowers users to create and customize content without the steep learning curve of complex editing software.
+Medos stands out by blending core video playback functionality with accessibility-focused features and lightweight design. Unlike traditional video players that prioritize extensive but often cumbersome feature sets, this application emphasizes simplicity while introducing essential tools for modern media use. Auto-generated captions and real-time subtitle translation enhance accessibility, making the player inclusive for users with hearing impairments or language barriers. The inclusion of basic video editing tools, such as trimming and stitching, empowers users to create and customize content without the steep learning curve of complex editing software.
 
-Additionally, the player’s stretch goals elevate its value as a versatile media hub. Cross-platform support ensures a seamless user experience across multiple devices, while integration with video-sharing APIs (e.g., YouTube, Twitch, Vimeo) offers convenient options for uploading, downloading, and streaming media. By combining these practical and creative features, the Desktop Media Player transforms from a standard playback tool into a comprehensive solution for everyday media consumption and lightweight content creation.
+Additionally, the player’s stretch goals elevate its value as a versatile media hub. Cross-platform support ensures a seamless user experience across multiple devices, while integration with video-sharing APIs (e.g., YouTube, Twitch, Vimeo) offers convenient options for uploading, downloading, and streaming media. By combining these practical and creative features, Medos transforms from a standard playback tool into a comprehensive solution for everyday media consumption and lightweight content creation.
 
 ## Effects
 A successful implementation will redefine how users interact with video playback and editing tools. By focusing on user experience and accessibility, this project aims to lower the barrier to entry for video editing and provide a seamless playback experience. Furthermore, features like subtitle translation and API integration will expand the player’s usability in global and collaborative contexts, benefiting both casual viewers and content creators.
@@ -84,7 +80,7 @@ The technical implementation focuses on modular design, allowing flexibility for
 
 ### Reasoning for Roles
 
-The project’s structure is designed to maximize efficiency and ensure high-quality development, given the scope and complexity of the desktop media player application.
+The project’s structure is designed to maximize efficiency and ensure high-quality development, given the scope and complexity of creating a desktop media player.
 
 - **Backend Developers (3)**: The decision to have three backend developers is essential for creating a solid and performant application. Since the core functionality of the media player (such as video decoding, playback control, and subtitle processing) is handled in the backend, it’s crucial to have sufficient resources dedicated to these complex tasks. The backend team will ensure that the application’s foundation is reliable, scalable, and optimized. Their work will include integrating libraries like FFmpeg and handling multithreading, file management, and performance optimizations.
 
@@ -365,4 +361,4 @@ The backend libaries provide the functionality of the application. They integrat
 The C++ Core Guidlines will be used to create a constistent coding style between project members. These are common guidelines widely used and adopted in the world. The guidelines specify ways to enforce their rules through several options: static analysis, compiler, run-time checks, and human review. All pull request to the main branch require approval from another member, ensuring multiple sets of eyes have looked over the code for consistent style and best practices. 
 
 ## Conclusion
-The Desktop Media Player project combines innovative features with a user-centric approach to create a streamlined, reliable video playback and editing tool. By prioritizing simplicity, accessibility, and performance, this project aims to fill the gap between complex professional tools and basic video players. With a strong focus on modularity and cross-platform capabilities, the player offers an adaptable solution for modern media consumption and creation.
+Medos combines innovative features with a user-centric approach to create a streamlined, reliable video playback and editing tool. By prioritizing simplicity, accessibility, and performance, this project aims to fill the gap between complex professional tools and basic video players. With a strong focus on modularity and cross-platform capabilities, the player offers an adaptable solution for modern media consumption and creation.

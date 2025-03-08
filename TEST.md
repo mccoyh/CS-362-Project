@@ -1,9 +1,18 @@
-# Testing Instructions
+# Testing
 
-All test executables are written to the `bin` directory after building.
+A suite of tests has been established to ensure proper performance of all libraries that power Medos.
+Since there is currently no simple and accurate way to automate AV playback and AI feature testing, all tests must be run manually.
 
-Note: `PATH_TO_MEDIA` can be omitted if the executable doesn’t require external media or you choose to use built-in asset names.
+## Running Tests
+Each test corresponds to a specific library and its functionality. If a test requires an external media file, provide the file path as an argument (`PATH_TO_MEDIA`). If the test does not require external media, you can omit this argument or use built-in asset names.
 
+All test executables are located in the `bin` directory after building the project.
+
+## Notes
+- Ensure all required dependencies are installed before running tests. Refer to [SETUP.md](SETUP.md) for setup instructions.
+- For troubleshooting or further details, refer to the respective library documentation.
+
+## Test Overview
 | **Library**     | **Test Name**     | **Executable**   | **Description**                                                                 | **Run Command**                                      |
 |-------------------|-------------------|------------------|---------------------------------------------------------------------------------|-----------------------------------------------------|
 | **AudioToTxt**    | test_whisper      | `test_whisper.exe` | Generates a text file transcription of an audio or video file.                  | `./test_whisper.exe PATH_TO_MEDIA`                  |

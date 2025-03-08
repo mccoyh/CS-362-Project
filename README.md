@@ -1,21 +1,21 @@
-# Desktop Media Player
+# Medos Monorepo
 
-A media player with support for Windows, Linux, and macOS.
+A collection of libraries written in C++ and a cross-platform media player.
 
-## Features
-- AI generated captions
-- Customizable UI themes
-- Basic media controls
-- Supports common media formats
+## Repository Contents
+- audiolib: A lightweight audio playback library for seamless sound rendering.
+- AudioToTxt: A transcription library that converts audio files into accurate captions and transcripts using AI.
+- AVParser: A media file parsing library that extracts structured data for further processing.
+- VulkanEngine: A Vulkan-based rendering engine for efficient video playback and window management.
 
 ## Installation
 
-For detailed build instructions, please refer to [SETUP.md](SETUP.md).
+To set up the project, follow the instructions in [SETUP.md](SETUP.md).
 
 ## Project Overview
 
-For more information about the project, check the [Proposal.md](Proposal.md).
+For a deeper understanding of the project’s goals and architecture, refer to [ABOUT.md](ABOUT.md).
 
 ## Tests
 
-For information about project tests, refer to [TEST.md](TEST.md).
+To learn about the project's testing procedures, see [TEST.md](TEST.md).
