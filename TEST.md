@@ -1,9 +1,11 @@
-# Testing Instructions
+# Testing
 
 All test executables are written to the `bin` directory after building.
 
-Note: `PATH_TO_MEDIA` can be omitted if the executable doesn’t require external media or you choose to use built-in asset names.
+## Running Tests
+Each test corresponds to a specific library and functionality. If a test requires an external media file, provide the file path as an argument. If not, you can omit PATH_TO_MEDIA or use built-in asset names.
 
+## Test Overview
 | **Library**     | **Test Name**     | **Executable**   | **Description**                                                                 | **Run Command**                                      |
 |-------------------|-------------------|------------------|---------------------------------------------------------------------------------|-----------------------------------------------------|
 | **AudioToTxt**    | test_whisper      | `test_whisper.exe` | Generates a text file transcription of an audio or video file.                  | `./test_whisper.exe PATH_TO_MEDIA`                  |
@@ -15,3 +17,8 @@ Note: `PATH_TO_MEDIA` can be omitted if the executable doesn’t require externa
 |                   | sfx                | `sfx.exe`         | Plays a video file with added effects.                                           | `./sfx.exe PATH_TO_MEDIA`                           |
 |                   | videoDecode        | `videoDecode.exe` | Decodes and plays a video file.                                                 | `./videoDecode.exe PATH_TO_MEDIA`                   |
 |                   | window             | `window.exe`      | Creates an empty window.                                                        | `./window.exe`           |
+
+## Notes
+
+ - Ensure all required dependencies are installed before running tests. You can refer to [SETUP.md](SETUP.md) for guidance.
+ - For troubleshooting or further details, refer to the respective library documentation.
