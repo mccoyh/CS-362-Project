@@ -56,6 +56,10 @@ private:
 
   bool shouldRecreateWindow = true;
 
+  struct SFX {
+    bool grayscale = false;
+  } sfx;
+
   void toggleFullscreen();
 
   void createWindow();
@@ -76,7 +80,9 @@ private:
 
   void timelineGui();
 
-  void volumeGui();
+  void volumeGui() const;
+
+  void sfxGui();
 
   void navigateFrames(int numFrames) const;
 };

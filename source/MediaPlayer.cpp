@@ -133,6 +133,7 @@ void MediaPlayer::update()
   handleKeyInput();
 
   gui->dockBottom("Media Player Controls");
+  gui->dockBottom("Special Effects");
   gui->setBottomDockPercent(0.3);
   displayGui();
 
@@ -292,6 +293,12 @@ void MediaPlayer::displayGui()
 
     ImGui::End();
   }
+
+  ImGui::Begin("Special Effects");
+
+  sfxGui();
+
+  ImGui::End();
 }
 
 void MediaPlayer::menuBarGui()
@@ -400,7 +407,7 @@ void MediaPlayer::timelineGui()
   }
 }
 
-void MediaPlayer::volumeGui()
+void MediaPlayer::volumeGui() const
 {
   constexpr float buttonSize = 100.0f;
 
@@ -421,6 +428,14 @@ void MediaPlayer::volumeGui()
   ImGui::PopStyleVar();
 
   Audio::changeVolume(audioData.stream, volume);
+}
+
+void MediaPlayer::sfxGui()
+{
+  if (ImGui::Checkbox("Grayscale", &sfx.grayscale))
+  {
+    vulkanEngine->setGrayscale(sfx.grayscale);
+  }
 }
 
 void MediaPlayer::navigateFrames(const int numFrames) const
