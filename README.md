@@ -14,7 +14,7 @@ To set up the project, follow the instructions in [SETUP.md](SETUP.md).
 
 ## Project Overview
 
-For a deeper understanding of the project’s goals and architecture, refer to [Proposal.md](Proposal.md).
+For a deeper understanding of the project’s goals and architecture, refer to [ABOUT.md](ABOUT.md).
 
 ## Tests
 
