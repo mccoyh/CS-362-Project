@@ -7,9 +7,15 @@ When running whisper for the first time with vulkan, the vulkan shaders are comp
 
 If vulkan is not enabled, use smaller models such as base, tiny, or small.
 
-# Build Options
-- WHISPER_USE_VULKAN - Default OFF: This flag can be used to turn on or off building the library with vulkan support. Vulkan provides GPU acceleration lowering the runtime of models. It is recommended to have Vulkan on for any large models.  
+Subtitle timestamps are integers for hundreths of a second. To convert: Frame / Frame_rate * 100.
 
+
+# Build Options
+- WHISPER_USE_VULKAN - Default ON: This flag can be used to turn on or off building the library with vulkan support. Vulkan provides GPU acceleration lowering the runtime of models. It is recommended to have Vulkan on for any large models. 
+
+# Build Issues
+- Vulkan SDK Version - 1.4.304.1 is tested to work on linux and windows. 1.3.250.1 is used on Mac since newer versions of vulkan do not install through github actions. 
+- Mac - Cloud build tests currently fails to find the correct drivers needed use whisper with vulkan support. GL_KHR_cooperative_matrix extension is not supported, but required for whisper vulkan suppoert. It is recommended to turn the build option WHISPER_USE_VULKAN to OFF unless you have checked your system can enable the extension. 
 
 # Functions
 ## transcribeAudio(const std::string& model_path, const std::string& audio_file, const std::string& output_srt)
@@ -18,7 +24,7 @@ This function uses whisper ASR cpp to transcribe the audio into subtitles and st
 
 Subtitles are formatted:  
 index_number\n
-start_frame --> end_frame\n 
+start_frame --> end_frame\n //start_frame/end_frame are actually in hundreths of a second (ie start_frame/100 = seconds). 
 subtitle_text\n
 \n  
 
@@ -60,9 +66,9 @@ This function loads a subtitle file into a map for quicker searching and accessi
 ##### Parameters
 - caption_srt : The path to a caption file.
 #### getCaptionAtFrame(int frame)
-This function returns the subtitle for a given frame.
+This function returns the subtitle for a given frame. Subtitles timestamps are in hundreths of a second not frames (convert to hundreths of a second). 
 ##### Parameters
-- frame : The frame to retrieve a subtitle.
+- frame : The frame to retrieve a subtitle. Subtitles timestamps are in hundreths of a second not frames. Please convert frames to hundreths of a second. 
 #### getNumCaptions()
 This function gets the number of subtitle blocks stored in the class.
 ##### Returns
@@ -87,7 +93,6 @@ int main(const int argc, char* argv[]) {
 
     const std::filesystem::path audioFile = assetsPath / "audio.pcm";
     const std::filesystem::path subtitleFile = assetsPath / "subtitles.srt";
-    const std::filesystem::path outputVideo = assetsPath / "output_with_subtitles_turbo.mp4";
     const std::filesystem::path modelPath = exePath / "models" / "ggml-large-v3-turbo-q5_0.bin"; //"ggml-base.bin"
     // Format Audio for Whisper
     if (!extractAudio(inputVideo.string(), audioFile.string())){
@@ -98,7 +103,7 @@ int main(const int argc, char* argv[]) {
         std::cout << "Failed to generate subtitles" << std::endl;
     }
     //Get caption at frame from subtitle file
-    int frame = 200; 
+    int frame = 200; //in hundreths of a second (ie 200 = 2s)
     std::string caption = Captions::getSubtitleForFrame(frame, subtitleFile.string());
     if (caption.at(0) == '['){
         std::cout << "Failed to find subtitle at frame. message: "<< caption << std::endl;

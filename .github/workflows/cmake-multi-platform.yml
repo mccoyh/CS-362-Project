@@ -106,18 +106,10 @@ jobs:
           echo "Installed FFmpeg version:"
           ffmpeg -version
 
-      - name: Install Vulkan SDK (Windows, linux)
-        if: matrix.os == 'windows-latest' || matrix.os == 'ubuntu-22.04'
+      - name: Install Vulkan SDK 
         uses: humbletim/install-vulkan-sdk@main
         with:
-          version: 1.4.304.1
-          cache: true
-
-      - name: Install Vulkan SDK (mac)
-        if: matrix.os == 'macos-latest'
-        uses: humbletim/install-vulkan-sdk@main
-        with:
-          version: 1.3.250.1
+          version: ${{ (matrix.os == 'windows-latest' || matrix.os == 'ubuntu-22.04') && '1.4.304.1' || '1.3.250.1' }}
           cache: true
 
       - name: Configure CMake
@@ -127,7 +119,7 @@ jobs:
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -S ${{ github.workspace }}
-          -DWHISPER_USE_VULKAN=${{ (matrix.os == 'windows-latest' || matrix.os == 'ubuntu-22.04') && 'ON' || 'OFF' }}
+          -DWHISPER_USE_VULKAN=${{ (matrix.os == 'macos-latest') && 'OFF' || 'ON' }}
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}

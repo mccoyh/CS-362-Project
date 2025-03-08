@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file
 
+## [0.0.5] - 3/7/2024
+- Changed default value for WHISPER_USE_VULKAN option to ON (For mac set option of OFF when building).
+- Updated docs on how to parse subtitle file (timestamps in hundreths of a second not frames).
+
 ## [0.0.4] - 3/4/2025
 - Changed members to Private
 - Created more descriptive names for variables
