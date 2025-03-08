@@ -8,39 +8,68 @@ MediaPlayer::MediaPlayer(const char* asset)
   : asset{asset}, vulkanEngine{std::make_unique<VkEngine::VulkanEngine>(vulkanEngineOptions)},
     parser{std::make_unique<AVParser::MediaParser>(asset)}
 {
-  loadCaptions();
+  startCaptionsLoading();
 
   Audio::initSDL();
   Audio::convertWav(asset, "audio");
 
   ImGui::SetCurrentContext(VkEngine::VulkanEngine::getImGuiContext());
-
-  captionCache = std::make_unique<Captions::CaptionCache>("assets/subtitles.srt");
 }
 
 MediaPlayer::~MediaPlayer()
 {
+  if (captionsThread.joinable())
+  {
+    captionsThread.join();
+  }
+
   Audio::deleteStream(audioData.stream);
   Audio::quitSDL();
 }
 
 void MediaPlayer::run()
 {
-  audioData = Audio::playAudio("audio.wav");
-  Audio::pauseAudio(audioData.stream);
-  audioDurationRemaining = audioData.duration;
-
   const auto frame = parser->getCurrentFrame();
   vulkanEngine->loadVideoFrame(frame.videoData, frame.frameWidth, frame.frameHeight);
   parser->pause();
 
+  audioData = Audio::playAudio("audio.wav");
+  Audio::pauseAudio(audioData.stream);
+  audioDurationRemaining = audioData.duration;
+
   while (vulkanEngine->isActive())
   {
+    if (!captionsReady && areCaptionsLoaded())
+    {
+      if (captionsThread.joinable())
+      {
+        captionsThread.join();
+      }
+
+      std::lock_guard lock(captionsMutex);
+      captionCache = std::make_unique<Captions::CaptionCache>("assets/subtitles.srt");
+
+      captionsReady = true;
+    }
+
     update();
   }
 }
 
-void MediaPlayer::loadCaptions() const
+void MediaPlayer::startCaptionsLoading()
+{
+  // Create a new thread to load captions
+  captionsThread = std::thread(&MediaPlayer::loadCaptions, this);
+}
+
+bool MediaPlayer::areCaptionsLoaded()
+{
+  std::lock_guard lock(captionsMutex);
+
+  return captionsLoaded;
+}
+
+void MediaPlayer::loadCaptions()
 {
   const std::string assetsPath = "assets/";
 
@@ -58,6 +87,13 @@ void MediaPlayer::loadCaptions() const
   {
     throw std::runtime_error("Failed to generate subtitles");
   }
+
+  // Lock the mutex before modifying shared state
+  std::lock_guard lock(captionsMutex);
+  captionsLoaded = true;
+
+  // Notify waiting threads that captions are loaded
+  captionsCV.notify_all();
 }
 
 void MediaPlayer::update()
@@ -72,9 +108,13 @@ void MediaPlayer::update()
 
   parser->update();
 
-  const std::string captionFromCache = captionCache->getCaptionAtFrame(parser->getCurrentFrameIndex() / parser->getFrameRate() * 100);
+  std::string caption = "Loading captions...";
+  if (captionsReady)
+  {
+    caption = captionCache->getCaptionAtFrame(parser->getCurrentFrameIndex() / parser->getFrameRate() * 100);
+  }
 
-  vulkanEngine->loadCaption(captionFromCache.c_str());
+  vulkanEngine->loadCaption(caption.c_str());
 
   if (const uint32_t currentFrameIndex = parser->getCurrentFrameIndex(); currentFrameIndex != previousFrameIndex)
   {
