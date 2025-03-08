@@ -281,7 +281,7 @@ void MediaPlayer::displayGui()
 {
   menuBarGui();
 
-  if (showMediaControls)
+  if (showControls.media)
   {
     ImGui::Begin("Media Player Controls");
 
@@ -294,11 +294,14 @@ void MediaPlayer::displayGui()
     ImGui::End();
   }
 
-  ImGui::Begin("Special Effects");
+  if (showControls.sfx)
+  {
+    ImGui::Begin("Special Effects");
 
-  sfxGui();
+    sfxGui();
 
-  ImGui::End();
+    ImGui::End();
+  }
 }
 
 void MediaPlayer::menuBarGui()
@@ -326,9 +329,14 @@ void MediaPlayer::menuBarGui()
 
     if (ImGui::BeginMenu("Options"))
     {
-      if (ImGui::MenuItem(showMediaControls ? "Hide Media Controls" : "Show Media Controls"))
+      if (ImGui::MenuItem(showControls.media ? "Hide Media Controls" : "Show Media Controls"))
       {
-        showMediaControls = !showMediaControls;
+        showControls.media = !showControls.media;
+      }
+
+      if (ImGui::MenuItem(showControls.sfx ? "Hide SFX Controls" : "Show SFX Controls"))
+      {
+        showControls.sfx = !showControls.sfx;
       }
 
       if (ImGui::MenuItem(fullscreen ? "Go Windowed" : "Go Fullscreen", "F11"))

@@ -50,11 +50,14 @@ private:
   bool captionsLoaded = false;
   bool captionsReady = false;
 
-  bool showMediaControls = true;
-
   bool fullscreen = false;
 
   bool shouldRecreateWindow = true;
+
+  struct ShowControls {
+    bool media = true;
+    bool sfx = true;
+  } showControls;
 
   struct SFX {
     bool grayscale = false;
