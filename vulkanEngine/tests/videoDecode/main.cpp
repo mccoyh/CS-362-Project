@@ -1,13 +1,13 @@
-#include "VideoDecoder.h"
+#include "../VideoDecoder.h"
 #include <source/VulkanEngine.h>
 #include <iostream>
 #include <chrono>
 
-int main()
+int main(const int argc, char* argv[])
 {
   try
   {
-    const VideoDecoder decoder("assets/sample_1080.mp4");
+    const VideoDecoder decoder(argc == 2 ? argv[1] :"assets/sample_1080.mp4");
     const auto frameData = std::make_shared<std::vector<uint8_t>>();
     int frameWidth, frameHeight;
 

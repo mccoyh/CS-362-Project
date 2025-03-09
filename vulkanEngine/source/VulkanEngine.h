@@ -19,6 +19,7 @@ class SwapChain;
 class RenderPass;
 class Framebuffer;
 class GuiPipeline;
+class VideoPipeline;
 class ImGuiInstance;
 
 class VulkanEngine {
@@ -31,10 +32,14 @@ public:
   void render();
 
   [[nodiscard]] std::shared_ptr<ImGuiInstance> getImGuiInstance() const;
-
+  [[nodiscard]] bool keyIsPressed(int key) const;
   static ImGuiContext* getImGuiContext();
 
   void loadVideoFrame(std::shared_ptr<std::vector<uint8_t>> frameData, int width, int height);
+
+  void loadCaption(const char* caption);
+
+  void setGrayscale(bool useGrayscale);
 
 private:
   VulkanEngineOptions vulkanEngineOptions;
@@ -48,7 +53,9 @@ private:
   std::shared_ptr<SwapChain> swapChain;
   std::shared_ptr<RenderPass> renderPass;
 
-  std::unique_ptr<GuiPipeline> guiPipeline;
+  std::shared_ptr<GuiPipeline> guiPipeline;
+
+  std::unique_ptr<VideoPipeline> videoPipeline;
 
   std::shared_ptr<ImGuiInstance> imGuiInstance;
 
@@ -63,9 +70,21 @@ private:
   std::shared_ptr<RenderPass> videoRenderPass;
   std::shared_ptr<Framebuffer> videoFramebuffer;
   std::vector<VkCommandBuffer> videoCommandBuffers;
-  VkExtent2D videoExtent{};
+  VkExtent2D videoExtent{ 100, 100 };
+
+  VkExtent2D videoViewportExtent{ 100, 100 };
 
   std::shared_ptr<std::vector<uint8_t>> videoFrameData;
+
+  std::vector<VkImage> videoTextureImages{};
+  std::vector<VkDeviceMemory> videoTextureImageMemory{};
+  std::vector<VkImageView> videoTextureImageViews{};
+  VkSampler videoTextureSampler = VK_NULL_HANDLE;
+  std::vector<VkDescriptorImageInfo> videoTextureImageInfos{};
+
+  const char* captionText = "";
+
+  bool grayscale = false;
 
   void initVulkan();
   void createCommandPool();
@@ -84,9 +103,21 @@ private:
 
   void createNewFrame() const;
 
-  void renderVideoWidget(uint32_t imageIndex) const;
+  void renderVideoWidget(uint32_t imageIndex);
 
-  void loadVideoFrameToImage(int framebufferIndex) const;
+  void renderCaption(const ImVec2& imagePos) const;
+
+  [[nodiscard]] bool validateVideoWidget();
+
+  void loadVideoFrameToImage(int imageIndex) const;
+
+  void setupVideoTexture();
+
+  void destroyVideoTexture() const;
+
+  void createVideoTextureSampler();
+
+  void destroyVideoTextureSampler() const;
 
   friend void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height);
 };

@@ -34,6 +34,12 @@ namespace VkEngine::GraphicsPipelineStates {
     .maxDepthBounds = 1.0f
   };
 
+  inline VkPipelineDepthStencilStateCreateInfo depthStencilStateNone {
+    .sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+    .depthTestEnable = VK_FALSE,
+    .depthWriteEnable = VK_FALSE
+  };
+
   inline std::array dynamicStates {
     VK_DYNAMIC_STATE_VIEWPORT,
     VK_DYNAMIC_STATE_SCISSOR
@@ -75,6 +81,17 @@ namespace VkEngine::GraphicsPipelineStates {
     .lineWidth = 1.0f
   };
 
+  inline VkPipelineRasterizationStateCreateInfo rasterizationStateNoCull {
+    .sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+    .depthClampEnable = VK_FALSE,
+    .rasterizerDiscardEnable = VK_FALSE,
+    .polygonMode = VK_POLYGON_MODE_FILL,
+    .cullMode = VK_CULL_MODE_NONE,
+    .frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE,
+    .depthBiasEnable = VK_FALSE,
+    .lineWidth = 1.0f
+  };
+
   inline VkVertexInputBindingDescription vertexBindingDescription = Vertex::getBindingDescription();
   inline std::array vertexAttributeDescriptions = Vertex::getAttributeDescriptions();
 
@@ -84,6 +101,14 @@ namespace VkEngine::GraphicsPipelineStates {
     .pVertexBindingDescriptions = &vertexBindingDescription,
     .vertexAttributeDescriptionCount = static_cast<uint32_t>(vertexAttributeDescriptions.size()),
     .pVertexAttributeDescriptions = vertexAttributeDescriptions.data()
+  };
+
+  inline VkPipelineVertexInputStateCreateInfo vertexInputStateNone {
+    .sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
+    .vertexBindingDescriptionCount = 0,
+    .pVertexBindingDescriptions = nullptr,
+    .vertexAttributeDescriptionCount = 0,
+    .pVertexAttributeDescriptions = nullptr
   };
 
   inline VkPipelineViewportStateCreateInfo viewportState {

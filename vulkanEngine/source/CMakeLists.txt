@@ -39,6 +39,10 @@ add_library(${PROJECT_NAME}
   pipelines/Vertex.h
   components/ImGuiInstance.cpp
   components/ImGuiInstance.h
+  pipelines/custom/VideoPipeline.cpp
+  pipelines/custom/VideoPipeline.h
+  pipelines/UniformBuffer.cpp
+  pipelines/UniformBuffer.h
 )
 
 # Shaders
@@ -145,6 +149,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}
   ${glm_SOURCE_DIR}
 )
 
