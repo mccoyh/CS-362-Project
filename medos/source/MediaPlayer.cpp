@@ -4,8 +4,10 @@
 #include <iostream>
 #include <filesystem>
 
+constexpr AVParser::AudioParams audioParams;
+
 MediaPlayer::MediaPlayer(const char* asset)
-  : asset{asset}, parser{std::make_unique<AVParser::MediaParser>(asset)}
+  : asset{asset}, parser{std::make_unique<AVParser::MediaParser>(asset, audioParams)}
 {
   startCaptionsLoading();
 
