@@ -698,7 +698,7 @@ namespace AVParser {
               int samples_converted = swr_convert(
                   swrContext,
                   &outBuffer, out_samples,
-                  (const uint8_t**)frame->data, frame->nb_samples
+                  frame->data, frame->nb_samples
               );
 
               if (samples_converted > 0)
