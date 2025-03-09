@@ -5,14 +5,14 @@
 #include <filesystem>
 
 constexpr AVParser::AudioParams audioParams;
+constexpr Audio::AudioParams audioParams2;
 
 MediaPlayer::MediaPlayer(const char* asset)
   : asset{asset}, parser{std::make_unique<AVParser::MediaParser>(asset, audioParams)}
 {
   startCaptionsLoading();
 
-  Audio::initSDL();
-  Audio::convertWav(asset, "audio");
+  audioPlayer = std::make_unique<Audio::AudioPlayer>(audioParams2);
 
   createWindow();
 }
@@ -23,9 +23,6 @@ MediaPlayer::~MediaPlayer()
   {
     captionsThread.join();
   }
-
-  Audio::deleteStream(audioData.stream);
-  Audio::quitSDL();
 }
 
 void MediaPlayer::run()
@@ -34,9 +31,7 @@ void MediaPlayer::run()
   vulkanEngine->loadVideoFrame(initialFrame.videoData, initialFrame.frameWidth, initialFrame.frameHeight);
   parser->pause();
 
-  audioData = Audio::playAudio("audio.wav");
-  Audio::pauseAudio(audioData.stream);
-  audioDurationRemaining = audioData.duration;
+  audioPlayer->stop();
 
   while (vulkanEngine->isActive())
   {
@@ -77,7 +72,7 @@ void MediaPlayer::createWindow()
   if (vulkanEngine != nullptr)
   {
     parser->pause();
-    Audio::pauseAudio(audioData.stream);
+    audioPlayer->stop();
 
     vulkanEngine.reset();
   }
@@ -160,11 +155,20 @@ void MediaPlayer::update()
 
   vulkanEngine->render();
 
-  if (audioDurationRemaining > 0)
-  {
-    Audio::delay(1); // checks for extra input every 1 ms
+  // TODO: Upload the correct frame's audio data
+  // Check if we need to add more audio data
+  const int available = audioPlayer->getAvailableBuffer();
+  constexpr int bytesPerSecond = audioParams2.sampleRate * audioParams2.channels * (audioParams2.bitsPerSample / 8);
 
-    audioDurationRemaining -= 1;
+  // If buffer needs more data, decode and queue it
+  if (available < bytesPerSecond) {
+    uint8_t* buffer = nullptr;
+    int bufferSize = 0;
+
+    if (parser->decodeAudioChunk(buffer, bufferSize)) {
+      audioPlayer->queueAudio(buffer, bufferSize);
+      av_freep(&buffer);
+    }
   }
 }
 
@@ -216,12 +220,12 @@ void MediaPlayer::handleKeyInput()
       if (parser->getState() == AVParser::MediaState::PAUSED)
       {
         parser->play();
-        Audio::resumeAudio(audioData.stream);
+        audioPlayer->start();
       }
       else if (parser->getState() == AVParser::MediaState::AUTO_PLAYING)
       {
         parser->pause();
-        Audio::pauseAudio(audioData.stream);
+        audioPlayer->stop();
       }
     }
   });
@@ -397,7 +401,7 @@ void MediaPlayer::timelineGui()
     if (ImGui::Button("Pause", ImVec2(buttonSize, 0)))
     {
       parser->pause();
-      Audio::pauseAudio(audioData.stream);
+      audioPlayer->stop();
     }
   }
   else
@@ -405,7 +409,7 @@ void MediaPlayer::timelineGui()
     if (ImGui::Button("Play", ImVec2(buttonSize, 0)))
     {
       parser->play();
-      Audio::resumeAudio(audioData.stream);
+      audioPlayer->start();
     }
   }
   ImGui::SameLine();
@@ -437,7 +441,7 @@ void MediaPlayer::volumeGui() const
   ImGui::PopItemWidth();
   ImGui::PopStyleVar();
 
-  Audio::changeVolume(audioData.stream, volume);
+  // Audio::changeVolume(audioData.stream, volume);
 }
 
 void MediaPlayer::sfxGui()
