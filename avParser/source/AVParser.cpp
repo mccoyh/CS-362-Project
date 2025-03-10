@@ -1,7 +1,4 @@
 #include "AVParser.h"
-
-#include <iostream>
-
 extern "C" {
 #include <libavutil/opt.h>
 }
@@ -117,7 +114,36 @@ namespace AVParser {
 
     currentFrame = targetFrame;
 
-    currentAudioChunk = 0;
+    // Calculate the correct audio chunk based on frame rate and target frame
+    const double frameRate = getFrameRate();
+    const AVStream* audioStream = formatContext->streams[audioStreamIndex];
+    const double audioPtsPerSecond = 1.0 / av_q2d(audioStream->time_base);
+
+    // Calculate the timestamp in seconds for the target frame
+    const double targetTimeInSeconds = static_cast<double>(targetFrame) / frameRate;
+
+    // Convert time to audio PTS
+    const auto targetAudioPts = static_cast<int64_t>(targetTimeInSeconds * audioPtsPerSecond);
+
+    // Find the closest audio chunk to this PTS
+    auto it = audioCache.lower_bound(targetAudioPts);
+
+    // If we found an exact match or a later chunk
+    if (it != audioCache.end())
+    {
+      // Calculate the index (distance from beginning)
+      currentAudioChunk = std::distance(audioCache.begin(), it);
+    }
+    else if (!audioCache.empty())
+    {
+      // If no exact match found, use the last available chunk
+      currentAudioChunk = audioCache.size() - 1;
+    }
+    else
+    {
+      // No audio chunks available
+      currentAudioChunk = 0;
+    }
   }
 
   void MediaParser::update()
@@ -665,7 +691,7 @@ namespace AVParser {
         av_freep(&buffer);
       }
       catch ([[maybe_unused]] const std::exception& e)
-      {}
+      { /* Some frames may not load but that's expected and OKAY. */ }
     }
   }
 
