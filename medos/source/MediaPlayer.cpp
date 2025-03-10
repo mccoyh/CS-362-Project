@@ -4,6 +4,7 @@
 #include <iostream>
 #include <filesystem>
 
+
 MediaPlayer::MediaPlayer(const char* asset)
   : asset{asset}, parser{std::make_unique<AVParser::MediaParser>(asset)}
 {
@@ -312,7 +313,9 @@ void MediaPlayer::menuBarGui()
     {
       if (ImGui::MenuItem("Open Media", "Ctrl+O"))
       {
-        // TODO: Open Video
+        fileDialog.SetTitle("Select a Media File");
+        fileDialog.SetTypeFilters({".mp4", ".avi", ".mkv", ".mov"}); // Allow video files
+        fileDialog.Open();  // Open the file dialog
       }
       ImGui::EndMenu();
     }
@@ -348,6 +351,22 @@ void MediaPlayer::menuBarGui()
     }
 
     ImGui::EndMainMenuBar();
+  }
+  // Always display the file browser
+  fileDialog.Display();
+
+  // Handle file selection
+  if (fileDialog.HasSelected()) 
+  {
+    std::string filePath = fileDialog.GetSelected().string();
+    std::cout << "Selected File: " << filePath << std::endl; // Debug output
+    std::cout << "Initial file: " << asset << std::endl;
+    //Set file path
+    asset = filePath.c_str();
+    std::cout << "New File: " << asset << std::endl;
+    fileDialog.ClearSelected();
+    //Reload with new file
+    update();
   }
 }
 
