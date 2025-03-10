@@ -83,6 +83,7 @@ namespace AVParser {
   {
     if (currentFrame + 1 > getTotalFrames())
     {
+      state = MediaState::PAUSED;
       return;
     }
 
