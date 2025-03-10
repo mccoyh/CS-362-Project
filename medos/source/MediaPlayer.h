@@ -9,6 +9,7 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <imfilebrowser.h>
 
 constexpr VkEngine::VulkanEngineOptions vulkanEngineOptions {
   .WINDOW_WIDTH = 1000,
@@ -31,6 +32,8 @@ public:
 
 private:
   const char* asset;
+
+  ImGui::FileBrowser fileDialog;  
 
   std::unique_ptr<VkEngine::VulkanEngine> vulkanEngine;
 
@@ -88,6 +91,8 @@ private:
   void sfxGui();
 
   void navigateFrames(int numFrames) const;
+
+  void loadNewFile();
 };
 
 #endif //MEDIAPLAYER_H

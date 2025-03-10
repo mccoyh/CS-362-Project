@@ -312,7 +312,9 @@ void MediaPlayer::menuBarGui()
     {
       if (ImGui::MenuItem("Open Media", "Ctrl+O"))
       {
-        // TODO: Open Video
+        fileDialog.SetTitle("Select a Media File");
+        fileDialog.SetTypeFilters({".mp4", ".avi", ".mkv", ".mov"}); // Allow video files
+        fileDialog.Open();  // Open the file dialog
       }
       ImGui::EndMenu();
     }
@@ -348,6 +350,19 @@ void MediaPlayer::menuBarGui()
     }
 
     ImGui::EndMainMenuBar();
+  }
+  // Always display the file browser
+  fileDialog.Display();
+
+  // Handle file selection
+  if (fileDialog.HasSelected()) 
+  {
+    std::string filePath = fileDialog.GetSelected().string();
+    //Set file path
+    asset = filePath.c_str();
+    fileDialog.ClearSelected();
+    //Reload with new file
+    loadNewFile();
   }
 }
 
@@ -454,4 +469,28 @@ void MediaPlayer::navigateFrames(const int numFrames) const
   const uint32_t newFrame = std::clamp(currentFrame + numFrames, 0, maxFrames);
 
   parser->loadFrameAt(newFrame);
+}
+
+void MediaPlayer::loadNewFile()
+{
+  //Stop current video
+  Audio::pauseAudio(audioData.stream);
+  parser->pause();
+  //Initialize new video
+  parser.reset();
+  parser = std::make_unique<AVParser::MediaParser>(std::string(asset));
+  parser->pause();
+
+
+  std::lock_guard lock(captionsMutex);
+  captionsLoaded = false;
+  captionsReady = false;
+  startCaptionsLoading();
+
+  Audio::convertWav(asset, "audio");
+  audioData = Audio::playAudio("audio.wav");
+  Audio::pauseAudio(audioData.stream);
+  audioDurationRemaining = audioData.duration;
+
+  update();
 }

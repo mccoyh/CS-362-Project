@@ -58,6 +58,8 @@ public:
 
   [[nodiscard]] MediaState getState() const;
 
+  void setFilepath(const std::string& mediaFile);
+
 private:
   AVFormatContext* formatContext = nullptr;
   AVFrame* frame = nullptr;
