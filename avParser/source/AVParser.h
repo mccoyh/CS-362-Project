@@ -68,6 +68,8 @@ public:
 
   bool getNextAudioChunk(uint8_t*& outBuffer, int& outBufferSize);
 
+  void setFilepath(const std::string& mediaFile);
+
 private:
   AVFormatContext* formatContext = nullptr;
   AVFrame* frame = nullptr;

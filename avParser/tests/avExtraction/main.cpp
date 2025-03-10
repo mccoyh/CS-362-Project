@@ -110,6 +110,15 @@ void displayControls(AVParser::MediaParser& parser)
 
     default: break;
   }
+  // Add the "Change Video" button
+  if (ImGui::Button("Change Video"))
+  {
+    try {
+      parser.setFilepath("assets/Valorant_test.mp4");  
+    } catch (const std::runtime_error& e) {
+        std::cerr << "Error: " << e.what() << std::endl;  
+    }
+  }
 
   ImGui::End();
 }
