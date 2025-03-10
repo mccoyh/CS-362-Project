@@ -455,11 +455,11 @@ void MediaPlayer::volumeGui() const
   }
   ImGui::SameLine();
   ImGui::PushItemWidth(150);
-  ImGui::SliderFloat("##volume", &volume, 0.0f, 1.0f, "%.2f");
+  ImGui::SliderFloat("##volume", &volume, 0.0f, 2.0f, "%.2f");
   ImGui::PopItemWidth();
   ImGui::PopStyleVar();
 
-  // Audio::changeVolume(audioData.stream, volume);
+  audioPlayer->setVolume(volume);
 }
 
 void MediaPlayer::sfxGui()

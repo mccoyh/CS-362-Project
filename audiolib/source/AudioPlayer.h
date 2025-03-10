@@ -26,6 +26,8 @@ public:
 
   void queueAudio(const uint8_t* buffer, int bufferSize) const;
 
+  void setVolume(float volume) const;
+
 private:
   struct AudioComponents {
     SDL_AudioDeviceID audioDevice = 0;

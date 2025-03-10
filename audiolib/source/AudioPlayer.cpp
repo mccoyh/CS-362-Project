@@ -52,6 +52,11 @@ namespace Audio {
     }
   }
 
+  void AudioPlayer::setVolume(const float volume) const
+  {
+    SDL_SetAudioStreamGain(components.audioStream, volume);
+  }
+
   void AudioPlayer::initSDL()
   {
     if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_EVENTS) < 0)
