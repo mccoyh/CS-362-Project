@@ -33,6 +33,8 @@ endif()
 set(SETUP_RPATH OFF)
 
 if(UNIX AND SETUP_RPATH)
+  message("Setting RPATH")
+  
   # Set the install RPATH to find libraries relative to the installed executable
   if(APPLE)
     set(CMAKE_INSTALL_RPATH "@executable_path")
