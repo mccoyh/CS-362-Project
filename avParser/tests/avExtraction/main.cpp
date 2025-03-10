@@ -5,11 +5,13 @@
 
 void displayControls(AVParser::MediaParser& parser);
 
+constexpr AVParser::AudioParams audioParams;
+
 int main(const int argc, char* argv[])
 {
   try
   {
-    auto parser = AVParser::MediaParser(argc == 2 ? argv[1] : "assets/sample_720.mp4");
+    auto parser = AVParser::MediaParser(argc == 2 ? argv[1] : "assets/sample_720.mp4", audioParams);
 
     const auto frameData = parser.getCurrentFrame();
 

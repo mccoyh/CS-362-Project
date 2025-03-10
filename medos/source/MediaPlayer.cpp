@@ -4,13 +4,15 @@
 #include <iostream>
 #include <filesystem>
 
+constexpr AVParser::AudioParams audioParams;
+constexpr Audio::AudioParams audioParams2;
+
 MediaPlayer::MediaPlayer(const char* asset)
-  : asset{asset}, parser{std::make_unique<AVParser::MediaParser>(asset)}
+  : asset{asset}, parser{std::make_unique<AVParser::MediaParser>(asset, audioParams)}
 {
   startCaptionsLoading();
 
-  Audio::initSDL();
-  Audio::convertWav(asset, "audio");
+  audioPlayer = std::make_unique<Audio::AudioPlayer>(audioParams2);
 
   createWindow();
 }
@@ -21,9 +23,6 @@ MediaPlayer::~MediaPlayer()
   {
     captionsThread.join();
   }
-
-  Audio::deleteStream(audioData.stream);
-  Audio::quitSDL();
 }
 
 void MediaPlayer::run()
@@ -32,9 +31,7 @@ void MediaPlayer::run()
   vulkanEngine->loadVideoFrame(initialFrame.videoData, initialFrame.frameWidth, initialFrame.frameHeight);
   parser->pause();
 
-  audioData = Audio::playAudio("audio.wav");
-  Audio::pauseAudio(audioData.stream);
-  audioDurationRemaining = audioData.duration;
+  audioPlayer->stop();
 
   while (vulkanEngine->isActive())
   {
@@ -75,7 +72,7 @@ void MediaPlayer::createWindow()
   if (vulkanEngine != nullptr)
   {
     parser->pause();
-    Audio::pauseAudio(audioData.stream);
+    audioPlayer->stop();
 
     vulkanEngine.reset();
   }
@@ -158,11 +155,23 @@ void MediaPlayer::update()
 
   vulkanEngine->render();
 
-  if (audioDurationRemaining > 0)
+  if (parser->getState() == AVParser::MediaState::AUTO_PLAYING)
   {
-    Audio::delay(1); // checks for extra input every 1 ms
+    // Check if we need to add more audio data
+    const int available = audioPlayer->getAvailableBuffer();
+    constexpr int bytesPerSecond = audioParams2.sampleRate * audioParams2.channels * (audioParams2.bitsPerSample / 8);
 
-    audioDurationRemaining -= 1;
+    // If buffer needs more data, decode and queue it
+    if (available < bytesPerSecond)
+    {
+      uint8_t* buffer = nullptr;
+      int bufferSize = 0;
+
+      if (parser->getNextAudioChunk(buffer, bufferSize))
+      {
+        audioPlayer->queueAudio(buffer, bufferSize);
+      }
+    }
   }
 }
 
@@ -214,12 +223,12 @@ void MediaPlayer::handleKeyInput()
       if (parser->getState() == AVParser::MediaState::PAUSED)
       {
         parser->play();
-        Audio::resumeAudio(audioData.stream);
+        audioPlayer->start();
       }
       else if (parser->getState() == AVParser::MediaState::AUTO_PLAYING)
       {
         parser->pause();
-        Audio::pauseAudio(audioData.stream);
+        audioPlayer->stop();
       }
     }
   });
@@ -410,7 +419,7 @@ void MediaPlayer::timelineGui()
     if (ImGui::Button("Pause", ImVec2(buttonSize, 0)))
     {
       parser->pause();
-      Audio::pauseAudio(audioData.stream);
+      audioPlayer->stop();
     }
   }
   else
@@ -418,7 +427,7 @@ void MediaPlayer::timelineGui()
     if (ImGui::Button("Play", ImVec2(buttonSize, 0)))
     {
       parser->play();
-      Audio::resumeAudio(audioData.stream);
+      audioPlayer->start();
     }
   }
   ImGui::SameLine();
@@ -446,11 +455,11 @@ void MediaPlayer::volumeGui() const
   }
   ImGui::SameLine();
   ImGui::PushItemWidth(150);
-  ImGui::SliderFloat("##volume", &volume, 0.0f, 1.0f, "%.2f");
+  ImGui::SliderFloat("##volume", &volume, 0.0f, 2.0f, "%.2f");
   ImGui::PopItemWidth();
   ImGui::PopStyleVar();
 
-  Audio::changeVolume(audioData.stream, volume);
+  audioPlayer->setVolume(volume);
 }
 
 void MediaPlayer::sfxGui()
@@ -473,24 +482,18 @@ void MediaPlayer::navigateFrames(const int numFrames) const
 
 void MediaPlayer::loadNewFile()
 {
-  //Stop current video
-  Audio::pauseAudio(audioData.stream);
-  parser->pause();
-  //Initialize new video
-  parser.reset();
-  parser = std::make_unique<AVParser::MediaParser>(std::string(asset));
-  parser->pause();
+  // Stop current audio
+  audioPlayer->stop();
 
+  // Initialize new video
+  parser.reset();
+  parser = std::make_unique<AVParser::MediaParser>(std::string(asset), audioParams);
+  parser->pause();
 
   std::lock_guard lock(captionsMutex);
   captionsLoaded = false;
   captionsReady = false;
   startCaptionsLoading();
-
-  Audio::convertWav(asset, "audio");
-  audioData = Audio::playAudio("audio.wav");
-  Audio::pauseAudio(audioData.stream);
-  audioDurationRemaining = audioData.duration;
 
   update();
 }

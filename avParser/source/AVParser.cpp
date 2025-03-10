@@ -1,11 +1,15 @@
 #include "AVParser.h"
+extern "C" {
+#include <libavutil/opt.h>
+}
 #include <ostream>
 #include <stdexcept>
 
 namespace AVParser {
-  MediaParser::MediaParser(const std::string& mediaFile)
+  MediaParser::MediaParser(const std::string& mediaFile, const AudioParams& params)
     : currentFrame(0), currentVideoData(std::make_shared<std::vector<uint8_t>>()),
-      currentAudioData(std::make_shared<std::vector<uint8_t>>()), previousTime(std::chrono::steady_clock::now())
+      currentAudioData(std::make_shared<std::vector<uint8_t>>()), previousTime(std::chrono::steady_clock::now()),
+      params(params)
   {
     if (avformat_open_input(&formatContext, mediaFile.c_str(), nullptr, nullptr) < 0)
     {
@@ -33,10 +37,14 @@ namespace AVParser {
   {
     av_packet_free(&packet);
     av_frame_free(&frame);
+
+    swr_free(&swrContext);
     avcodec_free_context(&audioCodecContext);
-    avcodec_free_context(&videoCodecContext);
-    avformat_close_input(&formatContext);
+
     sws_freeContext(swsContext);
+    avcodec_free_context(&videoCodecContext);
+
+    avformat_close_input(&formatContext);
   }
 
   AVFrameData MediaParser::getCurrentFrame() const
@@ -105,6 +113,37 @@ namespace AVParser {
     loadFrameFromCache(targetFrame);
 
     currentFrame = targetFrame;
+
+    // Calculate the correct audio chunk based on frame rate and target frame
+    const double frameRate = getFrameRate();
+    const AVStream* audioStream = formatContext->streams[audioStreamIndex];
+    const double audioPtsPerSecond = 1.0 / av_q2d(audioStream->time_base);
+
+    // Calculate the timestamp in seconds for the target frame
+    const double targetTimeInSeconds = static_cast<double>(targetFrame) / frameRate;
+
+    // Convert time to audio PTS
+    const auto targetAudioPts = static_cast<int64_t>(targetTimeInSeconds * audioPtsPerSecond);
+
+    // Find the closest audio chunk to this PTS
+    auto it = audioCache.lower_bound(targetAudioPts);
+
+    // If we found an exact match or a later chunk
+    if (it != audioCache.end())
+    {
+      // Calculate the index (distance from beginning)
+      currentAudioChunk = std::distance(audioCache.begin(), it);
+    }
+    else if (!audioCache.empty())
+    {
+      // If no exact match found, use the last available chunk
+      currentAudioChunk = audioCache.size() - 1;
+    }
+    else
+    {
+      // No audio chunks available
+      currentAudioChunk = 0;
+    }
   }
 
   void MediaParser::update()
@@ -148,6 +187,35 @@ namespace AVParser {
   MediaState MediaParser::getState() const
   {
     return state;
+  }
+
+  bool MediaParser::getNextAudioChunk(uint8_t*& outBuffer, int& outBufferSize)
+  {
+    if (currentAudioChunk >= audioCache.size())
+    {
+      return false;
+    }
+
+    const auto it = std::next(audioCache.begin(), currentAudioChunk); // Efficient lookup
+
+    if (it == audioCache.end())
+    {
+      return false;
+    }
+
+    outBuffer = it->second.data();
+
+    const auto it2 = std::next(audioCacheSizes.begin(), currentAudioChunk); // Efficient lookup
+
+    if (it2 == audioCacheSizes.end())
+    {
+      return false;
+    }
+    outBufferSize = static_cast<int>(it2->second);
+
+    currentAudioChunk ++;
+
+    return true;
   }
 
   int MediaParser::getFrameWidth() const
@@ -394,18 +462,66 @@ namespace AVParser {
 
   void MediaParser::setupAudio()
   {
-    audioCodec = avcodec_find_decoder(formatContext->streams[audioStreamIndex]->codecpar->codec_id);
-    if (!audioCodec)
+    // Get codec parameters
+    const AVCodecParameters* codecParams = formatContext->streams[audioStreamIndex]->codecpar;
+    const AVCodec* codec = avcodec_find_decoder(codecParams->codec_id);
+    if (!codec)
     {
-      throw std::runtime_error("Failed to find audio decoder!");
+      avformat_close_input(&formatContext);
+      throw std::runtime_error("Failed to find decoder");
     }
 
-    audioCodecContext = avcodec_alloc_context3(audioCodec);
-    avcodec_parameters_to_context(audioCodecContext, formatContext->streams[audioStreamIndex]->codecpar);
-
-    if (avcodec_open2(audioCodecContext, audioCodec, nullptr) < 0)
+    // Allocate codec context
+    audioCodecContext = avcodec_alloc_context3(codec);
+    if (!audioCodecContext)
     {
-      throw std::runtime_error("Failed to open audio codec!");
+      avformat_close_input(&formatContext);
+      throw std::runtime_error("Failed to allocate codec context");
+    }
+
+    // Copy codec parameters to context
+    if (avcodec_parameters_to_context(audioCodecContext, codecParams) < 0)
+    {
+      avcodec_free_context(&audioCodecContext);
+      avformat_close_input(&formatContext);
+      throw std::runtime_error("Failed to copy codec parameters to context");
+    }
+
+    // Open codec
+    if (avcodec_open2(audioCodecContext, codec, nullptr) < 0)
+    {
+      avcodec_free_context(&audioCodecContext);
+      avformat_close_input(&formatContext);
+      throw std::runtime_error("Failed to open codec");
+    }
+
+    // Create resampler context
+    swrContext = swr_alloc();
+    if (!swrContext)
+    {
+      avcodec_free_context(&audioCodecContext);
+      avformat_close_input(&formatContext);
+      throw std::runtime_error("Failed to allocate SwrContext");
+    }
+
+    // Set input options
+    av_opt_set_chlayout(swrContext, "in_chlayout", &audioCodecContext->ch_layout, 0);
+    av_opt_set_int(swrContext, "in_sample_rate", audioCodecContext->sample_rate, 0);
+    av_opt_set_sample_fmt(swrContext, "in_sample_fmt", audioCodecContext->sample_fmt, 0);
+
+    // Set output options
+    constexpr AVChannelLayout outLayout = AV_CHANNEL_LAYOUT_STEREO;
+    av_opt_set_chlayout(swrContext, "out_chlayout", &outLayout, 0);
+    av_opt_set_int(swrContext, "out_sample_rate", params.sampleRate, 0);
+    av_opt_set_sample_fmt(swrContext, "out_sample_fmt", AV_SAMPLE_FMT_S16, 0);
+
+    // Initialize SwrContext
+    if (swr_init(swrContext) < 0)
+    {
+      swr_free(&swrContext);
+      avcodec_free_context(&audioCodecContext);
+      avformat_close_input(&formatContext);
+      throw std::runtime_error("Failed to initialize SwrContext");
     }
   }
 
@@ -452,9 +568,10 @@ namespace AVParser {
 
     // Flush the video decoder to clear internal buffers
     avcodec_flush_buffers(videoCodecContext);
+    avcodec_flush_buffers(audioCodecContext);
   }
 
-  void MediaParser::loadFrame() const
+  void MediaParser::loadFrame()
   {
     if (frame == nullptr)
     {
@@ -562,6 +679,145 @@ namespace AVParser {
     }
 
     cache[targetKeyFrame] = std::move(frameCache);
+
+    seekToFrame(targetFrame);
+
+    for (uint32_t i = targetKeyFrame; i < nextKeyFrame * 2; ++i)
+    {
+      try
+      {
+        uint8_t* buffer = nullptr;
+        int bufferSize = 0;
+        decodeAudioChunk(buffer, bufferSize);
+        av_freep(&buffer);
+      }
+      catch ([[maybe_unused]] const std::exception& e)
+      { /* Some frames may not load but that's expected and OKAY. */ }
+    }
+  }
+
+  bool MediaParser::decodeAudioChunk(uint8_t*& outBuffer, int& outBufferSize)
+  {
+    AVPacket* packet = av_packet_alloc();
+    AVFrame* frame = av_frame_alloc();
+    bool gotAudio = false;
+    bool endOfFile = false;
+
+    outBuffer = nullptr;
+    outBufferSize = 0;
+
+    if (!packet || !frame)
+    {
+      if (packet)
+      {
+        av_packet_free(&packet);
+      }
+      if (frame)
+      {
+        av_frame_free(&frame);
+      }
+      throw std::runtime_error("Failed to allocate packet or frame");
+    }
+
+    while (!gotAudio && !endOfFile)
+    {
+      int readResult = av_read_frame(formatContext, packet);
+
+      if (readResult >= 0)
+      {
+        if (packet->stream_index == audioStreamIndex)
+        {
+          if (avcodec_send_packet(audioCodecContext, packet) < 0)
+          {
+            throw std::runtime_error("Failed to send packet for decoding");
+          }
+
+          const int receiveResult = avcodec_receive_frame(audioCodecContext, frame);
+          if (receiveResult == AVERROR(EAGAIN) || receiveResult == AVERROR_EOF)
+          {
+            break;
+          }
+
+          if (receiveResult < 0)
+          {
+            throw std::runtime_error("Error during decoding");
+          }
+
+          // Calculate output buffer size
+          const int out_samples = static_cast<int>(av_rescale_rnd(
+              swr_get_delay(swrContext, audioCodecContext->sample_rate) + frame->nb_samples,
+              params.sampleRate,
+              audioCodecContext->sample_rate,
+              AV_ROUND_UP
+          ));
+
+          if (outBuffer)
+          {
+            av_freep(&outBuffer);
+            outBuffer = nullptr;
+          }
+
+          // Allocate output buffer
+          const int buffer_size = av_samples_alloc(&outBuffer, nullptr, params.channels,
+                                                   out_samples, AV_SAMPLE_FMT_S16, 0);
+
+          if (buffer_size < 0)
+          {
+            throw std::runtime_error("Failed to allocate samples buffer");
+          }
+
+          // Convert audio samples
+          const int samples_converted = swr_convert(
+              swrContext,
+              &outBuffer, out_samples,
+              frame->data, frame->nb_samples
+          );
+
+          if (samples_converted > 0)
+          {
+            const int bytesPerSample = av_get_bytes_per_sample(AV_SAMPLE_FMT_S16);
+            outBufferSize = samples_converted * params.channels * bytesPerSample;
+            gotAudio = true;
+
+            // Cache
+            audioCache[frame->pts] = std::vector(outBuffer, outBuffer + outBufferSize);
+            audioCacheSizes[frame->pts] = outBufferSize;
+
+            break;
+          }
+
+          av_freep(&outBuffer);
+        }
+        av_packet_unref(packet);
+      }
+      else if (readResult == AVERROR_EOF)
+      {
+        // End of file, send null packet to flush decoder
+        avcodec_send_packet(audioCodecContext, nullptr);
+        endOfFile = true;
+      }
+      else
+      {
+        av_frame_free(&frame);
+        av_packet_free(&packet);
+        if (outBuffer)
+        {
+          av_freep(&outBuffer);
+        }
+        throw std::runtime_error("Failed to decode frame");
+      }
+    }
+
+    av_frame_free(&frame);
+    av_packet_free(&packet);
+
+    if (!gotAudio && outBuffer)
+    {
+      av_freep(&outBuffer);
+      outBuffer = nullptr;
+    }
+
+    return gotAudio;
   }
 
   void MediaParser::setFilepath(const std::string& mediaFile)

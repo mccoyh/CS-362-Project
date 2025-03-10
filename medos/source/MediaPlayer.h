@@ -1,7 +1,7 @@
 #ifndef MEDIAPLAYER_H
 #define MEDIAPLAYER_H
 
-#include <audio.h>
+#include <AudioPlayer.h>
 #include <AudioToTxt.h>
 #include <AVParser.h>
 #include <VulkanEngine.h>
@@ -41,7 +41,7 @@ private:
 
   std::unique_ptr<Captions::CaptionCache> captionCache{};
 
-  Audio::AudioData audioData{};
+  std::unique_ptr<Audio::AudioPlayer> audioPlayer{};
 
   uint32_t audioDurationRemaining = 0;
 

@@ -6,6 +6,8 @@ set(BUILD_SHARED_LIBS ON)
 add_library(${PROJECT_NAME}
   audio.cpp
   audio.h
+  AudioPlayer.cpp
+  AudioPlayer.h
 )
 
 # Load SDL3
