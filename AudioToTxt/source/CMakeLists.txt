@@ -3,8 +3,12 @@ include(FetchContent)
 
 set(BUILD_SHARED_LIBS ON)
 
-# User option to enable/disable Vulkan (default: ON)
-option(WHISPER_USE_VULKAN "Enable Vulkan support for Whisper" ON)
+# User option to enable/disable Vulkan
+if (NOT APPLE)
+    option(WHISPER_USE_VULKAN "Enable Vulkan support for Whisper" ON)
+else()
+    option(WHISPER_USE_VULKAN "Enable Vulkan support for Whisper" OFF)
+endif ()
 
 add_library(${PROJECT_NAME}
     AudioToTxt.h
