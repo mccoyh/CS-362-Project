@@ -30,7 +30,9 @@ if (NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 endif()
 
-if(UNIX)
+set(SETUP_RPATH OFF)
+
+if(UNIX AND SETUP_RPATH)
   # Set the install RPATH to find libraries relative to the installed executable
   if(APPLE)
     set(CMAKE_INSTALL_RPATH "@executable_path")
