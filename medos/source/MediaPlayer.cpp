@@ -319,7 +319,7 @@ void MediaPlayer::menuBarGui()
   {
     if (ImGui::BeginMenu("File"))
     {
-      if (ImGui::MenuItem("Open Media", "Ctrl+O"))
+      if (ImGui::MenuItem("Open Media"))
       {
         fileDialog.SetTitle("Select a Media File");
         fileDialog.SetTypeFilters({".mp4", ".avi", ".mkv", ".mov"}); // Allow video files
@@ -448,10 +448,10 @@ void MediaPlayer::volumeGui() const
   ImGui::AlignTextToFramePadding();
   ImGui::Text("Volume:");
   ImGui::SameLine();
-  if (ImGui::Button(volume <= 0.01f ? "Mute" : "Unmute", ImVec2(buttonSize, 0)))
+  if (ImGui::Button(volume > 0.0f ? "Mute" : "Unmute", ImVec2(buttonSize, 0)))
   {
     // Toggle mute
-    volume = volume <= 0.01f ? 1.0f : 0.0f;
+    volume = volume > 0.0f ? 0.0f : 1.0f;
   }
   ImGui::SameLine();
   ImGui::PushItemWidth(150);
@@ -488,6 +488,8 @@ void MediaPlayer::loadNewFile()
   // Initialize new video
   parser.reset();
   parser = std::make_unique<AVParser::MediaParser>(std::string(asset), audioParams);
+  const auto initialFrame = parser->getCurrentFrame();
+  vulkanEngine->loadVideoFrame(initialFrame.videoData, initialFrame.frameWidth, initialFrame.frameHeight);
   parser->pause();
 
   std::lock_guard lock(captionsMutex);
