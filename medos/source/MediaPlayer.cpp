@@ -448,10 +448,10 @@ void MediaPlayer::volumeGui() const
   ImGui::AlignTextToFramePadding();
   ImGui::Text("Volume:");
   ImGui::SameLine();
-  if (ImGui::Button(volume <= 0.01f ? "Mute" : "Unmute", ImVec2(buttonSize, 0)))
+  if (ImGui::Button(volume > 0.0f ? "Mute" : "Unmute", ImVec2(buttonSize, 0)))
   {
     // Toggle mute
-    volume = volume <= 0.01f ? 1.0f : 0.0f;
+    volume = volume > 0.0f ? 0.0f : 1.0f;
   }
   ImGui::SameLine();
   ImGui::PushItemWidth(150);
