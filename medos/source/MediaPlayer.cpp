@@ -488,6 +488,8 @@ void MediaPlayer::loadNewFile()
   // Initialize new video
   parser.reset();
   parser = std::make_unique<AVParser::MediaParser>(std::string(asset), audioParams);
+  const auto initialFrame = parser->getCurrentFrame();
+  vulkanEngine->loadVideoFrame(initialFrame.videoData, initialFrame.frameWidth, initialFrame.frameHeight);
   parser->pause();
 
   std::lock_guard lock(captionsMutex);
