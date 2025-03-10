@@ -1,4 +1,7 @@
 #include "AVParser.h"
+
+#include <iostream>
+
 extern "C" {
 #include <libavutil/opt.h>
 }
@@ -113,6 +116,8 @@ namespace AVParser {
     loadFrameFromCache(targetFrame);
 
     currentFrame = targetFrame;
+
+    currentAudioChunk = 0;
   }
 
   void MediaParser::update()
@@ -156,6 +161,35 @@ namespace AVParser {
   MediaState MediaParser::getState() const
   {
     return state;
+  }
+
+  bool MediaParser::getNextAudioChunk(uint8_t*& outBuffer, int& outBufferSize)
+  {
+    if (currentAudioChunk >= audioCache.size())
+    {
+      return false;
+    }
+
+    const auto it = std::next(audioCache.begin(), currentAudioChunk); // Efficient lookup
+
+    if (it == audioCache.end())
+    {
+      return false;
+    }
+
+    outBuffer = it->second.data();
+
+    const auto it2 = std::next(audioCacheSizes.begin(), currentAudioChunk); // Efficient lookup
+
+    if (it2 == audioCacheSizes.end())
+    {
+      return false;
+    }
+    outBufferSize = static_cast<int>(it2->second);
+
+    currentAudioChunk ++;
+
+    return true;
   }
 
   int MediaParser::getFrameWidth() const
@@ -510,7 +544,7 @@ namespace AVParser {
     avcodec_flush_buffers(videoCodecContext);
   }
 
-  void MediaParser::loadFrame() const
+  void MediaParser::loadFrame()
   {
     if (frame == nullptr)
     {
@@ -618,6 +652,21 @@ namespace AVParser {
     }
 
     cache[targetKeyFrame] = std::move(frameCache);
+
+    seekToFrame(targetFrame);
+
+    for (uint32_t i = targetKeyFrame; i < nextKeyFrame * 2; ++i)
+    {
+      try
+      {
+        uint8_t* buffer = nullptr;
+        int bufferSize = 0;
+        decodeAudioChunk(buffer, bufferSize);
+        av_freep(&buffer);
+      }
+      catch ([[maybe_unused]] const std::exception& e)
+      {}
+    }
   }
 
   bool MediaParser::decodeAudioChunk(uint8_t*& outBuffer, int& outBufferSize)
@@ -702,6 +751,11 @@ namespace AVParser {
             const int bytesPerSample = av_get_bytes_per_sample(AV_SAMPLE_FMT_S16);
             outBufferSize = samples_converted * params.channels * bytesPerSample;
             gotAudio = true;
+
+            // Cache
+            audioCache[frame->pts] = std::vector(outBuffer, outBuffer + outBufferSize);
+            audioCacheSizes[frame->pts] = outBufferSize;
+
             break;
           }
 

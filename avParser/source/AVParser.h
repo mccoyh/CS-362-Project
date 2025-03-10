@@ -66,6 +66,8 @@ public:
 
   [[nodiscard]] MediaState getState() const;
 
+  bool getNextAudioChunk(uint8_t*& outBuffer, int& outBufferSize);
+
 private:
   AVFormatContext* formatContext = nullptr;
   AVFrame* frame = nullptr;
@@ -102,6 +104,10 @@ private:
 
   AudioParams params;
 
+  std::map<uint32_t, std::vector<uint8_t>> audioCache;
+  std::map<uint32_t, uint32_t> audioCacheSizes;
+  uint32_t currentAudioChunk = 0;
+
   [[nodiscard]] int getFrameWidth() const;
 
   [[nodiscard]] int getFrameHeight() const;
@@ -124,7 +130,7 @@ private:
 
   void seekToFrame(int64_t targetFrame) const;
 
-  void loadFrame() const;
+  void loadFrame();
 
   void convertVideoFrame() const;
 
@@ -132,7 +138,6 @@ private:
 
   void loadFrames(uint32_t targetFrame);
 
-public:
   bool decodeAudioChunk(uint8_t*& outBuffer, int& outBufferSize);
 };
 } // AVParser

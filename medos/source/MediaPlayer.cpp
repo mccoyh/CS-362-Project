@@ -155,19 +155,22 @@ void MediaPlayer::update()
 
   vulkanEngine->render();
 
-  // TODO: Upload the correct frame's audio data
-  // Check if we need to add more audio data
-  const int available = audioPlayer->getAvailableBuffer();
-  constexpr int bytesPerSecond = audioParams2.sampleRate * audioParams2.channels * (audioParams2.bitsPerSample / 8);
+  if (parser->getState() == AVParser::MediaState::AUTO_PLAYING)
+  {
+    // Check if we need to add more audio data
+    const int available = audioPlayer->getAvailableBuffer();
+    constexpr int bytesPerSecond = audioParams2.sampleRate * audioParams2.channels * (audioParams2.bitsPerSample / 8);
 
-  // If buffer needs more data, decode and queue it
-  if (available < bytesPerSecond) {
-    uint8_t* buffer = nullptr;
-    int bufferSize = 0;
+    // If buffer needs more data, decode and queue it
+    if (available < bytesPerSecond)
+    {
+      uint8_t* buffer = nullptr;
+      int bufferSize = 0;
 
-    if (parser->decodeAudioChunk(buffer, bufferSize)) {
-      audioPlayer->queueAudio(buffer, bufferSize);
-      av_freep(&buffer);
+      if (parser->getNextAudioChunk(buffer, bufferSize))
+      {
+        audioPlayer->queueAudio(buffer, bufferSize);
+      }
     }
   }
 }
