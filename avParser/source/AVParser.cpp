@@ -1,7 +1,6 @@
 #include "AVParser.h"
 #include <ostream>
 #include <stdexcept>
-#include <iostream>
 
 namespace AVParser {
   MediaParser::MediaParser(const std::string& mediaFile)
@@ -574,6 +573,26 @@ namespace AVParser {
     formatContext = nullptr;
     cache.clear();
     
+    frame = nullptr;
+    packet = nullptr;
+    swsContext = nullptr;
+
+    videoCodec = nullptr;
+    videoCodecContext = nullptr;
+
+    audioCodec = nullptr;
+    audioCodecContext = nullptr;
+
+    videoStreamIndex = -1;
+    audioStreamIndex = -1;
+
+    timeAccumulator = 0;
+
+    state = MediaState::AUTO_PLAYING;
+
+    keyFrameMap.clear();
+
+    totalFrames = 0;
 
     if (avformat_open_input(&formatContext, mediaFile.c_str(), nullptr, nullptr) < 0)
     {

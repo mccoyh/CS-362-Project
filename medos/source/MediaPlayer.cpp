@@ -4,7 +4,6 @@
 #include <iostream>
 #include <filesystem>
 
-
 MediaPlayer::MediaPlayer(const char* asset)
   : asset{asset}, parser{std::make_unique<AVParser::MediaParser>(asset)}
 {
@@ -478,8 +477,12 @@ void MediaPlayer::loadNewFile()
   Audio::pauseAudio(audioData.stream);
   parser->pause();
   //Initialize new video
-  parser->setFilepath(std::string(asset));
+  parser.reset();
+  parser = std::make_unique<AVParser::MediaParser>(std::string(asset));
+  parser->pause();
 
+
+  std::lock_guard lock(captionsMutex);
   captionsLoaded = false;
   captionsReady = false;
   startCaptionsLoading();
