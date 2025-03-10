@@ -482,24 +482,18 @@ void MediaPlayer::navigateFrames(const int numFrames) const
 
 void MediaPlayer::loadNewFile()
 {
-  //Stop current video
-  Audio::pauseAudio(audioData.stream);
-  parser->pause();
-  //Initialize new video
-  parser.reset();
-  parser = std::make_unique<AVParser::MediaParser>(std::string(asset));
-  parser->pause();
+  // Stop current audio
+  audioPlayer->stop();
 
+  // Initialize new video
+  parser.reset();
+  parser = std::make_unique<AVParser::MediaParser>(std::string(asset), audioParams);
+  parser->pause();
 
   std::lock_guard lock(captionsMutex);
   captionsLoaded = false;
   captionsReady = false;
   startCaptionsLoading();
-
-  Audio::convertWav(asset, "audio");
-  audioData = Audio::playAudio("audio.wav");
-  Audio::pauseAudio(audioData.stream);
-  audioDurationRemaining = audioData.duration;
 
   update();
 }
