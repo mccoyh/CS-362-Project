@@ -568,6 +568,7 @@ namespace AVParser {
 
     // Flush the video decoder to clear internal buffers
     avcodec_flush_buffers(videoCodecContext);
+    avcodec_flush_buffers(audioCodecContext);
   }
 
   void MediaParser::loadFrame()
