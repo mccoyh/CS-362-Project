@@ -656,80 +656,74 @@ namespace AVParser {
             throw std::runtime_error("Failed to send packet for decoding");
           }
 
-          while (true)
+          const int receiveResult = avcodec_receive_frame(audioCodecContext, frame);
+          if (receiveResult == AVERROR(EAGAIN) || receiveResult == AVERROR_EOF)
           {
-            const int receiveResult = avcodec_receive_frame(audioCodecContext, frame);
-            if (receiveResult == AVERROR(EAGAIN) || receiveResult == AVERROR_EOF)
-            {
-              break;
-            }
-
-            if (receiveResult < 0)
-            {
-              throw std::runtime_error("Error during decoding");
-            }
-
-            // Calculate output buffer size
-            const int out_samples = static_cast<int>(av_rescale_rnd(
-                swr_get_delay(swrContext, audioCodecContext->sample_rate) + frame->nb_samples,
-                params.sampleRate,
-                audioCodecContext->sample_rate,
-                AV_ROUND_UP
-            ));
-
-            if (outBuffer)
-            {
-              av_freep(&outBuffer);
-              outBuffer = nullptr;
-            }
-
-            // Allocate output buffer
-            const int buffer_size = av_samples_alloc(&outBuffer, nullptr, params.channels,
-                                                     out_samples, AV_SAMPLE_FMT_S16, 0);
-
-            if (buffer_size < 0)
-            {
-              throw std::runtime_error("Failed to allocate samples buffer");
-            }
-
-            // Convert audio samples
-            const int samples_converted = swr_convert(
-                swrContext,
-                &outBuffer, out_samples,
-                frame->data, frame->nb_samples
-            );
-
-            if (samples_converted > 0)
-            {
-              const int bytesPerSample = av_get_bytes_per_sample(AV_SAMPLE_FMT_S16);
-              outBufferSize = samples_converted * params.channels * bytesPerSample;
-              gotAudio = true;
-              break;
-            }
-
-            av_freep(&outBuffer);
+            break;
           }
-        }
-        av_packet_unref(packet);
-      }
-      else
-      {
-        if (readResult == AVERROR_EOF)
-        {
-          // End of file, send null packet to flush decoder
-          avcodec_send_packet(audioCodecContext, nullptr);
-          endOfFile = true;
-        }
-        else
-        {
-          av_frame_free(&frame);
-          av_packet_free(&packet);
+
+          if (receiveResult < 0)
+          {
+            throw std::runtime_error("Error during decoding");
+          }
+
+          // Calculate output buffer size
+          const int out_samples = static_cast<int>(av_rescale_rnd(
+              swr_get_delay(swrContext, audioCodecContext->sample_rate) + frame->nb_samples,
+              params.sampleRate,
+              audioCodecContext->sample_rate,
+              AV_ROUND_UP
+          ));
+
           if (outBuffer)
           {
             av_freep(&outBuffer);
+            outBuffer = nullptr;
           }
-          throw std::runtime_error("Failed to decode frame");
+
+          // Allocate output buffer
+          const int buffer_size = av_samples_alloc(&outBuffer, nullptr, params.channels,
+                                                   out_samples, AV_SAMPLE_FMT_S16, 0);
+
+          if (buffer_size < 0)
+          {
+            throw std::runtime_error("Failed to allocate samples buffer");
+          }
+
+          // Convert audio samples
+          const int samples_converted = swr_convert(
+              swrContext,
+              &outBuffer, out_samples,
+              frame->data, frame->nb_samples
+          );
+
+          if (samples_converted > 0)
+          {
+            const int bytesPerSample = av_get_bytes_per_sample(AV_SAMPLE_FMT_S16);
+            outBufferSize = samples_converted * params.channels * bytesPerSample;
+            gotAudio = true;
+            break;
+          }
+
+          av_freep(&outBuffer);
         }
+        av_packet_unref(packet);
+      }
+      else if (readResult == AVERROR_EOF)
+      {
+        // End of file, send null packet to flush decoder
+        avcodec_send_packet(audioCodecContext, nullptr);
+        endOfFile = true;
+      }
+      else
+      {
+        av_frame_free(&frame);
+        av_packet_free(&packet);
+        if (outBuffer)
+        {
+          av_freep(&outBuffer);
+        }
+        throw std::runtime_error("Failed to decode frame");
       }
     }
 
