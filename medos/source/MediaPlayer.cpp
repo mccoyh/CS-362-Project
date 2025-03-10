@@ -319,7 +319,7 @@ void MediaPlayer::menuBarGui()
   {
     if (ImGui::BeginMenu("File"))
     {
-      if (ImGui::MenuItem("Open Media", "Ctrl+O"))
+      if (ImGui::MenuItem("Open Media"))
       {
         fileDialog.SetTitle("Select a Media File");
         fileDialog.SetTypeFilters({".mp4", ".avi", ".mkv", ".mov"}); // Allow video files
