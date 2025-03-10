@@ -1,6 +1,7 @@
 #include "AVParser.h"
 #include <ostream>
 #include <stdexcept>
+#include <iostream>
 
 namespace AVParser {
   MediaParser::MediaParser(const std::string& mediaFile)
@@ -562,5 +563,36 @@ namespace AVParser {
     }
 
     cache[targetKeyFrame] = std::move(frameCache);
+  }
+
+  void MediaParser::setFilepath(const std::string& mediaFile)
+  {
+    currentFrame = 0;
+    currentVideoData = std::make_shared<std::vector<uint8_t>>();
+    currentAudioData = std::make_shared<std::vector<uint8_t>>();
+    previousTime = std::chrono::steady_clock::now();
+    formatContext = nullptr;
+    cache.clear();
+    
+
+    if (avformat_open_input(&formatContext, mediaFile.c_str(), nullptr, nullptr) < 0)
+    {
+      throw std::runtime_error("Failed to open video file!");
+    }
+    if (avformat_find_stream_info(formatContext, nullptr) < 0)
+    {
+      throw std::runtime_error("Failed to retrieve stream info!");
+    }
+
+    findStreamIndices();
+
+    setupVideo();
+
+    setupAudio();
+
+    frame = av_frame_alloc();
+    packet = av_packet_alloc();
+
+    loadNextFrame();
   }
 } // AVParser

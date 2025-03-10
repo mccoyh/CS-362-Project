@@ -56,6 +56,11 @@ Enables or disables manual control over frame loading.
 
 Gets the current state of the media parser.
 
+### `void setFilepath(const std::string& mediaFile);`
+- **mediaFile**: The path to the media file to be parsed.
+
+Loads and initializes a new media file. 
+
 ## `AVFrameData`
 
 Contains the data of a single frame:

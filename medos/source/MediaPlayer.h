@@ -91,6 +91,8 @@ private:
   void sfxGui();
 
   void navigateFrames(int numFrames) const;
+
+  void loadNewFile();
 };
 
 #endif //MEDIAPLAYER_H

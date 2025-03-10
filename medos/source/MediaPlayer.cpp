@@ -359,14 +359,11 @@ void MediaPlayer::menuBarGui()
   if (fileDialog.HasSelected()) 
   {
     std::string filePath = fileDialog.GetSelected().string();
-    std::cout << "Selected File: " << filePath << std::endl; // Debug output
-    std::cout << "Initial file: " << asset << std::endl;
     //Set file path
     asset = filePath.c_str();
-    std::cout << "New File: " << asset << std::endl;
     fileDialog.ClearSelected();
     //Reload with new file
-    update();
+    loadNewFile();
   }
 }
 
@@ -473,4 +470,24 @@ void MediaPlayer::navigateFrames(const int numFrames) const
   const uint32_t newFrame = std::clamp(currentFrame + numFrames, 0, maxFrames);
 
   parser->loadFrameAt(newFrame);
+}
+
+void MediaPlayer::loadNewFile()
+{
+  //Stop current video
+  Audio::pauseAudio(audioData.stream);
+  parser->pause();
+  //Initialize new video
+  parser->setFilepath(std::string(asset));
+
+  captionsLoaded = false;
+  captionsReady = false;
+  startCaptionsLoading();
+
+  Audio::convertWav(asset, "audio");
+  audioData = Audio::playAudio("audio.wav");
+  Audio::pauseAudio(audioData.stream);
+  audioDurationRemaining = audioData.duration;
+
+  update();
 }
