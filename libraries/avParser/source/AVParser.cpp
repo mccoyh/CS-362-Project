@@ -657,22 +657,22 @@ namespace AVParser {
       --it;
       const auto targetKeyFrame = it->first;
 
-      auto keyFrameIt = cache.find(targetKeyFrame);
-      if (keyFrameIt == cache.end())
+      auto keyFrameIt = videoCache.find(targetKeyFrame);
+      if (keyFrameIt == videoCache.end())
       {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         continue;
       }
 
       // Access the keyframe map from the cache
-      const auto& [frames] = keyFrameIt->second;
-      const auto frameIt = frames.find(targetFrame);
-      if (frameIt == frames.end())
+      const auto& frames = keyFrameIt->second;
+      const auto relativeFrame = targetFrame - targetKeyFrame;
+      if (relativeFrame > frames.size())
       {
         throw std::runtime_error("Target frame not found in key frame.");
       }
 
-      data = frameIt->second;
+      data = frames.at(relativeFrame);
       found = true;
     }
 
@@ -692,16 +692,17 @@ namespace AVParser {
     const auto targetKeyFrame = it->first;
 
     FrameCache frameCache;
+    frameCache.reserve(nextKeyFrame - targetKeyFrame);
 
     seekToFrame(targetKeyFrame);
 
     for (uint32_t i = targetKeyFrame; i < nextKeyFrame; ++i)
     {
       loadFrame();
-      frameCache.frames[i] = *backgroundVideoData;
+      frameCache.push_back(*backgroundVideoData);
     }
 
-    cache[targetKeyFrame] = std::move(frameCache);
+    videoCache[targetKeyFrame] = std::move(frameCache);
 
     seekToFrame(targetKeyFrame);
 
@@ -862,7 +863,7 @@ namespace AVParser {
       --it;
 
       // Load current keyframe's frames if not cached
-      if (const auto currentKeyFrame = it->first; !cache.contains(currentKeyFrame))
+      if (const auto currentKeyFrame = it->first; !videoCache.contains(currentKeyFrame))
       {
         loadFrames(currentKeyFrame);
       }
@@ -873,7 +874,7 @@ namespace AVParser {
         // Preload next keyframe for forward playback
         ++it;
         if (it != keyFrameMap.end()) {
-          if (const auto nextKeyFrame = it->first; !cache.contains(nextKeyFrame))
+          if (const auto nextKeyFrame = it->first; !videoCache.contains(nextKeyFrame))
           {
             loadFrames(nextKeyFrame);
           }
@@ -887,7 +888,7 @@ namespace AVParser {
         ++tempIt;
         if (tempIt != keyFrameMap.end())
         {
-          if (const auto nextKeyFrame = tempIt->first; !cache.contains(nextKeyFrame))
+          if (const auto nextKeyFrame = tempIt->first; !videoCache.contains(nextKeyFrame))
           {
             loadFrames(nextKeyFrame);
           }
@@ -897,7 +898,7 @@ namespace AVParser {
         if (it != keyFrameMap.begin())
         {
           --it;
-          if (const auto prevKeyFrame = it->first; !cache.contains(prevKeyFrame))
+          if (const auto prevKeyFrame = it->first; !videoCache.contains(prevKeyFrame))
           {
             loadFrames(prevKeyFrame);
           }
@@ -905,13 +906,13 @@ namespace AVParser {
       }
 
       // Smarter cache management - keep keyframes around current position
-      while (cache.size() > 6)
+      while (videoCache.size() > 6)
       {
         // Find the keyframe farthest from current position to remove
         uint32_t farthestKeyFrame = 0;
         int64_t maxDistance = -1;
 
-        for (const auto& kf: cache | std::views::keys)
+        for (const auto& kf: videoCache | std::views::keys)
         {
           const int64_t distance = std::abs(static_cast<int64_t>(kf) - static_cast<int64_t>(currentFrameIdx));
           if (distance > maxDistance)
@@ -923,7 +924,7 @@ namespace AVParser {
 
         if (maxDistance > 0)
         {
-          cache.erase(farthestKeyFrame);
+          videoCache.erase(farthestKeyFrame);
         }
         else
         {
@@ -942,7 +943,7 @@ namespace AVParser {
     currentAudioData = std::make_shared<std::vector<uint8_t>>();
     previousTime = std::chrono::steady_clock::now();
     formatContext = nullptr;
-    cache.clear();
+    videoCache.clear();
     
     frame = nullptr;
     packet = nullptr;
