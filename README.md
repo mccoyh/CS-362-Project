@@ -2,16 +2,16 @@
 
 ## Repository Contents
 
-### 📝 [Documentation `docs`](./docs)
+### 📝 [Documentation (`docs`)](./docs)
  - General information and technical documentation about the repository.
 
-### 📚 [Internal Libraries `libraries`](./libraries)
+### 📚 [Internal Libraries (`libraries`)](./libraries)
 - [`audiolib`](./libraries/audiolib): A lightweight audio playback library for seamless sound rendering.
 - [`AudioToTxt`](./libraries/AudioToTxt): An AI-powered transcription library that converts audio files into accurate captions and transcripts.
 - [`AVParser`](./libraries/avParser): A media file parsing library that extracts structured data for further processing.
 - [`VulkanEngine`](./libraries/vulkanEngine): A Vulkan-based rendering engine for efficient video playback and window management.
 
-### 📊 [Weekly Reports `reports`](./reports)
+### 📊 [Weekly Reports (`reports`)](./reports)
  - Status updates tracking application development progress over time.
 
 ### 🎬️ [Source Code (`source`)](./source)
