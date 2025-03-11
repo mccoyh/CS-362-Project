@@ -1,4 +1,8 @@
 #include "AVParser.h"
+
+#include <iostream>
+#include <thread>
+
 extern "C" {
 #include <libavutil/opt.h>
 }
@@ -30,11 +34,18 @@ namespace AVParser {
     frame = av_frame_alloc();
     packet = av_packet_alloc();
 
+    backgroundThread = std::thread(&MediaParser::backgroundFrameLoader, this);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(750));
+
     loadNextFrame();
   }
 
   MediaParser::~MediaParser()
   {
+    keepLoadingInBackground = false;
+    backgroundThread.join();
+
     av_packet_free(&packet);
     av_frame_free(&frame);
 
@@ -111,9 +122,11 @@ namespace AVParser {
       throw std::out_of_range("Target frame is out of range!");
     }
 
-    loadFrameFromCache(targetFrame);
+    state = MediaState::PAUSED;
 
     currentFrame = targetFrame;
+
+    loadFrameFromCache(targetFrame);
 
     // Calculate the correct audio chunk based on frame rate and target frame
     const double frameRate = getFrameRate();
@@ -631,31 +644,40 @@ namespace AVParser {
 
   void MediaParser::loadFrameFromCache(const uint32_t targetFrame)
   {
-    auto it = keyFrameMap.upper_bound(static_cast<int>(targetFrame));
-    if (it == keyFrameMap.begin())
-    {
-      throw std::runtime_error("Key frame not found!");
-    }
-    --it;
-    const auto targetKeyFrame = it->first;
+    bool found = false;
+    std::vector<unsigned char> data;
 
-    auto keyFrameIt = cache.find(targetKeyFrame);
-    if (keyFrameIt == cache.end())
+    while (!found)
     {
-      loadFrames(targetFrame);  // Load frames if not found
-      keyFrameIt = cache.find(targetKeyFrame);  // Re-check after loading
-    }
+      auto it = keyFrameMap.upper_bound(static_cast<int>(targetFrame));
+      if (it == keyFrameMap.begin())
+      {
+        throw std::runtime_error("Key frame not found!");
+      }
+      --it;
+      const auto targetKeyFrame = it->first;
 
-    // Access the keyframe map from the cache
-    const auto& [frames] = keyFrameIt->second;
-    const auto frameIt = frames.find(targetFrame);
-    if (frameIt == frames.end())
-    {
-      throw std::runtime_error("Target frame not found in key frame.");
+      auto keyFrameIt = cache.find(targetKeyFrame);
+      if (keyFrameIt == cache.end())
+      {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        continue;
+      }
+
+      // Access the keyframe map from the cache
+      const auto& [frames] = keyFrameIt->second;
+      const auto frameIt = frames.find(targetFrame);
+      if (frameIt == frames.end())
+      {
+        throw std::runtime_error("Target frame not found in key frame.");
+      }
+
+      data = frameIt->second;
+      found = true;
     }
 
     // Set currentVideoData to the frame
-    currentVideoData = std::make_shared<std::vector<uint8_t>>(frameIt->second);
+    currentVideoData = std::make_shared<std::vector<uint8_t>>(data);
   }
 
   void MediaParser::loadFrames(const uint32_t targetFrame)
@@ -819,6 +841,45 @@ namespace AVParser {
     }
 
     return gotAudio;
+  }
+
+  void MediaParser::backgroundFrameLoader()
+  {
+    while (keepLoadingInBackground)
+    {
+      // ensure current frame is loaded
+      auto it = keyFrameMap.upper_bound(static_cast<int>(currentFrame));
+      if (it == keyFrameMap.begin())
+      {
+        throw std::runtime_error("Key frame not found!");
+      }
+      --it;
+      auto targetKeyFrame = it->first;
+
+      auto keyFrameIt = cache.find(targetKeyFrame);
+      if (keyFrameIt == cache.end())
+      {
+        loadFrames(targetKeyFrame);  // Load frames if not found
+      }
+
+      // ensure next frame is loaded
+      ++it;
+      if (it != keyFrameMap.end())
+      {
+        targetKeyFrame = it->first;
+
+        keyFrameIt = cache.find(targetKeyFrame);
+        if (keyFrameIt == cache.end())
+        {
+          loadFrames(targetKeyFrame);  // Load frames if not found
+        }
+      }
+
+      // Wait
+      std::this_thread::sleep_for(std::chrono::milliseconds(250)); // Simulate work
+    }
+
+    std::cout << "Worker thread is stopping!" << std::endl;
   }
 
   void MediaParser::setFilepath(const std::string& mediaFile)

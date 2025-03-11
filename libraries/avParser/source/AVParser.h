@@ -1,5 +1,6 @@
 #ifndef AVPARSER_H
 #define AVPARSER_H
+#include <thread>
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -141,6 +142,11 @@ private:
   void loadFrames(uint32_t targetFrame);
 
   bool decodeAudioChunk(uint8_t*& outBuffer, int& outBufferSize);
+
+  std::atomic<bool> keepLoadingInBackground = true;
+  std::thread backgroundThread;
+
+  void backgroundFrameLoader();
 };
 } // AVParser
 
