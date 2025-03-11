@@ -99,7 +99,7 @@ private:
 
   MediaState state = MediaState::AUTO_PLAYING;
 
-  std::map<int, bool> keyFrameMap;
+  std::map<int, int> keyFrameMap;
 
   using FrameCache = std::vector<std::vector<uint8_t>>;
   std::unordered_map<uint32_t, FrameCache> videoCache;
@@ -120,7 +120,7 @@ private:
 
   void setupVideo();
 
-  void loadVideoKeyframes();
+  void loadKeyframes();
 
   void calculateTotalFrames();
 

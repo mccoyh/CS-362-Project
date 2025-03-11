@@ -33,6 +33,10 @@ namespace AVParser {
 
     setupAudio();
 
+    loadKeyframes();
+
+    calculateTotalFrames();
+
     frame = av_frame_alloc();
     packet = av_packet_alloc();
 
@@ -290,13 +294,9 @@ namespace AVParser {
                                 videoCodecContext->pix_fmt, videoCodecContext->width,
                                 videoCodecContext->height, AV_PIX_FMT_RGBA, SWS_BILINEAR,
                                 nullptr, nullptr, nullptr);
-
-    loadVideoKeyframes();
-
-    calculateTotalFrames();
   }
 
-  void MediaParser::loadVideoKeyframes()
+  void MediaParser::loadKeyframes()
   {
     const AVStream* videoStream = formatContext->streams[videoStreamIndex];
 
@@ -980,6 +980,10 @@ namespace AVParser {
     setupVideo();
 
     setupAudio();
+
+    loadKeyframes();
+
+    calculateTotalFrames();
 
     frame = av_frame_alloc();
     packet = av_packet_alloc();
