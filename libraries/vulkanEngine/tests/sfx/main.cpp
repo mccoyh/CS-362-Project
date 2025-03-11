@@ -1,6 +1,6 @@
 #include "../VideoDecoder.h"
-#include <source/VulkanEngine.h>
-#include <source/components/ImGuiInstance.h>
+#include <VulkanEngine.h>
+#include <components/ImGuiInstance.h>
 #include <iostream>
 #include <chrono>
 

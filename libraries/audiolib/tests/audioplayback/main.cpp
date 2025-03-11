@@ -1,4 +1,4 @@
-#include <source/audio.h>
+#include <audio.h>
 
 int main(const int argc, char* argv[]) {
   Audio::initSDL();
