@@ -12,6 +12,7 @@ extern "C" {
 namespace AVParser {
   MediaParser::MediaParser(const std::string& mediaFile, const AudioParams& params)
     : currentFrame(0), currentVideoData(std::make_shared<std::vector<uint8_t>>()),
+      backgroundVideoData(std::make_shared<std::vector<uint8_t>>()),
       currentAudioData(std::make_shared<std::vector<uint8_t>>()), previousTime(std::chrono::steady_clock::now()),
       params(params)
   {
@@ -626,12 +627,12 @@ namespace AVParser {
     const int outHeight = getFrameHeight();
 
     // Resize or reallocate the buffer if needed
-    if (currentVideoData->size() != outWidth * outHeight * 4)
+    if (backgroundVideoData->size() != outWidth * outHeight * 4)
     {
-      currentVideoData->resize(outWidth * outHeight * 4);
+      backgroundVideoData->resize(outWidth * outHeight * 4);
     }
 
-    uint8_t* dst[1] = { currentVideoData->data() };
+    uint8_t* dst[1] = { backgroundVideoData->data() };
     const int dstStride[1] = { outWidth * 4 };
 
     if (!swsContext)
@@ -698,7 +699,7 @@ namespace AVParser {
     for (uint32_t i = targetKeyFrame; i < nextKeyFrame; ++i)
     {
       loadFrame();
-      frameCache.frames[i] = *currentVideoData;
+      frameCache.frames[i] = *backgroundVideoData;
     }
 
     cache[targetKeyFrame] = std::move(frameCache);

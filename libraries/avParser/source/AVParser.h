@@ -92,6 +92,8 @@ private:
   std::shared_ptr<std::vector<uint8_t>> currentVideoData;
   std::shared_ptr<std::vector<uint8_t>> currentAudioData;
 
+  std::shared_ptr<std::vector<uint8_t>> backgroundVideoData;
+
   float timeAccumulator = 0;
   std::chrono::time_point<std::chrono::steady_clock> previousTime;
 
