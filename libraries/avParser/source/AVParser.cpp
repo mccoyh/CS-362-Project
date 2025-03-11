@@ -662,7 +662,7 @@ namespace AVParser {
       auto keyFrameIt = cache.find(targetKeyFrame);
       if (keyFrameIt == cache.end())
       {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
         continue;
       }
 
@@ -879,16 +879,6 @@ namespace AVParser {
           {
             loadFrames(nextKeyFrame);
           }
-
-          // Also try to preload the keyframe after that
-          ++it;
-          if (it != keyFrameMap.end())
-          {
-            if (const auto futureKeyFrame = it->first; !cache.contains(futureKeyFrame))
-            {
-              loadFrames(futureKeyFrame);
-            }
-          }
         }
       }
       else if (currentState == MediaState::MANUAL)
@@ -917,7 +907,7 @@ namespace AVParser {
       }
 
       // Smarter cache management - keep keyframes around current position
-      while (cache.size() > 8)
+      while (cache.size() > 6)
       {
         // Find the keyframe farthest from current position to remove
         uint32_t farthestKeyFrame = 0;
@@ -942,9 +932,6 @@ namespace AVParser {
           break;
         }
       }
-
-      // Wait before next iteration
-      std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     std::cout << "Worker thread is stopping!" << std::endl;
