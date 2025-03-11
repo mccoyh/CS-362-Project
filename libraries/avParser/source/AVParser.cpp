@@ -345,9 +345,6 @@ namespace AVParser {
       av_packet_unref(&packet);
     }
 
-    // Set current frame to the start
-    currentFrame = 0;
-
     // Reset stream position
     av_seek_frame(formatContext, videoStreamIndex, 0, AVSEEK_FLAG_BACKWARD);
   }
