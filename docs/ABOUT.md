@@ -369,3 +369,9 @@ Medos combines innovative features with a user-centric approach to create a stre
 - I would definately spend more time thinking of project ideas, and try a much easier one. Creating a media player from scratch was incredibly difficult.
 - I would be more forceful about getting team members to communicate about what they are doing for the project, where they're at with it, and any issues they are having. This also applies to getting them to start working on it earlier.
 - I would choose more feasible use cases, and add to them if I feel we are capable of doing more.
+
+### Quinton
+- The scope of the project seemed very doable and I was very excited to implement all of the interesting and unique features that our proposal contained. Keeping up with the milestones due to the larger scope proved far more difficult than I imagined. I need to realize what can be done realistically in 10 weeks.
+- In the future, I also plan to "scrap" features sooner than later. I ended up taking too long on a feature, just to give up on it closer to the finish line than I would have liked. 
+- I hope to implement better communications plans. While I feel like I have been communicating very consistently, I would like to plan to ask each team member what their task/goal is for the week, so the team knows who is doing what.
+- Taking this course while also taking 14 other credits felt like it better prepared me for future software engineering careers. While I felt a little unprepared this term, I now know how it feels to have several larger scoped projects with short deadlines.
