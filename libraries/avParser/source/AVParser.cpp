@@ -862,10 +862,9 @@ namespace AVParser {
       }
 
       --it;
-      auto currentKeyFrame = it->first;
 
       // Load current keyframe's frames if not cached
-      if (cache.find(currentKeyFrame) == cache.end())
+      if (const auto currentKeyFrame = it->first; !cache.contains(currentKeyFrame))
       {
         loadFrames(currentKeyFrame);
       }
@@ -876,8 +875,7 @@ namespace AVParser {
         // Preload next keyframe for forward playback
         ++it;
         if (it != keyFrameMap.end()) {
-          auto nextKeyFrame = it->first;
-          if (cache.find(nextKeyFrame) == cache.end())
+          if (const auto nextKeyFrame = it->first; !cache.contains(nextKeyFrame))
           {
             loadFrames(nextKeyFrame);
           }
