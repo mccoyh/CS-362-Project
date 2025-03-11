@@ -38,8 +38,6 @@ namespace AVParser {
 
     backgroundThread = std::thread(&MediaParser::backgroundFrameLoader, this);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(750));
-
     loadNextFrame();
   }
 
@@ -857,7 +855,7 @@ namespace AVParser {
       auto it = keyFrameMap.upper_bound(static_cast<int>(currentFrameIdx));
       if (it == keyFrameMap.begin())
       {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
         continue;
       }
 
