@@ -13,12 +13,12 @@
 
 ## Installation
 
-To set up the project, follow the instructions in [SETUP.md](SETUP.md).
+To set up the project, follow the instructions in [SETUP.md](docs/SETUP.md).
 
 ## Project Overview
 
-For a deeper understanding of the project’s goals and architecture, refer to [ABOUT.md](ABOUT.md).
+For a deeper understanding of the project’s goals and architecture, refer to [ABOUT.md](docs/ABOUT.md).
 
 ## Tests
 
-To learn about the project's testing procedures, see [TEST.md](TEST.md).
+To learn about the project's testing procedures, see [TEST.md](docs/TEST.md).
