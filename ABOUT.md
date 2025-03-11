@@ -362,3 +362,10 @@ The C++ Core Guidlines will be used to create a constistent coding style between
 
 ## Conclusion
 Medos combines innovative features with a user-centric approach to create a streamlined, reliable video playback and editing tool. By prioritizing simplicity, accessibility, and performance, this project aims to fill the gap between complex professional tools and basic video players. With a strong focus on modularity and cross-platform capabilities, the player offers an adaptable solution for modern media consumption and creation.
+
+## Reflections
+
+### Hunter
+- I would definately spend more time thinking of project ideas, and try a much easier one. Creating a media player from scratch was incredibly difficult.
+- I would be more forceful about getting team members to communicate about what they are doing for the project, where they're at with it, and any issues they are having. This also applies to getting them to start working on it earlier.
+- I would choose more feasible use cases, and add to them if I feel we are capable of doing more.
