@@ -1,6 +1,7 @@
 #include "AVParser.h"
 
 #include <iostream>
+#include <ranges>
 #include <thread>
 
 extern "C" {
@@ -844,95 +845,112 @@ namespace AVParser {
     return gotAudio;
   }
 
-  void MediaParser::backgroundFrameLoader() {
-    while (keepLoadingInBackground) {
-        // Get current frame and playback state
-        const uint32_t currentFrameIdx = currentFrame;
-        const MediaState currentState = state;
+  void MediaParser::backgroundFrameLoader()
+  {
+    while (keepLoadingInBackground)
+    {
+      // Get current frame and playback state
+      const uint32_t currentFrameIdx = currentFrame;
+      const MediaState currentState = state;
 
-        // Determine which keyframes to load based on playback direction
-        auto it = keyFrameMap.upper_bound(static_cast<int>(currentFrameIdx));
-        if (it == keyFrameMap.begin()) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            continue;
-        }
-
-        --it;
-        auto currentKeyFrame = it->first;
-
-        // Load current keyframe's frames if not cached
-        if (cache.find(currentKeyFrame) == cache.end()) {
-            loadFrames(currentKeyFrame);
-        }
-
-        // Determine next frames to preload based on playback state
-        if (currentState == MediaState::AUTO_PLAYING) {
-            // Preload next keyframe for forward playback
-            ++it;
-            if (it != keyFrameMap.end()) {
-                auto nextKeyFrame = it->first;
-                if (cache.find(nextKeyFrame) == cache.end()) {
-                    loadFrames(nextKeyFrame);
-                }
-
-                // Also try to preload the keyframe after that
-                ++it;
-                if (it != keyFrameMap.end()) {
-                    auto futureKeyFrame = it->first;
-                    if (cache.find(futureKeyFrame) == cache.end()) {
-                        loadFrames(futureKeyFrame);
-                    }
-                }
-            }
-        } else if (currentState == MediaState::MANUAL) {
-            // For manual mode, preload both forward and backward
-            // First the next keyframe
-            auto tempIt = it;
-            ++tempIt;
-            if (tempIt != keyFrameMap.end()) {
-                auto nextKeyFrame = tempIt->first;
-                if (cache.find(nextKeyFrame) == cache.end()) {
-                    loadFrames(nextKeyFrame);
-                }
-            }
-
-            // Then the previous keyframe
-            if (it != keyFrameMap.begin()) {
-                --it;
-                auto prevKeyFrame = it->first;
-                if (cache.find(prevKeyFrame) == cache.end()) {
-                    loadFrames(prevKeyFrame);
-                }
-            }
-        }
-
-        // Smarter cache management - keep keyframes around current position
-        while (cache.size() > 8) {
-            // Find the keyframe farthest from current position to remove
-            uint32_t farthestKeyFrame = 0;
-            int64_t maxDistance = -1;
-
-            for (const auto& [kf, _] : cache) {
-                int64_t distance = std::abs(static_cast<int64_t>(kf) - static_cast<int64_t>(currentFrameIdx));
-                if (distance > maxDistance) {
-                    maxDistance = distance;
-                    farthestKeyFrame = kf;
-                }
-            }
-
-            if (maxDistance > 0) {
-                cache.erase(farthestKeyFrame);
-            } else {
-                break;
-            }
-        }
-
-        // Wait before next iteration
+      // Determine which keyframes to load based on playback direction
+      auto it = keyFrameMap.upper_bound(static_cast<int>(currentFrameIdx));
+      if (it == keyFrameMap.begin())
+      {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        continue;
+      }
+
+      --it;
+      auto currentKeyFrame = it->first;
+
+      // Load current keyframe's frames if not cached
+      if (cache.find(currentKeyFrame) == cache.end())
+      {
+        loadFrames(currentKeyFrame);
+      }
+
+      // Determine next frames to preload based on playback state
+      if (currentState == MediaState::AUTO_PLAYING)
+      {
+        // Preload next keyframe for forward playback
+        ++it;
+        if (it != keyFrameMap.end()) {
+          auto nextKeyFrame = it->first;
+          if (cache.find(nextKeyFrame) == cache.end())
+          {
+            loadFrames(nextKeyFrame);
+          }
+
+          // Also try to preload the keyframe after that
+          ++it;
+          if (it != keyFrameMap.end())
+          {
+            if (const auto futureKeyFrame = it->first; !cache.contains(futureKeyFrame))
+            {
+              loadFrames(futureKeyFrame);
+            }
+          }
+        }
+      }
+      else if (currentState == MediaState::MANUAL)
+      {
+        // For manual mode, preload both forward and backward
+        // First the next keyframe
+        auto tempIt = it;
+        ++tempIt;
+        if (tempIt != keyFrameMap.end())
+        {
+          if (const auto nextKeyFrame = tempIt->first; !cache.contains(nextKeyFrame))
+          {
+            loadFrames(nextKeyFrame);
+          }
+        }
+
+        // Then the previous keyframe
+        if (it != keyFrameMap.begin())
+        {
+          --it;
+          if (const auto prevKeyFrame = it->first; !cache.contains(prevKeyFrame))
+          {
+            loadFrames(prevKeyFrame);
+          }
+        }
+      }
+
+      // Smarter cache management - keep keyframes around current position
+      while (cache.size() > 8)
+      {
+        // Find the keyframe farthest from current position to remove
+        uint32_t farthestKeyFrame = 0;
+        int64_t maxDistance = -1;
+
+        for (const auto& kf: cache | std::views::keys)
+        {
+          const int64_t distance = std::abs(static_cast<int64_t>(kf) - static_cast<int64_t>(currentFrameIdx));
+          if (distance > maxDistance)
+          {
+            maxDistance = distance;
+            farthestKeyFrame = kf;
+          }
+        }
+
+        if (maxDistance > 0)
+        {
+          cache.erase(farthestKeyFrame);
+        }
+        else
+        {
+          break;
+        }
+      }
+
+      // Wait before next iteration
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     std::cout << "Worker thread is stopping!" << std::endl;
-}
+  }
 
   void MediaParser::setFilepath(const std::string& mediaFile)
   {
