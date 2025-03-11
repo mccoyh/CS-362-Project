@@ -703,7 +703,7 @@ namespace AVParser {
 
     cache[targetKeyFrame] = std::move(frameCache);
 
-    seekToFrame(targetFrame);
+    seekToFrame(targetKeyFrame);
 
     for (uint32_t i = targetKeyFrame; i < nextKeyFrame * 2; ++i)
     {
