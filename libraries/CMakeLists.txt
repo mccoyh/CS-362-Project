@@ -1,3 +1,5 @@
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+
 # Specify the components FFmpeg should have available
 set(FFMPEG_COMPONENTS avcodec avformat swscale avutil swresample)
 
