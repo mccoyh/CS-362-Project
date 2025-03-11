@@ -319,6 +319,7 @@ namespace AVParser {
       av_packet_unref(&packet);
     }
 
+    /* Find Video Keyframes */
     // Reset to beginning
     av_seek_frame(formatContext, videoStreamIndex, 0, AVSEEK_FLAG_BACKWARD);
 
@@ -340,7 +341,36 @@ namespace AVParser {
         // The first keyframe becomes frame 0
         keyFrameMap[frameNumber] = true;
 
-        printf("Keyframe at PTS: %lld, mapped to frame: %d\n", pts, frameNumber);
+        printf("Video Keyframe at PTS: %lld, mapped to frame: %d\n", pts, frameNumber);
+      }
+      av_packet_unref(&packet);
+    }
+
+    /* Find Audio Keyframes */
+    // Reset to beginning
+    av_seek_frame(formatContext, videoStreamIndex, 0, AVSEEK_FLAG_BACKWARD);
+
+    auto keyFrame = keyFrameMap.begin();
+
+    while (av_read_frame(formatContext, &packet) >= 0)
+    {
+      if (packet.stream_index == videoStreamIndex && packet.flags & AV_PKT_FLAG_KEY)
+      {
+        // Calculate frame number relative to the first keyframe
+        const int64_t pts = packet.pts;
+        const int64_t ptsDiff = pts - firstKeyframePts;
+
+        const double frameDuration = av_q2d(AVRational{
+          videoStream->avg_frame_rate.den,
+          videoStream->avg_frame_rate.num
+        });
+
+        // The first keyframe becomes frame 0
+        keyFrame->second = packet.pts;
+
+        printf("Audio Keyframe at PTS: %lld, mapped to frame: %d\n", pts, keyFrame->first);
+
+        ++keyFrame;
       }
       av_packet_unref(&packet);
     }
