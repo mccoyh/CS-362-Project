@@ -90,7 +90,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 #Create Include Headers
-IF (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL ${CMAKE_SOURCE_DIR}/AudioToTxt/source)
+IF (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL ${CMAKE_SOURCE_DIR}/libraries/AudioToTxt/source)
     file(COPY
         DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
         DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include/AudioToTxt

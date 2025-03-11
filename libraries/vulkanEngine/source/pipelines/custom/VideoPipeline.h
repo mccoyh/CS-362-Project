@@ -1,7 +1,7 @@
 #ifndef VIDEOPIPELINE_H
 #define VIDEOPIPELINE_H
 
-#include "source/pipelines/GraphicsPipeline.h"
+#include "../GraphicsPipeline.h"
 #include <vulkan/vulkan.h>
 #include <memory>
 

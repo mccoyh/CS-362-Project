@@ -154,7 +154,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 # Create Include Headers
-if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL ${CMAKE_SOURCE_DIR}/vulkanEngine/source)
+if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL ${CMAKE_SOURCE_DIR}/libraries/vulkanEngine/source)
   file(COPY
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
     DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include/VulkanEngine

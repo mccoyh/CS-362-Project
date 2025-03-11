@@ -1,5 +1,5 @@
 #include "MediaPlayer.h"
-#include "../../AudioToTxt/tests/test_whisper/audioDecoding.h"
+#include "../libraries/AudioToTxt/tests/test_whisper/audioDecoding.h"
 #include <components/ImGuiInstance.h>
 #include <iostream>
 #include <filesystem>

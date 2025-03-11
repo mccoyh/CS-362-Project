@@ -16,7 +16,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 # Create Include Headers
-if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL ${CMAKE_SOURCE_DIR}/avParser/source)
+if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL ${CMAKE_SOURCE_DIR}/libraries/avParser/source)
   file(COPY
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
     DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include/avParser

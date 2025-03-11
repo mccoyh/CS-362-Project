@@ -43,7 +43,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 # Create Include Headers
-if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL ${CMAKE_SOURCE_DIR}/audiolib/source)
+if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL ${CMAKE_SOURCE_DIR}/libraries/audiolib/source)
   file(COPY
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
     DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include/audiolib

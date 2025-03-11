@@ -2,8 +2,8 @@ project(Medos)
 
 add_executable(${PROJECT_NAME}
   main.cpp
-  ../../AudioToTxt/tests/test_whisper/audioDecoding.h
-  ../../AudioToTxt/tests/test_whisper/audioDecoding.cpp
+  ../libraries/AudioToTxt/tests/test_whisper/audioDecoding.h
+  ../libraries/AudioToTxt/tests/test_whisper/audioDecoding.cpp
   MediaPlayer.cpp
   MediaPlayer.h
 )
