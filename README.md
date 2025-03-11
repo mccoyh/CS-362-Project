@@ -1,21 +1,30 @@
 # Medos Monorepo
 
-A collection of libraries written in C++ and a cross-platform media player.
-
 ## Repository Contents
-- audiolib: A lightweight audio playback library for seamless sound rendering.
-- AudioToTxt: A transcription library that converts audio files into accurate captions and transcripts using AI.
-- AVParser: A media file parsing library that extracts structured data for further processing.
-- VulkanEngine: A Vulkan-based rendering engine for efficient video playback and window management.
+
+### 📝 [Documentation (`docs`)](./docs)
+ - General information and technical documentation about the repository.
+
+### 📚 [Internal Libraries (`libraries`)](./libraries)
+- [`audiolib`](./libraries/audiolib): A lightweight audio playback library for seamless sound rendering.
+- [`AudioToTxt`](./libraries/AudioToTxt): An AI-powered transcription library that converts audio files into accurate captions and transcripts.
+- [`AVParser`](./libraries/avParser): A media file parsing library that extracts structured data for further processing.
+- [`VulkanEngine`](./libraries/vulkanEngine): A Vulkan-based rendering engine for efficient video playback and window management.
+
+### 📊 [Weekly Reports (`reports`)](./reports)
+ - Status updates tracking application development progress over time.
+
+### 🎬️ [Source Code (`source`)](./source)
+ - [`Medos`](./source): A cross-platform media player designed for Windows, macOS, and Linux.
 
 ## Installation
 
-To set up the project, follow the instructions in [SETUP.md](SETUP.md).
+To build the repository on your own machine, follow the instructions in [SETUP.md](docs/SETUP.md).
 
 ## Project Overview
 
-For a deeper understanding of the project’s goals and architecture, refer to [ABOUT.md](ABOUT.md).
+For a deeper understanding of the project’s goals and architecture, see [ABOUT.md](docs/ABOUT.md).
 
 ## Tests
 
-To learn about the project's testing procedures, see [TEST.md](TEST.md).
+For details on testing procedures, see [TEST.md](docs/TEST.md).

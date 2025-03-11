@@ -51,20 +51,6 @@ if (MSVC)
   set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS 1)
 endif()
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
+add_subdirectory(libraries)
 
-# Specify the components FFmpeg should have available
-set(FFMPEG_COMPONENTS avcodec avformat swscale avutil swresample)
-
-# Find FFmpeg package
-find_package(FFmpeg REQUIRED COMPONENTS ${FFMPEG_COMPONENTS})
-
-add_subdirectory(vulkanEngine)
-
-add_subdirectory(audiolib)
-
-add_subdirectory(AudioToTxt)
-
-add_subdirectory(avParser)
-
-add_subdirectory(medos)
+add_subdirectory(source)
