@@ -15,7 +15,7 @@
  - Status updates tracking application development progress over time.
 
 ### 🎬️ [Source Code (`source`)](./source)
- - Medos: A cross-platform media player designed for Windows, macOS, and Linux.
+ - [`Medos`](./source): A cross-platform media player designed for Windows, macOS, and Linux.
 
 ## Installation
 
