@@ -2,19 +2,19 @@
 
 ## Repository Contents
 
-### 📝 Documentation `docs`
+### 📝 [Documentation `docs`](./docs)
  - General information and technical documentation about the repository.
 
-### 📚 Internal Libraries `libraries`
+### 📚 [Internal Libraries `libraries`](./libraries)
 - `audiolib`: A lightweight audio playback library for seamless sound rendering.
 - `AudioToTxt`: An AI-powered transcription library that converts audio files into accurate captions and transcripts.
 - `AVParser`: A media file parsing library that extracts structured data for further processing.
 - `VulkanEngine`: A Vulkan-based rendering engine for efficient video playback and window management.
 
-### 📊 Weekly Reports `reports`
+### 📊 [Weekly Reports `reports`](./reports)
  - Status updates tracking application development progress over time.
 
-### 🎬️ Source Code `source`
+### 🎬️ [Source Code (`source`)](./source)
  - Medos: A cross-platform media player designed for Windows, macOS, and Linux.
 
 ## Installation
