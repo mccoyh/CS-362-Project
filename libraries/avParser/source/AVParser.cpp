@@ -915,7 +915,7 @@ namespace AVParser {
       }
 
       // Smarter cache management - keep keyframes around current position
-      while (videoCache.size() > 6)
+      while (videoCache.size() > 4)
       {
         // Find the keyframe farthest from current position to remove
         uint32_t farthestKeyFrame = 0;
@@ -933,6 +933,21 @@ namespace AVParser {
 
         if (maxDistance > 0)
         {
+          const int chunks = videoCache.size();
+
+          for (int i = 0; i < chunks; ++i)
+          {
+            if (farthestKeyFrame > currentFrame)
+            {
+              audioCache.erase(std::prev(audioCache.end()));
+            }
+            else
+            {
+              audioCache.erase(audioCache.begin());
+              currentAudioChunk--;
+            }
+          }
+
           videoCache.erase(farthestKeyFrame);
         }
         else
