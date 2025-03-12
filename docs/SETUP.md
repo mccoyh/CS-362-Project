@@ -13,41 +13,45 @@ Before building the Media Player, ensure you have the following dependencies ins
 4. **Vulkan SDK** (latest version recommended)\
    See the [Vulkan Setup](#vulkan-setup) section for more information.
 
-### Cloning the Repository and Building the Project
+## Building the Project
 
-1. First, clone the repository to your local machine:
+### Cloning the Repository
+
+1. Clone the repository to your local machine:
 
 ```bash
 git clone https://github.com/mccoyh/CS-362-Project
 cd CS-362-Project
 ```
 
-2. Create a separate directory for the build process:
+### Build Process
+
+1. Create a separate directory for the build process:
 
 ```bash
 mkdir build
 cd build
 ```
 
-3. Configure the CMake project and generate the necessary build files:
+2. Configure the CMake project and generate the necessary build files:
 
 ```bash
 cmake ..
 ```
 
-4. Compile the project using your preferred build system:
+3. Compile the project using your preferred build system:
 
 ```bash
 cmake --build .
 ```
 
-5. After building, all files will have been written to the `bin` directory.
+4. After building, all files will have been written to the `bin` directory.
 
 ```bash
 cd bin
 ```
 
-6. To run an executable:
+5. To run an executable:
  - Choose the executable (`EXE_NAME`).
  - Ensure required media files are present relative to the executable (`PATH_TO_MEDIA`).
 
