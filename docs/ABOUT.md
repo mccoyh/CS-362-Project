@@ -1,18 +1,26 @@
 # Medos
 
+## Developed By
+- Alexander Martin
+- Jared Northrop
+- Hunter McCoy
+- Quinton Gonzales
+- Reynaud Hunter
+- Thai Le
+
 ## Abstract
-Medos is a lightweight and efficient video playback application designed for simplicity, performance, and accessibility. It offers essential playback features, such as play, pause, and fast-forward, while integrating advanced functionalities like simple video editing, auto-generated captions, and subtitle translation. With a focus on cross-platform compatibility, this application is designed to enhance user experience through a clean interface and seamless usability. By including stretch goals like integration with video-sharing APIs, the media player aspires to be a versatile tool for both casual users and creators.
+Medos is a lightweight and efficient video playback application designed for simplicity, performance, and accessibility. It offers essential playback features, such as play, pause, and fast-forward, while integrating advanced functionalities like simple video editing, auto-generated captions, and a customizable user interface. With a focus on cross-platform compatibility, this application is designed to enhance user experience through a clean interface and seamless usability. Medos aspires to be a versatile tool for both casual users and content creators by delivering a consistent look and feel across multiple operating systems while integrating useful features.
 
 ## Goal
-The primary goal is to create a simple yet robust desktop video player that balances functionality and user-friendliness. By eliminating unnecessary complexities found in traditional players, the project aims to deliver a streamlined tool that focuses on playback efficiency, basic editing, and accessibility enhancements. The project also seeks to provide users with a consistent and familiar interface across platforms, further broadening its usability and appeal.
+Medos's primary goal is to deliver a cross-platform desktop media player that balances functionality and user-friendliness. Currently, most media players are built for only a single platform or have either too many or too few features. Medos delivers a simple yet customizable user interface that functions the same no matter what device you use it on. Focusing on the core aspect of video playback with minimal editing features allows Medos to be a viable option for many wanting to try a new media player.
 
 ## Current Practice
-Most existing video players are burdened with excessive features that overwhelm users and contribute to bloated performance. These tools often lack cross-platform consistency, requiring users to learn multiple interfaces across devices. Additionally, basic video editing is often relegated to specialized software, leaving a gap for casual users who require simple, intuitive editing tools.
+Most existing video players are burdened with excessive features that overwhelm users and contribute to bloated performance. Take VLC for example, the UI does not feel modern and there are many features that most users don't even know exist or how to access. These tools often lack cross-platform compatablity, requiring users to learn multiple interfaces across devices. Additionally, basic video editing is often relegated to specialized software, leaving a gap for casual users who require simple, intuitive editing tools.
 
 ## Novelty
-Medos stands out by blending core video playback functionality with accessibility-focused features and lightweight design. Unlike traditional video players that prioritize extensive but often cumbersome feature sets, this application emphasizes simplicity while introducing essential tools for modern media use. Auto-generated captions and real-time subtitle translation enhance accessibility, making the player inclusive for users with hearing impairments or language barriers. The inclusion of basic video editing tools, such as trimming and stitching, empowers users to create and customize content without the steep learning curve of complex editing software.
+Medos stands out by blending core video playback functionality with accessibility-focused features and lightweight design. Unlike traditional video players that prioritize extensive but often cumbersome feature sets that most users don't even know exist, Medos emphasizes simplicity while introducing essential tools for modern media use. Auto-generated captions and real-time subtitles enhance accessibility, making the player inclusive for users with hearing impairments or language barriers. The inclusion of basic video editing such as making the video grayscale or other traditional image editing features helps make Medos stand out as a simple yet effective resource.
 
-Additionally, the player’s stretch goals elevate its value as a versatile media hub. Cross-platform support ensures a seamless user experience across multiple devices, while integration with video-sharing APIs (e.g., YouTube, Twitch, Vimeo) offers convenient options for uploading, downloading, and streaming media. By combining these practical and creative features, Medos transforms from a standard playback tool into a comprehensive solution for everyday media consumption and lightweight content creation.
+Additionally, the expansion of certain features such as adding automated caption translation, more extensive video editing or even trimming/stitching of media clips would make Medos an even more effective tool. The potential of adding in support for usage of APIs such as YouTube, Twitch, Vimeo, or other common applications could help users consume and modify media without ever opening a web browser. By combining these practical and creative features, Medos transforms from a standard playback tool into a comprehensive solution for everyday media consumption and lightweight content creation.
 
 ## Effects
 A successful implementation will redefine how users interact with video playback and editing tools. By focusing on user experience and accessibility, this project aims to lower the barrier to entry for video editing and provide a seamless playback experience. Furthermore, features like subtitle translation and API integration will expand the player’s usability in global and collaborative contexts, benefiting both casual viewers and content creators.
@@ -21,9 +29,9 @@ A successful implementation will redefine how users interact with video playback
 
 ## Non-Functional and External Requirements
 ### Non-Functional Requirements:
-1. The application must have a responsive and intuitive GUI that ensures ease of navigation.
-2. The video player must operate efficiently on a wide range of hardware, including older systems, without significant performance degradation.
-3. Playback and editing processes should run smoothly with minimal latency or resource overhead.
+1. The application must have a responsive and intuitive GUI that ensures ease of navigation. In other words, the average user should be able to open Medos and start using it, while some may have to refer to some in-app help menus available for additional guidance.
+2. The video player must operate efficiently on a wide range of hardware, including older systems, without significant performance degradation. This means that media must load within 1 second of launching the application and there should not be any playback stuttering.
+3. Playback and editing processes should run smoothly with minimal latency or resource overhead. This means that Medos's memory usage must be within the capabilities of the hardware it is running on, automatically scaling or lazy loading data to ensure a smooth experience.
 
 ### External Requirements:
 1. The application must handle invalid inputs gracefully, such as unsupported video formats, to ensure robustness.
@@ -34,6 +42,37 @@ A successful implementation will redefine how users interact with video playback
 ---
 
 ## Technical Approach  
+
+### High-Level Solution
+
+Medos will be developed as a cross-platform desktop application focusing on delivering a streamlined, consistent media experience across different operating systems. The player will feature a modern, intuitive interface that prioritizes ease of use while maintaining powerful functionality accessible through a minimalist design.
+
+#### User Experience
+
+Users will interact with Medos through a clean, customizable interface that eliminates the complexity found in traditional media players. The design will follow these principles:
+
+1. **Simplified Navigation**: Essential controls (play, pause, volume, seek) will be immediately visible and accessible, while advanced features are organized in logical, easy-to-find menus.
+
+2. **Consistent Cross-Platform Experience**: Whether on Windows, macOS, or Linux, users will enjoy the same workflow and interface, eliminating the need to relearn controls when switching devices.
+
+3. **Contextual Tools**: Editing features and accessibility options will appear when relevant, reducing interface clutter while maintaining functionality.
+
+#### Core Features Addressing Existing Challenges
+
+To address the issues identified with current media players, Medos will implement:
+
+1. **Balanced Feature Set**: Including only the most useful features that enhance the viewing experience without overwhelming users or causing performance issues.
+
+2. **Integrated Accessibility**: Auto-generated captions and real-time subtitle translation will be core features rather than afterthoughts, making content accessible to diverse users.
+
+3. **Lightweight Editing**: Basic video manipulation tools (grayscale filters, trimming, brightness/contrast adjustments) will be available directly in the player, eliminating the need for separate editing software for simple tasks.
+
+4. **Media API Integration**: Optional connections to platforms like YouTube and Twitch will allow seamless content consumption without browser dependencies.
+
+5. **Performance Optimization**: Adaptive resource management will ensure smooth playback across various hardware configurations, including older systems.
+
+
+### Tech Stack
 - **Languages**: The application is built with **C++** for high performance and memory efficiency.  
 - **Frameworks and Libraries**:  
   - **FFmpeg** for robust video/audio decoding and processing.  
@@ -43,40 +82,46 @@ A successful implementation will redefine how users interact with video playback
   - **SDL3** for cross-platform audio output.  
 - **Tools**:  
   - **Git & CMake** streamline development and build processes.  
-  - **GitHub Actions** enables a simple **CI/CD pipeline** for automated builds and testing.
+  - **GitHub Actions** enables a simple **CI/CD pipeline** for automated builds, testing, and releases.
 
 The technical implementation focuses on modular design, allowing flexibility for future feature additions and performance optimizations.
 
 ---
 
 ## Risks, Team Information, and Timeline
+
 ### Risks and Mitigation
-1. **Library Familiarity**: Some team members are unfamiliar with FFmpeg and ImGui.
-    - **Likelyhood**: High
-    - **Mitigation**: Allocate time for learning resources and prototyping early in the project.
-2. **Coordination Challenges**: With a large team, maintaining consistent coding standards may be difficult.
-    - **Likelyhood**: Medium
-    - **Mitigation**: Use detailed style guides and conduct weekly code reviews.
-3. **Time Constraints**: Balancing project work with coursework may lead to delays.
-    - **Likelyhood**: High
-    - **Mitigation**: Set clear milestones and prioritize high-impact tasks.
-4. **Familiarity with Build System**: Some members are unfamiliar with Cmake. 
-    - **Likelyhood**: Medium
-    - **Mitigation**: Members with Cmake expirience will provide examples of Cmake structure and assistance.
-5. **Delayed task completion due to workload or unforseen complications**: Tasks may not completed on time due to unforseen problems. Due to the time constraint above this needs to be handled quickly. 
-    - **Likelyhood**: Medium
-    - **Mitigation**: Establish consistent communication through meeting to ensure members can complete on time. Redistribute work when problems arise. 
+
+1. **Compatibility Across Operating Systems:** Ensuring consistent functionality across Windows, macOS, and Linux presents significant challenges due to different system architectures and APIs.
+   - Likelihood: High
+   - Mitigation: Implement OS abstraction layers, use cross-platform libraries like Qt, and establish testing protocols for all target platforms (Windows, macOS, Linux).
+
+2. **Media Format Support:** Supporting diverse audio and video codecs involves complex licensing considerations and technical implementation challenges.
+   - Likelihood: High
+   - Mitigation: Integrate FFmpeg for broad codec support, document licensing requirements, and implement graceful fallbacks for unsupported formats.
+
+3. **Performance Optimization:** Resource-intensive media decoding and playback operations can lead to poor performance on lower-end hardware.
+   - Likelihood: Medium
+   - Mitigation: Implement frame buffering, hardware acceleration where available, and regular profiling to identify bottlenecks.
+
+4. **Audio-Video Synchronization:** Maintaining precise synchronization between audio and video streams is technically challenging but critical for user experience.
+   - Likelihood: High
+   - Mitigation: Implement precise timestamp matching, buffering strategies, and A/V drift correction algorithms.
+ 
+5. **UI Responsiveness:** Heavy media processing can block the UI thread, causing the application to appear frozen or unresponsive.
+   - Likelihood: Medium
+   - Mitigation: Implement multithreading for media decoding separate from UI thread, use asynchronous loading for large files, and optimize render loops.
 
 ## Team Members and Roles
 
-| **Team Member**  | **Role**           |  
-|------------------|--------------------|  
-| Hunter McCoy     | Backend Developer  |  
-| Quinton Gonzales | Tester             |  
-| Jared Northrop   | Backend Developer  |  
-| Alexander Martin | Backend Developer  |  
-| Thai Le          | Tester             |
-| Reynaud Hunter   | Frontend Developer |
+| **Team Member**  | **Role**                              |  
+|------------------|---------------------------------------|  
+| Hunter McCoy     | Backend Developer - Audio             |  
+| Quinton Gonzales | Tester - Cross-platform compatability |  
+| Jared Northrop   | Backend Developer - AI Captions       |  
+| Alexander Martin | Backend Developer - Video             |  
+| Thai Le          | Tester - Overall system integration   |
+| Reynaud Hunter   | Frontend Developer - ImGui UI         |
 
 ### Reasoning for Roles
 
@@ -341,24 +386,39 @@ External feedback will be most useful during weeks 5-6 when the MVP is completed
 - The application crashes during editing.
 
 ## Software Architecture
-**User Interface**:
-The UI needs to provide simple and clear options to the user to interact with the media player. Videos need to render and playback smoothly. 
-- The UI links user actions with the libraries used perform all the features and specifications of the application. 
 
-**Backend Libraries**:
-Libraries are used to facilitate the core functionalities of application. Each implemented library focuses on a single functionality of the application, creating a modular design. 
-- The libraries are called by the UI to implement their functionalities. Libraries also link to third party or standard libraries to optimally perform complex operations. 
+Internal Libraries:
+- audiolib: A lightweight audio playback library for seamless sound rendering.
+- AudioToTxt: An AI-powered transcription library that converts audio files into accurate captions and transcripts.
+- AVParser: A media file parsing library that extracts structured data for further processing.
+- VulkanEngine: A Vulkan-based rendering engine for efficient video playback and window management.
+
+Medos:
+ - A cross-platform media player designed for Windows, macOS, and Linux.
+
+Each internal library is developed and tested independently while remaining fully integrated within the project's CMake build system. These libraries serve distinct yet essential roles, enabling Medos to deliver its intended functionalities.
+
+Medos itself utilizes all these libraries while also managing the User Interface code, creating a complete and usable application.
 
 ## Software Design
-**User Interface**:
-The UI wil be implemented through a the IMGUI library. This component is responsible for collecting the users actions and displaying the results to the user. 
 
-**Backend Libraries**:
-The backend libaries provide the functionality of the application. They integrate functions provided by third party and standard libraries to fit the needs of the media player as well as create the workflow between operations. Each backend library is defined by a core feature of the media player creating a modular design where each feature works independently. The third party libraries include IMGUI, FFMPeg, Whisper ASR CPP, and Vulkan SDK.
+### Audiolib
+Audiolib manages audio playback and ensures smooth sound rendering. It decodes audio files, streams data efficiently, and prevents playback interruptions. It also interacts with the system’s audio hardware to deliver high-quality output.
 
+### AudioToTxt
+transcribes spoken content from media files into synchronized text. It processes audio input, generates captions with accurate timestamps, and optimizes retrieval through caching. This allows for real-time or near-instantaneous access to transcriptions without unnecessary file reads.
+
+### AVParser
+AVParser extracts and processes essential information from media files. It identifies and separates audio and video streams while retrieving metadata like duration and format. To maintain performance, it runs parsing operations asynchronously without blocking the main application.
+
+### VulkanEngine
+VulkanEngine handles video playback and user interface management. It ensures efficient video decoding, rendering frames smoothly with minimal latency. Additionally, it integrates with the graphical interface to manage user interactions and display media controls.
+
+### Medos
+Medos combines all internal components into a functional cross-platform media player. It coordinates media playback, synchronizes audio and video, and manages user interactions. By integrating these features, it provides a seamless and intuitive multimedia experience.
 
 ## Coding guidlines
-The C++ Core Guidlines will be used to create a constistent coding style between project members. These are common guidelines widely used and adopted in the world. The guidelines specify ways to enforce their rules through several options: static analysis, compiler, run-time checks, and human review. All pull request to the main branch require approval from another member, ensuring multiple sets of eyes have looked over the code for consistent style and best practices. 
+The [C++ Core Guidlines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines) will be used to create a constistent coding style between project members. These are common guidelines widely used and adopted in the world. The guidelines specify ways to enforce their rules through several options: static analysis, compiler, run-time checks, and human review. All pull request to the main branch require approval from another member, ensuring multiple sets of eyes have looked over the code for consistent style and best practices. 
 
 ## Conclusion
 Medos combines innovative features with a user-centric approach to create a streamlined, reliable video playback and editing tool. By prioritizing simplicity, accessibility, and performance, this project aims to fill the gap between complex professional tools and basic video players. With a strong focus on modularity and cross-platform capabilities, the player offers an adaptable solution for modern media consumption and creation.

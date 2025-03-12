@@ -18,12 +18,12 @@ add_library(${PROJECT_NAME}
 # Define lists of model URLs and paths
 set(MODEL_URLS
     "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo-q5_0.bin?download=true"
-    "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin?download=true"
+#    "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin?download=true"
 )
 
 set(MODEL_PATHS
     "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/models/ggml-large-v3-turbo-q5_0.bin"
-    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/models/ggml-base.bin"
+#    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/models/ggml-base.bin"
 )
 list(LENGTH MODEL_URLS num_models)
 math(EXPR num_models_minus_one "${num_models} - 1")
