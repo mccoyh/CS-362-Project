@@ -376,6 +376,12 @@ Medos combines innovative features with a user-centric approach to create a stre
 - I hope to implement better communications plans. While I feel like I have been communicating very consistently, I would like to plan to ask each team member what their task/goal is for the week, so the team knows who is doing what.
 - Taking this course while also taking 14 other credits felt like it better prepared me for future software engineering careers. While I felt a little unprepared this term, I now know how it feels to have several larger scoped projects with short deadlines.
 
+### Jared
+- I think the project had close to the proper scope for seven people with uniform participation. However this team did not function at the level required to fulfull all features we planned to implement in the 9 weeks. 
+- One of the things I saw during this project was the need of a leader to ensure consistnent updates of individual project updates. There was low communication which made it unclear on the progress of various members. 
+- This project showed how poor communication slows down a project and can put a lot or pressure on certain members if work load has to be redistrubuted due to a members work not being completed on time. 
+- One of the biggest techinical ideas I learned the most about, was how build systems work to create complete applications. Previously I had not done much with build systems and this project allowed me to use and get used to them. 
+
 ### Reynaud
 - I should have asked for help sooner instead of trying to figure everything out on my own. It would have saved time and reduced stress.
 - Better communication with my team was needed. I should have checked in more often instead of working independently.
