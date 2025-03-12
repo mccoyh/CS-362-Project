@@ -1,14 +1,10 @@
 #include "AVParser.h"
-
-#include <iostream>
-#include <ranges>
-#include <thread>
-
 extern "C" {
 #include <libavutil/opt.h>
 }
-#include <ostream>
 #include <stdexcept>
+#include <ranges>
+#include <thread>
 
 namespace AVParser {
   MediaParser::MediaParser(const std::string& mediaFile, const AudioParams& params)
@@ -307,7 +303,6 @@ namespace AVParser {
       {
         firstKeyframePts = packet.pts;
         firstKeyframeFound = true;
-        printf("First keyframe found at PTS: %lld\n", firstKeyframePts);
       }
       av_packet_unref(&packet);
     }
@@ -333,8 +328,6 @@ namespace AVParser {
 
         // The first keyframe becomes frame 0
         keyFrameMap[frameNumber] = true;
-
-        printf("Video Keyframe at PTS: %lld, mapped to frame: %d\n", pts, frameNumber);
       }
       av_packet_unref(&packet);
     }
@@ -350,8 +343,6 @@ namespace AVParser {
       if (packet.stream_index == videoStreamIndex && packet.flags & AV_PKT_FLAG_KEY)
       {
         keyFrame->second = static_cast<int>(packet.pts);
-
-        printf("Audio Keyframe at PTS: %lld, mapped to frame: %d\n", packet.pts, keyFrame->first);
 
         ++keyFrame;
       }
@@ -956,8 +947,6 @@ namespace AVParser {
         }
       }
     }
-
-    std::cout << "Worker thread is stopping!" << std::endl;
   }
 
   void MediaParser::setFilepath(const std::string& mediaFile)
