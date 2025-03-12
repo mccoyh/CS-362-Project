@@ -5,13 +5,13 @@
 Before building the Media Player, ensure you have the following dependencies installed:
 
 1. **Git** (for cloning the repository)\
-   See the [Git Setup](#git-setup) section for more information.
+   See [Git Setup](#git-setup) for installation steps.
 2. **CMake** (version 3.2 or higher)\
-   See the [CMake Setup](#cmake-setup) section for more information.
+   See [CMake Setup](#cmake-setup) for installation steps.
 3. **FFmpeg** (latest version recommended)\
-   See the [FFmpeg Setup](#ffmpeg-setup-windowslinux) section for more information.
+   See [FFmpeg Setup](#ffmpeg-setup-windowslinux) for installation steps.
 4. **Vulkan SDK** (latest version recommended)\
-   See the [Vulkan Setup](#vulkan-setup) section for more information.
+   See [Vulkan Setup](#vulkan-setup) for installation steps.
 
 ## Building the Project
 
@@ -26,33 +26,38 @@ cd CS-362-Project
 
 ### Build Process
 
-1. Create a separate directory for the build process:
+1. Create a separate directory for the build:
 
 ```bash
 mkdir build
 cd build
 ```
 
-2. Configure the CMake project and generate the necessary build files:
+2. Configure the project with CMake:
 
 ```bash
 cmake ..
 ```
 
-3. Compile the project using your preferred build system:
+3. Compile the project:
 
 ```bash
 cmake --build .
 ```
 
-4. After building, all files will have been written to the `bin` directory.
+4. The compiled binaries will be located in the `bin/` directory.
+
+
+### Running the Executable
+
+1. Navigate to the `bin/` directory:
 
 ```bash
 cd bin
 ```
 
-5. To run an executable:
- - Choose the executable (`EXE_NAME`).
+2. Run Medos:
+ - Choose an executable (`EXE_NAME`). To run Medos itself, simply choose the `Medos` executable.
  - Ensure required media files are present relative to the executable (`PATH_TO_MEDIA`).
 
 Then run:
@@ -60,7 +65,7 @@ Then run:
 ./EXE_NAME PATH_TO_MEDIA
 ```
 
-> ⚠️ **Note:** `PATH_TO_MEDIA` can be omitted if the executable doesn’t require external media or if you choose to use built-in asset names. Additionally, see [TEST.md](TEST.md) for more information about each executable.
+> ⚠️ **Note:** `PATH_TO_MEDIA` is optional if the application has built-in asset handling. See [TEST.md](TEST.md) for more details.
 
 ## Git Setup
 
