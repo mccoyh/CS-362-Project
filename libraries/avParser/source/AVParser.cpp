@@ -224,7 +224,7 @@ namespace AVParser {
     outBuffer = it->second.data();
     outBufferSize = static_cast<int>(it->second.size());
 
-    currentAudioChunk ++;
+    currentAudioChunk++;
 
     return true;
   }
