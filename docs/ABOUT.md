@@ -341,24 +341,39 @@ External feedback will be most useful during weeks 5-6 when the MVP is completed
 - The application crashes during editing.
 
 ## Software Architecture
-**User Interface**:
-The UI needs to provide simple and clear options to the user to interact with the media player. Videos need to render and playback smoothly. 
-- The UI links user actions with the libraries used perform all the features and specifications of the application. 
 
-**Backend Libraries**:
-Libraries are used to facilitate the core functionalities of application. Each implemented library focuses on a single functionality of the application, creating a modular design. 
-- The libraries are called by the UI to implement their functionalities. Libraries also link to third party or standard libraries to optimally perform complex operations. 
+Internal Libraries:
+- audiolib: A lightweight audio playback library for seamless sound rendering.
+- AudioToTxt: An AI-powered transcription library that converts audio files into accurate captions and transcripts.
+- AVParser: A media file parsing library that extracts structured data for further processing.
+- VulkanEngine: A Vulkan-based rendering engine for efficient video playback and window management.
+
+Medos:
+ - A cross-platform media player designed for Windows, macOS, and Linux.
+
+Each internal library is developed and tested independently while remaining fully integrated within the project's CMake build system. These libraries serve distinct yet essential roles, enabling Medos to deliver its intended functionalities.
+
+Medos itself utilizes all these libraries while also managing the User Interface code, creating a complete and usable application.
 
 ## Software Design
-**User Interface**:
-The UI wil be implemented through a the IMGUI library. This component is responsible for collecting the users actions and displaying the results to the user. 
 
-**Backend Libraries**:
-The backend libaries provide the functionality of the application. They integrate functions provided by third party and standard libraries to fit the needs of the media player as well as create the workflow between operations. Each backend library is defined by a core feature of the media player creating a modular design where each feature works independently. The third party libraries include IMGUI, FFMPeg, Whisper ASR CPP, and Vulkan SDK.
+### Audiolib
+Audiolib manages audio playback and ensures smooth sound rendering. It decodes audio files, streams data efficiently, and prevents playback interruptions. It also interacts with the system’s audio hardware to deliver high-quality output.
 
+### AudioToTxt
+transcribes spoken content from media files into synchronized text. It processes audio input, generates captions with accurate timestamps, and optimizes retrieval through caching. This allows for real-time or near-instantaneous access to transcriptions without unnecessary file reads.
+
+### AVParser
+AVParser extracts and processes essential information from media files. It identifies and separates audio and video streams while retrieving metadata like duration and format. To maintain performance, it runs parsing operations asynchronously without blocking the main application.
+
+### VulkanEngine
+VulkanEngine handles video playback and user interface management. It ensures efficient video decoding, rendering frames smoothly with minimal latency. Additionally, it integrates with the graphical interface to manage user interactions and display media controls.
+
+### Medos
+Medos combines all internal components into a functional cross-platform media player. It coordinates media playback, synchronizes audio and video, and manages user interactions. By integrating these features, it provides a seamless and intuitive multimedia experience.
 
 ## Coding guidlines
-The C++ Core Guidlines will be used to create a constistent coding style between project members. These are common guidelines widely used and adopted in the world. The guidelines specify ways to enforce their rules through several options: static analysis, compiler, run-time checks, and human review. All pull request to the main branch require approval from another member, ensuring multiple sets of eyes have looked over the code for consistent style and best practices. 
+The [C++ Core Guidlines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines) will be used to create a constistent coding style between project members. These are common guidelines widely used and adopted in the world. The guidelines specify ways to enforce their rules through several options: static analysis, compiler, run-time checks, and human review. All pull request to the main branch require approval from another member, ensuring multiple sets of eyes have looked over the code for consistent style and best practices. 
 
 ## Conclusion
 Medos combines innovative features with a user-centric approach to create a streamlined, reliable video playback and editing tool. By prioritizing simplicity, accessibility, and performance, this project aims to fill the gap between complex professional tools and basic video players. With a strong focus on modularity and cross-platform capabilities, the player offers an adaptable solution for modern media consumption and creation.
