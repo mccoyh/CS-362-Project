@@ -349,16 +349,6 @@ namespace AVParser {
     {
       if (packet.stream_index == videoStreamIndex && packet.flags & AV_PKT_FLAG_KEY)
       {
-        // Calculate frame number relative to the first keyframe
-        const int64_t pts = packet.pts;
-        const int64_t ptsDiff = pts - firstKeyframePts;
-
-        const double frameDuration = av_q2d(AVRational{
-          videoStream->avg_frame_rate.den,
-          videoStream->avg_frame_rate.num
-        });
-
-        // The first keyframe becomes frame 0
         keyFrame->second = packet.pts;
 
         printf("Audio Keyframe at PTS: %lld, mapped to frame: %d\n", pts, keyFrame->first);
