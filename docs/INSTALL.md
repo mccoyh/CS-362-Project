@@ -1,6 +1,6 @@
 # Installation Guide for Medos
 
-## Downloading Medos
+## 📥 Downloading Medos
 
 To download Medos, follow these steps:
 
@@ -13,7 +13,7 @@ To download Medos, follow these steps:
 
 > ⚠️ **Note:** You only need to download the source code if you plan to compile Medos yourself. If so, download the source files from the latest release and follow the build instructions in [SETUP.md](SETUP.md).
 
-## Running Medos
+## ▶️ Running Medos
 
 1. Navigate to the folder where you extracted Medos.
 2. Launch the `Medos` Executable
@@ -24,4 +24,6 @@ To download Medos, follow these steps:
 > - If you encounter firewall or permission issues, allow Medos through your firewall or run it with administrative privileges.
 > - On Linux, ensure proper file permissions with `sudo chmod -R 777 <EXTRACTED_FOLDER>`. Replace `<EXTRACTED_FOLDER>` with the path where you unzipped Medos.
 
+## 🎧 Using Medos
 
+Once Medos is running, you can control media playback using the intuitive on-screen controls. These allow you to play, pause, adjust volume, seek, and manage other playback settings with ease.
