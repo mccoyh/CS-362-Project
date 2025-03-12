@@ -375,3 +375,10 @@ Medos combines innovative features with a user-centric approach to create a stre
 - In the future, I also plan to "scrap" features sooner than later. I ended up taking too long on a feature, just to give up on it closer to the finish line than I would have liked. 
 - I hope to implement better communications plans. While I feel like I have been communicating very consistently, I would like to plan to ask each team member what their task/goal is for the week, so the team knows who is doing what.
 - Taking this course while also taking 14 other credits felt like it better prepared me for future software engineering careers. While I felt a little unprepared this term, I now know how it feels to have several larger scoped projects with short deadlines.
+
+### Reynaud
+- I should have asked for help sooner instead of trying to figure everything out on my own. It would have saved time and reduced stress.
+- Better communication with my team was needed. I should have checked in more often instead of working independently.
+-	I need to prioritize teamwork—coordinating with others would have made the project smoother.
+-	I should have been more proactive in tracking team progress and addressing issues earlier.
+-	Moving forward, I will communicate more, collaborate better, and seek help when needed.
