@@ -15,7 +15,7 @@ Before building the Media Player, ensure you have the following dependencies ins
 
 ## Building the Project
 
-### Cloning the Repository
+### 📂 Cloning the Repository
 
 1. Clone the repository to your local machine:
 
@@ -24,7 +24,7 @@ git clone https://github.com/mccoyh/CS-362-Project
 cd CS-362-Project
 ```
 
-### Build Process
+### 🛠 Build Process
 
 1. Create a separate directory for the build:
 
@@ -48,7 +48,7 @@ cmake --build .
 4. The compiled binaries will be located in the `bin/` directory.
 
 
-### Running the Executable
+### ▶️ Running the Executable
 
 1. Navigate to the `bin/` directory:
 
