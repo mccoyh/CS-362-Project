@@ -912,13 +912,13 @@ namespace AVParser {
         uint32_t farthestKeyFrame = 0;
         int64_t maxDistance = -1;
 
-        for (const auto& kf: videoCache | std::views::keys)
+        for (const auto& cache : videoCache)
         {
-          const int64_t distance = std::abs(static_cast<int64_t>(kf) - static_cast<int64_t>(currentFrameIdx));
+          const int64_t distance = std::abs(static_cast<int64_t>(cache.first) - static_cast<int64_t>(currentFrameIdx));
           if (distance > maxDistance)
           {
             maxDistance = distance;
-            farthestKeyFrame = kf;
+            farthestKeyFrame = cache.first;
           }
         }
 
