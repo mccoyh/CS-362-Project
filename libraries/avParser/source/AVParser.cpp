@@ -349,9 +349,9 @@ namespace AVParser {
     {
       if (packet.stream_index == videoStreamIndex && packet.flags & AV_PKT_FLAG_KEY)
       {
-        keyFrame->second = packet.pts;
+        keyFrame->second = static_cast<int>(packet.pts);
 
-        printf("Audio Keyframe at PTS: %lld, mapped to frame: %d\n", pts, keyFrame->first);
+        printf("Audio Keyframe at PTS: %lld, mapped to frame: %d\n", packet.pts, keyFrame->first);
 
         ++keyFrame;
       }
