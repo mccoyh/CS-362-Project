@@ -376,6 +376,19 @@ Medos combines innovative features with a user-centric approach to create a stre
 - I hope to implement better communications plans. While I feel like I have been communicating very consistently, I would like to plan to ask each team member what their task/goal is for the week, so the team knows who is doing what.
 - Taking this course while also taking 14 other credits felt like it better prepared me for future software engineering careers. While I felt a little unprepared this term, I now know how it feels to have several larger scoped projects with short deadlines.
 
+### Jared
+- I think the project had close to the proper scope for seven people with uniform participation. However this team did not function at the level required to fulfull all features we planned to implement in the 9 weeks. 
+- One of the things I saw during this project was the need of a leader to ensure consistnent updates of individual project updates. There was low communication which made it unclear on the progress of various members. 
+- This project showed how poor communication slows down a project and can put a lot or pressure on certain members if work load has to be redistrubuted due to a members work not being completed on time. 
+- One of the biggest techinical ideas I learned the most about, was how build systems work to create complete applications. Previously I had not done much with build systems and this project allowed me to use and get used to them. 
+
+### Reynaud
+- I should have asked for help sooner instead of trying to figure everything out on my own. It would have saved time and reduced stress.
+- Better communication with my team was needed. I should have checked in more often instead of working independently.
+-	I need to prioritize teamwork—coordinating with others would have made the project smoother.
+-	I should have been more proactive in tracking team progress and addressing issues earlier.
+-	Moving forward, I will communicate more, collaborate better, and seek help when needed.
+
 ### Alexander
 - I would definitely have a focus on early communication. The start of this project was extremely slow which led to a lot of work happening later on and team members being disconnected. If we were to have established better roles and communication guidelines for all team members at the start as well as expectations, that would have helped us be more successful as a team. Making sure everyone understood the project's big picture, build system, and their own responsibilities would have gone a long way towards ensuring a successful project.
 - I learned a lot about GitHub Actions and creating cross-platform desktop applications. This project provided me with the foundational understanding of what is necessary to both build source code and distribute binary applications across multiple different operating systems and the cloud. Setting up automatic releases on GitHub was interesting to accomplish as well, but if I were to do it again, I would get the release pipeline set up at the same time as the CI pipeline since there was definitely some debugging done quite late just to get it running cross-platform.
