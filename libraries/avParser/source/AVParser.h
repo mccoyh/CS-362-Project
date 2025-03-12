@@ -111,6 +111,9 @@ private:
   std::map<uint32_t, std::vector<uint8_t>> audioCache;
   uint32_t currentAudioChunk = 0;
 
+  std::atomic<bool> keepLoadingInBackground = true;
+  std::thread backgroundThread;
+
   [[nodiscard]] int getFrameWidth() const;
 
   [[nodiscard]] int getFrameHeight() const;
@@ -142,9 +145,6 @@ private:
   void loadFrames(uint32_t targetFrame);
 
   bool decodeAudioChunk(uint8_t*& outBuffer, int& outBufferSize);
-
-  std::atomic<bool> keepLoadingInBackground = true;
-  std::thread backgroundThread;
 
   void backgroundFrameLoader();
 };
