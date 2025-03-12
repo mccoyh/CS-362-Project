@@ -5,7 +5,9 @@
 Before building the Media Player, ensure you have the following dependencies installed:
 
 1. **Git** (for cloning the repository)
+   See the [Git Setup](#git-setup) section for setup details.
 2. **CMake** (version 3.2 or higher)
+   See the [CMake Setup](#cmake-setup) section for setup details.
 3. **FFmpeg** (latest version recommended)\
    See the [FFmpeg Setup](#ffmpeg-setup-windowslinux) section for setup details.
 4. **Vulkan SDK** (latest version recommended)\
@@ -56,6 +58,84 @@ Then run:
 
 Note: `PATH_TO_MEDIA` can be omitted if the executable doesn’t require external media or you choose to use built-in asset names.
 
+## Git Setup
+
+### Windows
+1. Download the installer from the [official Git website](https://git-scm.com/download/win)
+2. Run the installer and follow the on-screen instructions
+3. During installation, select the option to add Git to your PATH
+4. Verify installation by opening a command prompt and typing:
+   ```bash
+   git --version
+   ```
+
+### macOS
+1. Install via Homebrew (recommended):
+   ```bash
+   brew install git
+   ```
+   Or download the installer from the [official Git website](https://git-scm.com/download/mac)
+2. Verify installation:
+   ```bash
+   git --version
+   ```
+
+### Linux
+For Debian/Ubuntu-based distributions:
+```bash
+sudo apt update
+sudo apt install git
+```
+
+For Fedora:
+```bash
+sudo dnf install git
+```
+
+Verify installation:
+```bash
+git --version
+```
+
+## CMake Setup
+
+### Windows
+1. Download the latest installer from the [official CMake website](https://cmake.org/download/#latest)
+2. Run the installer and follow the on-screen instructions
+3. Make sure to select the option to add CMake to your system PATH
+4. Verify installation by opening a command prompt and typing:
+   ```bash
+   cmake --version
+   ```
+
+### macOS
+1. Install via Homebrew (recommended):
+   ```bash
+   brew install cmake
+   ```
+   Or download the latest installer from the [official CMake website](https://cmake.org/download/#latest)
+2. Verify installation:
+   ```bash
+   cmake --version
+   ```
+
+### Linux
+For Debian/Ubuntu-based distributions:
+```bash
+sudo apt update
+sudo apt install cmake
+```
+
+For Fedora:
+```bash
+sudo dnf install cmake
+```
+
+Verify installation:
+```bash
+cmake --version
+```
+
 ## FFmpeg Setup (Windows/Linux)
 
 ### 1. Download FFmpeg
@@ -81,8 +161,8 @@ Run `brew --prefix` to find your brew install location.
 
 ### 3. Add to System PATH
 Add the following paths to your system's PATH environment variable where BREW_PREFIX is the actual prefix you found in the previous step:
- - `"BREW_PREFIX/bin/ffmpeg:$PATH"`
- - `"BREW_PREFIX/opt/ffmpeg/bin:$PATH"`
+- `"BREW_PREFIX/bin/ffmpeg:$PATH"`
+- `"BREW_PREFIX/opt/ffmpeg/bin:$PATH"`
 
 
 ## Vulkan Setup
@@ -92,5 +172,4 @@ Add the following paths to your system's PATH environment variable where BREW_PR
 - Choose the appropriate version for your operating system (Windows, Linux, or macOS).
 
 ### 2. Install the SDK
-After downloading, run the installer and follow the on-screen instructions. Alternatively, you can install it manually by following the platform-specific setup guide provided on the Vulkan SDK website.  
-
+After downloading, run the installer and follow the on-screen instructions. Alternatively, you can install it manually by following the platform-specific setup guide provided on the Vulkan SDK website.
