@@ -42,6 +42,37 @@ A successful implementation will redefine how users interact with video playback
 ---
 
 ## Technical Approach  
+
+### High-Level Solution
+
+Medos will be developed as a cross-platform desktop application focusing on delivering a streamlined, consistent media experience across different operating systems. The player will feature a modern, intuitive interface that prioritizes ease of use while maintaining powerful functionality accessible through a minimalist design.
+
+#### User Experience
+
+Users will interact with Medos through a clean, customizable interface that eliminates the complexity found in traditional media players. The design will follow these principles:
+
+1. **Simplified Navigation**: Essential controls (play, pause, volume, seek) will be immediately visible and accessible, while advanced features are organized in logical, easy-to-find menus.
+
+2. **Consistent Cross-Platform Experience**: Whether on Windows, macOS, or Linux, users will enjoy the same workflow and interface, eliminating the need to relearn controls when switching devices.
+
+3. **Contextual Tools**: Editing features and accessibility options will appear when relevant, reducing interface clutter while maintaining functionality.
+
+#### Core Features Addressing Existing Challenges
+
+To address the issues identified with current media players, Medos will implement:
+
+1. **Balanced Feature Set**: Including only the most useful features that enhance the viewing experience without overwhelming users or causing performance issues.
+
+2. **Integrated Accessibility**: Auto-generated captions and real-time subtitle translation will be core features rather than afterthoughts, making content accessible to diverse users.
+
+3. **Lightweight Editing**: Basic video manipulation tools (grayscale filters, trimming, brightness/contrast adjustments) will be available directly in the player, eliminating the need for separate editing software for simple tasks.
+
+4. **Media API Integration**: Optional connections to platforms like YouTube and Twitch will allow seamless content consumption without browser dependencies.
+
+5. **Performance Optimization**: Adaptive resource management will ensure smooth playback across various hardware configurations, including older systems.
+
+
+### Tech Stack
 - **Languages**: The application is built with **C++** for high performance and memory efficiency.  
 - **Frameworks and Libraries**:  
   - **FFmpeg** for robust video/audio decoding and processing.  
@@ -51,7 +82,7 @@ A successful implementation will redefine how users interact with video playback
   - **SDL3** for cross-platform audio output.  
 - **Tools**:  
   - **Git & CMake** streamline development and build processes.  
-  - **GitHub Actions** enables a simple **CI/CD pipeline** for automated builds and testing.
+  - **GitHub Actions** enables a simple **CI/CD pipeline** for automated builds, testing, and releases.
 
 The technical implementation focuses on modular design, allowing flexibility for future feature additions and performance optimizations.
 
