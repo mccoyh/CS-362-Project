@@ -1,6 +1,6 @@
 # Medos Monorepo
 
-## Repository Contents
+## 🗂️ Repository Contents
 
 ### 📝 [Documentation (`docs`)](./docs)
  - General information and technical documentation about the repository.
@@ -17,14 +17,18 @@
 ### 🎬️ [Source Code (`source`)](./source)
  - [`Medos`](./source): A cross-platform media player designed for Windows, macOS, and Linux.
 
-## Installation
+## 🚀 Getting Started
 
-To build the repository on your own machine, follow the instructions in [SETUP.md](docs/SETUP.md).
+### For Users
+To install the pre-built application, follow the instructions in [INSTALL.md](docs/INSTALL.md)
 
-## Project Overview
+### For Developers
+To build the repository from its source code, follow the instructions in [SETUP.md](docs/SETUP.md).
+
+## 🔍 Project Overview
 
 For a deeper understanding of the project’s goals and architecture, see [ABOUT.md](docs/ABOUT.md).
 
-## Tests
+## 🧪 Tests
 
 For details on testing procedures, see [TEST.md](docs/TEST.md).
