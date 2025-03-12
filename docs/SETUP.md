@@ -56,7 +56,7 @@ Then run:
 ./EXE_NAME PATH_TO_MEDIA
 ```
 
-Note: `PATH_TO_MEDIA` can be omitted if the executable doesn’t require external media or you choose to use built-in asset names.
+> ⚠️ **Note:** `PATH_TO_MEDIA` can be omitted if the executable doesn’t require external media or if you choose to use built-in asset names. Additionally, see [TEST.md](TEST.md) for more information about each executable.
 
 ## Git Setup
 
