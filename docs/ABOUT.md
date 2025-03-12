@@ -1,5 +1,13 @@
 # Medos
 
+## Developed By
+- Alexander Martin
+- Jared Northrop
+- Hunter McCoy
+- Quinton Gonzales
+- Reynaud Hunter
+- Thai Le
+
 ## Abstract
 Medos is a lightweight and efficient video playback application designed for simplicity, performance, and accessibility. It offers essential playback features, such as play, pause, and fast-forward, while integrating advanced functionalities like simple video editing, auto-generated captions, and a customizable user interface. With a focus on cross-platform compatibility, this application is designed to enhance user experience through a clean interface and seamless usability. Medos aspires to be a versatile tool for both casual users and content creators by delivering a consistent look and feel across multiple operating systems while integrating useful features.
 
