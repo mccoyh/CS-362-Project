@@ -222,14 +222,7 @@ namespace AVParser {
     }
 
     outBuffer = it->second.data();
-
-    const auto it2 = std::next(audioCacheSizes.begin(), currentAudioChunk); // Efficient lookup
-
-    if (it2 == audioCacheSizes.end())
-    {
-      return false;
-    }
-    outBufferSize = static_cast<int>(it2->second);
+    outBufferSize = static_cast<int>(it->second.size());
 
     currentAudioChunk ++;
 
@@ -832,7 +825,6 @@ namespace AVParser {
 
             // Cache
             audioCache[frame->pts] = std::vector(outBuffer, outBuffer + outBufferSize);
-            audioCacheSizes[frame->pts] = outBufferSize;
 
             break;
           }

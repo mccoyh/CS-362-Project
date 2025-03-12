@@ -109,7 +109,6 @@ private:
   AudioParams params;
 
   std::map<uint32_t, std::vector<uint8_t>> audioCache;
-  std::map<uint32_t, uint32_t> audioCacheSizes;
   uint32_t currentAudioChunk = 0;
 
   [[nodiscard]] int getFrameWidth() const;
