@@ -4,14 +4,14 @@
 
 Before building the Media Player, ensure you have the following dependencies installed:
 
-1. **Git** (for cloning the repository)
-   See the [Git Setup](#git-setup) section for setup details.
-2. **CMake** (version 3.2 or higher)
-   See the [CMake Setup](#cmake-setup) section for setup details.
+1. **Git** (for cloning the repository)\
+   See the [Git Setup](#git-setup) section for more information.
+2. **CMake** (version 3.2 or higher)\
+   See the [CMake Setup](#cmake-setup) section for more information.
 3. **FFmpeg** (latest version recommended)\
-   See the [FFmpeg Setup](#ffmpeg-setup-windowslinux) section for setup details.
+   See the [FFmpeg Setup](#ffmpeg-setup-windowslinux) section for more information.
 4. **Vulkan SDK** (latest version recommended)\
-   Refer to the [Vulkan Setup](#vulkan-setup) section for installation instructions.
+   See the [Vulkan Setup](#vulkan-setup) section for more information.
 
 ### Cloning the Repository and Building the Project
 
@@ -172,4 +172,5 @@ Add the following paths to your system's PATH environment variable where BREW_PR
 - Choose the appropriate version for your operating system (Windows, Linux, or macOS).
 
 ### 2. Install the SDK
-After downloading, run the installer and follow the on-screen instructions. Alternatively, you can install it manually by following the platform-specific setup guide provided on the Vulkan SDK website.
+- Run the installer and follow the on-screen instructions.
+- Alternatively, follow the platform-specific setup guide provided on the Vulkan SDK website.
