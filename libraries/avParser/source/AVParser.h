@@ -1,5 +1,6 @@
 #ifndef AVPARSER_H
 #define AVPARSER_H
+#include <thread>
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -91,24 +92,27 @@ private:
   std::shared_ptr<std::vector<uint8_t>> currentVideoData;
   std::shared_ptr<std::vector<uint8_t>> currentAudioData;
 
+  std::shared_ptr<std::vector<uint8_t>> backgroundVideoData;
+
   float timeAccumulator = 0;
   std::chrono::time_point<std::chrono::steady_clock> previousTime;
 
   MediaState state = MediaState::AUTO_PLAYING;
 
-  std::map<int, bool> keyFrameMap;
-  struct FrameCache {
-    std::unordered_map<uint32_t, std::vector<uint8_t>> frames;
-  };
-  std::unordered_map<uint32_t, FrameCache> cache;
+  std::map<int, int> keyFrameMap;
+
+  using FrameCache = std::vector<std::vector<uint8_t>>;
+  std::unordered_map<uint32_t, FrameCache> videoCache;
 
   uint32_t totalFrames = 0;
 
   AudioParams params;
 
   std::map<uint32_t, std::vector<uint8_t>> audioCache;
-  std::map<uint32_t, uint32_t> audioCacheSizes;
   uint32_t currentAudioChunk = 0;
+
+  std::atomic<bool> keepLoadingInBackground = true;
+  std::thread backgroundThread;
 
   [[nodiscard]] int getFrameWidth() const;
 
@@ -118,7 +122,7 @@ private:
 
   void setupVideo();
 
-  void loadVideoKeyframes();
+  void loadKeyframes();
 
   void calculateTotalFrames();
 
@@ -141,6 +145,8 @@ private:
   void loadFrames(uint32_t targetFrame);
 
   bool decodeAudioChunk(uint8_t*& outBuffer, int& outBufferSize);
+
+  void backgroundFrameLoader();
 };
 } // AVParser
 

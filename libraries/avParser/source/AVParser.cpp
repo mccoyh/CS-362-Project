@@ -2,12 +2,14 @@
 extern "C" {
 #include <libavutil/opt.h>
 }
-#include <ostream>
 #include <stdexcept>
+#include <ranges>
+#include <thread>
 
 namespace AVParser {
   MediaParser::MediaParser(const std::string& mediaFile, const AudioParams& params)
     : currentFrame(0), currentVideoData(std::make_shared<std::vector<uint8_t>>()),
+      backgroundVideoData(std::make_shared<std::vector<uint8_t>>()),
       currentAudioData(std::make_shared<std::vector<uint8_t>>()), previousTime(std::chrono::steady_clock::now()),
       params(params)
   {
@@ -27,14 +29,23 @@ namespace AVParser {
 
     setupAudio();
 
+    loadKeyframes();
+
+    calculateTotalFrames();
+
     frame = av_frame_alloc();
     packet = av_packet_alloc();
+
+    backgroundThread = std::thread(&MediaParser::backgroundFrameLoader, this);
 
     loadNextFrame();
   }
 
   MediaParser::~MediaParser()
   {
+    keepLoadingInBackground = false;
+    backgroundThread.join();
+
     av_packet_free(&packet);
     av_frame_free(&frame);
 
@@ -111,9 +122,11 @@ namespace AVParser {
       throw std::out_of_range("Target frame is out of range!");
     }
 
-    loadFrameFromCache(targetFrame);
+    state = MediaState::PAUSED;
 
     currentFrame = targetFrame;
+
+    loadFrameFromCache(targetFrame);
 
     // Calculate the correct audio chunk based on frame rate and target frame
     const double frameRate = getFrameRate();
@@ -205,16 +218,9 @@ namespace AVParser {
     }
 
     outBuffer = it->second.data();
+    outBufferSize = static_cast<int>(it->second.size());
 
-    const auto it2 = std::next(audioCacheSizes.begin(), currentAudioChunk); // Efficient lookup
-
-    if (it2 == audioCacheSizes.end())
-    {
-      return false;
-    }
-    outBufferSize = static_cast<int>(it2->second);
-
-    currentAudioChunk ++;
+    currentAudioChunk++;
 
     return true;
   }
@@ -277,13 +283,9 @@ namespace AVParser {
                                 videoCodecContext->pix_fmt, videoCodecContext->width,
                                 videoCodecContext->height, AV_PIX_FMT_RGBA, SWS_BILINEAR,
                                 nullptr, nullptr, nullptr);
-
-    loadVideoKeyframes();
-
-    calculateTotalFrames();
   }
 
-  void MediaParser::loadVideoKeyframes()
+  void MediaParser::loadKeyframes()
   {
     const AVStream* videoStream = formatContext->streams[videoStreamIndex];
 
@@ -301,11 +303,11 @@ namespace AVParser {
       {
         firstKeyframePts = packet.pts;
         firstKeyframeFound = true;
-        printf("First keyframe found at PTS: %lld\n", firstKeyframePts);
       }
       av_packet_unref(&packet);
     }
 
+    /* Find Video Keyframes */
     // Reset to beginning
     av_seek_frame(formatContext, videoStreamIndex, 0, AVSEEK_FLAG_BACKWARD);
 
@@ -326,14 +328,26 @@ namespace AVParser {
 
         // The first keyframe becomes frame 0
         keyFrameMap[frameNumber] = true;
-
-        printf("Keyframe at PTS: %lld, mapped to frame: %d\n", pts, frameNumber);
       }
       av_packet_unref(&packet);
     }
 
-    // Set current frame to the start
-    currentFrame = 0;
+    /* Find Audio Keyframes */
+    // Reset to beginning
+    av_seek_frame(formatContext, videoStreamIndex, 0, AVSEEK_FLAG_BACKWARD);
+
+    auto keyFrame = keyFrameMap.begin();
+
+    while (av_read_frame(formatContext, &packet) >= 0)
+    {
+      if (packet.stream_index == videoStreamIndex && packet.flags & AV_PKT_FLAG_KEY)
+      {
+        keyFrame->second = static_cast<int>(packet.pts);
+
+        ++keyFrame;
+      }
+      av_packet_unref(&packet);
+    }
 
     // Reset stream position
     av_seek_frame(formatContext, videoStreamIndex, 0, AVSEEK_FLAG_BACKWARD);
@@ -353,39 +367,39 @@ namespace AVParser {
     // Otherwise calculate based on duration and frame rate
     if (stream->duration != AV_NOPTS_VALUE)
     {
-        const double frameRate = getFrameRate();
-        const double durationSeconds = static_cast<double>(stream->duration) * av_q2d(stream->time_base);
-        totalFrames = static_cast<int>(durationSeconds * frameRate);
+      const double frameRate = getFrameRate();
+      const double durationSeconds = static_cast<double>(stream->duration) * av_q2d(stream->time_base);
+      totalFrames = static_cast<int>(durationSeconds * frameRate);
     }
 
     // If metadata methods fail, count frames more efficiently by seeking to last keyframe
     AVFormatContext* tempFormatCtx = nullptr;
     if (avformat_open_input(&tempFormatCtx, formatContext->url, nullptr, nullptr) < 0)
     {
-        throw std::runtime_error("Failed to open video file for frame counting!");
+      throw std::runtime_error("Failed to open video file for frame counting!");
     }
 
     if (avformat_find_stream_info(tempFormatCtx, nullptr) < 0)
     {
-        avformat_close_input(&tempFormatCtx);
-        throw std::runtime_error("Failed to retrieve stream info for frame counting!");
+      avformat_close_input(&tempFormatCtx);
+      throw std::runtime_error("Failed to retrieve stream info for frame counting!");
     }
 
     // Find video stream index in temp context
     int tempVideoStreamIndex = -1;
     for (size_t i = 0; i < tempFormatCtx->nb_streams; i++)
     {
-        if (tempFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
-        {
-            tempVideoStreamIndex = static_cast<int>(i);
-            break;
-        }
+      if (tempFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
+      {
+        tempVideoStreamIndex = static_cast<int>(i);
+        break;
+      }
     }
 
     if (tempVideoStreamIndex == -1)
     {
-        avformat_close_input(&tempFormatCtx);
-        throw std::runtime_error("No video stream found for frame counting!");
+      avformat_close_input(&tempFormatCtx);
+      throw std::runtime_error("No video stream found for frame counting!");
     }
 
     // stream
@@ -398,34 +412,34 @@ namespace AVParser {
 
     if (avcodec_open2(tempCodecCtx, tempCodec, nullptr) < 0)
     {
-        avcodec_free_context(&tempCodecCtx);
-        avformat_close_input(&tempFormatCtx);
-        throw std::runtime_error("Failed to open codec for frame counting!");
+      avcodec_free_context(&tempCodecCtx);
+      avformat_close_input(&tempFormatCtx);
+      throw std::runtime_error("Failed to open codec for frame counting!");
     }
 
     // If we have keyframes, seek to the last known keyframe
     int frameCount = 0;
     if (!keyFrameMap.empty())
     {
-        // Get the last keyframe position
-        const int lastKeyframe = keyFrameMap.rbegin()->first;
-        frameCount = lastKeyframe;
+      // Get the last keyframe position
+      const int lastKeyframe = keyFrameMap.rbegin()->first;
+      frameCount = lastKeyframe;
 
-        // Calculate PTS for the last keyframe
-        const int64_t targetPts = av_rescale_q(lastKeyframe,
-                                               AVRational{videoStream->avg_frame_rate.den, videoStream->avg_frame_rate.num},
-                                               videoStream->time_base) + videoStream->start_time;
+      // Calculate PTS for the last keyframe
+      const int64_t targetPts = av_rescale_q(lastKeyframe,
+                                             AVRational{videoStream->avg_frame_rate.den, videoStream->avg_frame_rate.num},
+                                             videoStream->time_base) + videoStream->start_time;
 
-        // Seek to the last keyframe
-        if (av_seek_frame(tempFormatCtx, tempVideoStreamIndex, targetPts, AVSEEK_FLAG_BACKWARD) < 0)
-        {
-            avcodec_free_context(&tempCodecCtx);
-            avformat_close_input(&tempFormatCtx);
-            totalFrames = lastKeyframe; // Return last keyframe number if seek fails
-        }
+      // Seek to the last keyframe
+      if (av_seek_frame(tempFormatCtx, tempVideoStreamIndex, targetPts, AVSEEK_FLAG_BACKWARD) < 0)
+      {
+        avcodec_free_context(&tempCodecCtx);
+        avformat_close_input(&tempFormatCtx);
+        totalFrames = lastKeyframe; // Return last keyframe number if seek fails
+      }
 
-        // Flush buffers after seeking
-        avcodec_flush_buffers(tempCodecCtx);
+      // Flush buffers after seeking
+      avcodec_flush_buffers(tempCodecCtx);
     }
 
     // Allocate packet and frame
@@ -436,17 +450,17 @@ namespace AVParser {
     int additionalFrames = 0;
     while (av_read_frame(tempFormatCtx, tempPacket) >= 0)
     {
-        if (tempPacket->stream_index == tempVideoStreamIndex)
+      if (tempPacket->stream_index == tempVideoStreamIndex)
+      {
+        if (avcodec_send_packet(tempCodecCtx, tempPacket) == 0)
         {
-            if (avcodec_send_packet(tempCodecCtx, tempPacket) == 0)
-            {
-                while (avcodec_receive_frame(tempCodecCtx, tempFrame) == 0)
-                {
-                    additionalFrames++;
-                }
-            }
+          while (avcodec_receive_frame(tempCodecCtx, tempFrame) == 0)
+          {
+            additionalFrames++;
+          }
         }
-        av_packet_unref(tempPacket);
+      }
+      av_packet_unref(tempPacket);
     }
 
     // Add additional frames to the count
@@ -613,12 +627,12 @@ namespace AVParser {
     const int outHeight = getFrameHeight();
 
     // Resize or reallocate the buffer if needed
-    if (currentVideoData->size() != outWidth * outHeight * 4)
+    if (backgroundVideoData->size() != outWidth * outHeight * 4)
     {
-      currentVideoData->resize(outWidth * outHeight * 4);
+      backgroundVideoData->resize(outWidth * outHeight * 4);
     }
 
-    uint8_t* dst[1] = { currentVideoData->data() };
+    uint8_t* dst[1] = { backgroundVideoData->data() };
     const int dstStride[1] = { outWidth * 4 };
 
     if (!swsContext)
@@ -631,31 +645,40 @@ namespace AVParser {
 
   void MediaParser::loadFrameFromCache(const uint32_t targetFrame)
   {
-    auto it = keyFrameMap.upper_bound(static_cast<int>(targetFrame));
-    if (it == keyFrameMap.begin())
-    {
-      throw std::runtime_error("Key frame not found!");
-    }
-    --it;
-    const auto targetKeyFrame = it->first;
+    bool found = false;
+    std::vector<unsigned char> data;
 
-    auto keyFrameIt = cache.find(targetKeyFrame);
-    if (keyFrameIt == cache.end())
+    while (!found)
     {
-      loadFrames(targetFrame);  // Load frames if not found
-      keyFrameIt = cache.find(targetKeyFrame);  // Re-check after loading
-    }
+      auto it = keyFrameMap.upper_bound(static_cast<int>(targetFrame));
+      if (it == keyFrameMap.begin())
+      {
+        throw std::runtime_error("Key frame not found!");
+      }
+      --it;
+      const auto targetKeyFrame = it->first;
 
-    // Access the keyframe map from the cache
-    const auto& [frames] = keyFrameIt->second;
-    const auto frameIt = frames.find(targetFrame);
-    if (frameIt == frames.end())
-    {
-      throw std::runtime_error("Target frame not found in key frame.");
+      auto keyFrameIt = videoCache.find(targetKeyFrame);
+      if (keyFrameIt == videoCache.end())
+      {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        continue;
+      }
+
+      // Access the keyframe map from the cache
+      const auto& frames = keyFrameIt->second;
+      const auto relativeFrame = targetFrame - targetKeyFrame;
+      if (relativeFrame > frames.size())
+      {
+        throw std::runtime_error("Target frame not found in key frame.");
+      }
+
+      data = frames.at(relativeFrame);
+      found = true;
     }
 
     // Set currentVideoData to the frame
-    currentVideoData = std::make_shared<std::vector<uint8_t>>(frameIt->second);
+    currentVideoData = std::make_shared<std::vector<uint8_t>>(data);
   }
 
   void MediaParser::loadFrames(const uint32_t targetFrame)
@@ -670,18 +693,19 @@ namespace AVParser {
     const auto targetKeyFrame = it->first;
 
     FrameCache frameCache;
+    frameCache.reserve(nextKeyFrame - targetKeyFrame);
 
     seekToFrame(targetKeyFrame);
 
     for (uint32_t i = targetKeyFrame; i < nextKeyFrame; ++i)
     {
       loadFrame();
-      frameCache.frames[i] = *currentVideoData;
+      frameCache.push_back(*backgroundVideoData);
     }
 
-    cache[targetKeyFrame] = std::move(frameCache);
+    videoCache[targetKeyFrame] = std::move(frameCache);
 
-    seekToFrame(targetFrame);
+    seekToFrame(targetKeyFrame);
 
     for (uint32_t i = targetKeyFrame; i < nextKeyFrame * 2; ++i)
     {
@@ -782,7 +806,6 @@ namespace AVParser {
 
             // Cache
             audioCache[frame->pts] = std::vector(outBuffer, outBuffer + outBufferSize);
-            audioCacheSizes[frame->pts] = outBufferSize;
 
             break;
           }
@@ -821,6 +844,111 @@ namespace AVParser {
     return gotAudio;
   }
 
+  void MediaParser::backgroundFrameLoader()
+  {
+    while (keepLoadingInBackground)
+    {
+      // Get current frame and playback state
+      const uint32_t currentFrameIdx = currentFrame;
+      const MediaState currentState = state;
+
+      // Determine which keyframes to load based on playback direction
+      auto it = keyFrameMap.upper_bound(static_cast<int>(currentFrameIdx));
+      if (it == keyFrameMap.begin())
+      {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        continue;
+      }
+
+      --it;
+
+      // Load current keyframe's frames if not cached
+      if (const auto currentKeyFrame = it->first; !videoCache.contains(currentKeyFrame))
+      {
+        loadFrames(currentKeyFrame);
+      }
+
+      // Determine next frames to preload based on playback state
+      if (currentState == MediaState::AUTO_PLAYING)
+      {
+        // Preload next keyframe for forward playback
+        ++it;
+        if (it != keyFrameMap.end()) {
+          if (const auto nextKeyFrame = it->first; !videoCache.contains(nextKeyFrame))
+          {
+            loadFrames(nextKeyFrame);
+          }
+        }
+      }
+      else if (currentState == MediaState::MANUAL)
+      {
+        // For manual mode, preload both forward and backward
+        // First the next keyframe
+        auto tempIt = it;
+        ++tempIt;
+        if (tempIt != keyFrameMap.end())
+        {
+          if (const auto nextKeyFrame = tempIt->first; !videoCache.contains(nextKeyFrame))
+          {
+            loadFrames(nextKeyFrame);
+          }
+        }
+
+        // Then the previous keyframe
+        if (it != keyFrameMap.begin())
+        {
+          --it;
+          if (const auto prevKeyFrame = it->first; !videoCache.contains(prevKeyFrame))
+          {
+            loadFrames(prevKeyFrame);
+          }
+        }
+      }
+
+      // Smarter cache management - keep keyframes around current position
+      while (videoCache.size() > 4)
+      {
+        // Find the keyframe farthest from current position to remove
+        uint32_t farthestKeyFrame = 0;
+        int64_t maxDistance = -1;
+
+        for (const auto& cache : videoCache)
+        {
+          const int64_t distance = std::abs(static_cast<int64_t>(cache.first) - static_cast<int64_t>(currentFrameIdx));
+          if (distance > maxDistance)
+          {
+            maxDistance = distance;
+            farthestKeyFrame = cache.first;
+          }
+        }
+
+        if (maxDistance > 0)
+        {
+          const int chunks = videoCache.size();
+
+          for (int i = 0; i < chunks; ++i)
+          {
+            if (farthestKeyFrame > currentFrame)
+            {
+              audioCache.erase(std::prev(audioCache.end()));
+            }
+            else
+            {
+              audioCache.erase(audioCache.begin());
+              currentAudioChunk--;
+            }
+          }
+
+          videoCache.erase(farthestKeyFrame);
+        }
+        else
+        {
+          break;
+        }
+      }
+    }
+  }
+
   void MediaParser::setFilepath(const std::string& mediaFile)
   {
     currentFrame = 0;
@@ -828,7 +956,7 @@ namespace AVParser {
     currentAudioData = std::make_shared<std::vector<uint8_t>>();
     previousTime = std::chrono::steady_clock::now();
     formatContext = nullptr;
-    cache.clear();
+    videoCache.clear();
     
     frame = nullptr;
     packet = nullptr;
@@ -865,6 +993,10 @@ namespace AVParser {
     setupVideo();
 
     setupAudio();
+
+    loadKeyframes();
+
+    calculateTotalFrames();
 
     frame = av_frame_alloc();
     packet = av_packet_alloc();
