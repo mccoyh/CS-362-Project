@@ -31,4 +31,4 @@ For a deeper understanding of the project’s goals and architecture, see [ABOUT
 
 ## 🧪 Tests
 
-For details on testing procedures, see [TEST.md](docs/TEST.md).
+For details on testing procedures, see [TESTING.md](docs/TESTING.md).

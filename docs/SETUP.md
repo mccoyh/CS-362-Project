@@ -65,7 +65,7 @@ Then run:
 ./EXE_NAME PATH_TO_MEDIA
 ```
 
-> ⚠️ **Note:** `PATH_TO_MEDIA` is optional if the application has built-in asset handling. See [TEST.md](TEST.md) for more details.
+> ⚠️ **Note:** `PATH_TO_MEDIA` is optional if the application has built-in asset handling. See [TESTING.md](TESTING.md) for more details.
 
 ## Git Setup
 
