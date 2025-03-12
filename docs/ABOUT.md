@@ -381,3 +381,10 @@ Medos combines innovative features with a user-centric approach to create a stre
 - One of the things I saw during this project was the need of a leader to ensure consistnent updates of individual project updates. There was low communication which made it unclear on the progress of various members. 
 - This project showed how poor communication slows down a project and can put a lot or pressure on certain members if work load has to be redistrubuted due to a members work not being completed on time. 
 - One of the biggest techinical ideas I learned the most about, was how build systems work to create complete applications. Previously I had not done much with build systems and this project allowed me to use and get used to them. 
+
+### Reynaud
+- I should have asked for help sooner instead of trying to figure everything out on my own. It would have saved time and reduced stress.
+- Better communication with my team was needed. I should have checked in more often instead of working independently.
+-	I need to prioritize teamwork—coordinating with others would have made the project smoother.
+-	I should have been more proactive in tracking team progress and addressing issues earlier.
+-	Moving forward, I will communicate more, collaborate better, and seek help when needed.
