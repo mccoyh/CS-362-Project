@@ -58,22 +58,28 @@ The technical implementation focuses on modular design, allowing flexibility for
 ---
 
 ## Risks, Team Information, and Timeline
+
 ### Risks and Mitigation
-1. **Library Familiarity**: Some team members are unfamiliar with FFmpeg and ImGui.
-    - **Likelyhood**: High
-    - **Mitigation**: Allocate time for learning resources and prototyping early in the project.
-2. **Coordination Challenges**: With a large team, maintaining consistent coding standards may be difficult.
-    - **Likelyhood**: Medium
-    - **Mitigation**: Use detailed style guides and conduct weekly code reviews.
-3. **Time Constraints**: Balancing project work with coursework may lead to delays.
-    - **Likelyhood**: High
-    - **Mitigation**: Set clear milestones and prioritize high-impact tasks.
-4. **Familiarity with Build System**: Some members are unfamiliar with Cmake. 
-    - **Likelyhood**: Medium
-    - **Mitigation**: Members with Cmake expirience will provide examples of Cmake structure and assistance.
-5. **Delayed task completion due to workload or unforseen complications**: Tasks may not completed on time due to unforseen problems. Due to the time constraint above this needs to be handled quickly. 
-    - **Likelyhood**: Medium
-    - **Mitigation**: Establish consistent communication through meeting to ensure members can complete on time. Redistribute work when problems arise. 
+
+1. **Compatibility Across Operating Systems:** Ensuring consistent functionality across Windows, macOS, and Linux presents significant challenges due to different system architectures and APIs.
+   - Likelihood: High
+   - Mitigation: Implement OS abstraction layers, use cross-platform libraries like Qt, and establish testing protocols for all target platforms (Windows, macOS, Linux).
+
+2. **Media Format Support:** Supporting diverse audio and video codecs involves complex licensing considerations and technical implementation challenges.
+   - Likelihood: High
+   - Mitigation: Integrate FFmpeg for broad codec support, document licensing requirements, and implement graceful fallbacks for unsupported formats.
+
+3. **Performance Optimization:** Resource-intensive media decoding and playback operations can lead to poor performance on lower-end hardware.
+   - Likelihood: Medium
+   - Mitigation: Implement frame buffering, hardware acceleration where available, and regular profiling to identify bottlenecks.
+
+4. **Audio-Video Synchronization:** Maintaining precise synchronization between audio and video streams is technically challenging but critical for user experience.
+   - Likelihood: High
+   - Mitigation: Implement precise timestamp matching, buffering strategies, and A/V drift correction algorithms.
+ 
+5. **UI Responsiveness:** Heavy media processing can block the UI thread, causing the application to appear frozen or unresponsive.
+   - Likelihood: Medium
+   - Mitigation: Implement multithreading for media decoding separate from UI thread, use asynchronous loading for large files, and optimize render loops.
 
 ## Team Members and Roles
 
