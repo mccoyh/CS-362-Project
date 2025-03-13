@@ -282,8 +282,6 @@ External feedback will be most useful during weeks 5-6 when the MVP is completed
 - The file format is unsupported.
 - The transcription process fails due to poor audio quality or missing data.
 
----
-
 ### 2. **Closed Captioning**
 **Actor**: Product user  
 **Trigger**: User plays a video and enables the closed captioning feature.  
@@ -302,8 +300,6 @@ External feedback will be most useful during weeks 5-6 when the MVP is completed
 - Captions fail to load or generate.
 - The user cannot adjust caption settings.
 
----
-
 ### 3. **Post-Processing Effects**
 **Actor**: Product user  
 **Trigger**: User hits the button for grayscale.  
@@ -320,8 +316,6 @@ External feedback will be most useful during weeks 5-6 when the MVP is completed
 **Exceptions**:
 - The selected effect fails to apply due to an unsupported video format.
 - The effect causes a performance issue, leading to lag or crash.
-
----
 
 ### 4. **Keyboard Shortcuts**
 **Actor**: Product user  
@@ -342,8 +336,6 @@ External feedback will be most useful during weeks 5-6 when the MVP is completed
 - A conflicting system-wide shortcut prevents the action.
 - The keyboard input is not detected due to a hardware or driver issue.
 
----
-
 ### 5. **Audio/Video Controls**
 **Actor**: Product user  
 **Trigger**: User moves the seeking bar.  
@@ -361,8 +353,6 @@ External feedback will be most useful during weeks 5-6 when the MVP is completed
 **Exceptions**:
 - Seeking fails due to a corrupted video file.
 - The video freezes or synchronizes with the audio after seeking.
-
----
 
 ### 6. **Customizable UI (Fullscreen, Hide Controls, Move Widgets)**
 **Actor**: Product user  
