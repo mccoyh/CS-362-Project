@@ -320,8 +320,8 @@ External feedback will be most useful during weeks 5-6 when the MVP is completed
 ### 4. **Keyboard Shortcuts**
 **Actor**: Product user  
 **Trigger**: User hits a key on the keyboard (spacebar, left/right arrow keys, r)  
-**Preconditions**: Application is open and video is loaded..  
-**Postconditions (success scenario)**: Application remains open and video has restarted..  
+**Preconditions**: Application is open and video is loaded.  
+**Postconditions (success scenario)**: Application remains open and video has restarted.  
 **Steps (success scenario)**:  
 1. User hits spacebar to play loaded video.
 2. User hits right arrow key to jump forward in the video.
