@@ -313,9 +313,13 @@ External feedback will be most useful during weeks 5-6 when the MVP is completed
 1. User selects the tab below the video labeled special effects.
 2. User hits button for grayscale.
 
-**Extensions**:  
-**Exceptions**:
+**Extensions**:
+- User applies multiple effects at once (e.g., grayscale and sepia).
+- User undoes the applied effect.
 
+**Exceptions**:
+- The selected effect fails to apply due to an unsupported video format.
+- The effect causes a performance issue, leading to lag or crash.
 
 ---
 
@@ -331,9 +335,12 @@ External feedback will be most useful during weeks 5-6 when the MVP is completed
 4. User hits r to restart the video.
 
 **Extensions**:
+- User customizes shortcut keys in the settings menu.
+- User enables/disables shortcut functionality.
 
 **Exceptions**:
-
+- A conflicting system-wide shortcut prevents the action.
+- The keyboard input is not detected due to a hardware or driver issue.
 
 ---
 
@@ -348,10 +355,12 @@ External feedback will be most useful during weeks 5-6 when the MVP is completed
 3. User drags seeking bar to another place.
 
 **Extensions**:
-
+- User adjusts playback speed while seeking.
+- User enables frame-by-frame scrubbing.
 
 **Exceptions**:
-
+- Seeking fails due to a corrupted video file.
+- The video freezes or synchronizes with the audio after seeking.
 
 ---
 
@@ -368,10 +377,12 @@ External feedback will be most useful during weeks 5-6 when the MVP is completed
 5. User repeats the previous step but instead selects hide sfx controls.
 
 **Extensions**:
-- 
+- User resets the UI layout to default.
+- User docks and undocks UI elements freely.
 
 **Exceptions**:
-
+- Fullscreen mode fails due to system display settings.
+- Hiding media controls prevents necessary user interactions.
 
 ## Software Architecture
 
