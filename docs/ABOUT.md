@@ -293,7 +293,6 @@ External feedback will be most useful during weeks 5-6 when the MVP is completed
 1. User selects a video file to play.
 2. User enables closed captioning.
 3. The application generates or loads captions and synchronizes them with playback.
-4. User adjusts caption settings (e.g., font size, position).
 
 **Extensions**:
 - User modifies the caption file directly.
@@ -305,85 +304,74 @@ External feedback will be most useful during weeks 5-6 when the MVP is completed
 
 ---
 
-### 3. **Software Hub for Various APIs**
+### 3. **Post-Processing Effects**
 **Actor**: Product user  
-**Trigger**: User integrates third-party video-sharing services into the application.  
-**Preconditions**: The application supports the API of the selected service.  
-**Postconditions (success scenario)**: The user successfully uploads, downloads, or streams video content using the integrated API.  
+**Trigger**: User hits the button for grayscale.  
+**Preconditions**: Application is open and video is loaded.  
+**Postconditions (success scenario)**: Application is open and video is in grayscale.  
 **Steps (success scenario)**:
-1. User navigates to the API integration menu.
-2. User selects a service to integrate.
-3. User authenticates with the third-party service.
-4. The application displays the integrated features (e.g., upload/download buttons).
-5. User interacts with the service via the application.
+1. User selects the tab below the video labeled special effects.
+2. User hits button for grayscale.
 
-**Extensions**: User removes or switches API integrations.  
+**Extensions**:  
 **Exceptions**:
-- Authentication fails.
-- API limitations or errors prevent successful interaction.
+
 
 ---
 
-### 4. **Playlist Integration and Support**
+### 4. **Keyboard Shortcuts**
 **Actor**: Product user  
-**Trigger**: User creates or imports a playlist.  
-**Preconditions**: The user has video files accessible for adding to a playlist.  
-**Postconditions (success scenario)**: The application plays the playlist in order, with options for customization.  
-**Steps (success scenario)**:
-1. User navigates to the playlist feature.
-2. User creates a new playlist or imports an existing one.
-3. User adds video files to the playlist.
-4. User customizes playback order or options.
-5. The playlist plays back as configured.
+**Trigger**: User hits a key on the keyboard (spacebar, left/right arrow keys, r)  
+**Preconditions**: Application is open and video is loaded..  
+**Postconditions (success scenario)**: Application remains open and video has restarted..  
+**Steps (success scenario)**:  
+1. User hits spacebar to play loaded video.
+2. User hits right arrow key to jump forward in the video.
+3. User hits the left arrow key to jump back in the video.
+4. User hits r to restart the video.
 
 **Extensions**:
-- User rearranges playlist order during playback.
-- User removes a file from the playlist.
 
 **Exceptions**:
-- File format of an added video is unsupported.
-- The playlist fails to save or load.
+
 
 ---
 
-### 5. **Custom Playback Speed Adjustment**
+### 5. **Audio/Video Controls**
 **Actor**: Product user  
-**Trigger**: User changes the playback speed of the current video.  
-**Preconditions**: A video file is loaded and playing.  
-**Postconditions (success scenario)**: The video plays at the adjusted speed without interruptions.  
+**Trigger**: User moves the seeking bar.  
+**Preconditions**: Application is open and video is loaded.  
+**Postconditions (success scenario)**: Application remains open and video position has changed.
 **Steps (success scenario)**:
-1. User opens the playback settings menu.
-2. User adjusts the speed using a slider or preset options (e.g., 0.5x, 1.0x, 2.0x).
-3. The application adjusts playback speed dynamically.
+1. User selects and drags the seeking bar to a random place.
+2. User hits play.
+3. User drags seeking bar to another place.
 
 **Extensions**:
-- User resets to the default playback speed.
-- User saves a custom speed for future use.
+
 
 **Exceptions**:
-- Playback becomes choppy due to hardware limitations.
-- Slider fails to adjust the speed accurately.
+
 
 ---
 
-### 6. **Quick Edits**
+### 6. **Customizable UI (Fullscreen, Hide Controls, Move Widgets)**
 **Actor**: Product user  
-**Trigger**: User trims or edits a video directly within the application.  
-**Preconditions**: A video file is loaded into the application.  
-**Postconditions (success scenario)**: The edited video is saved as a new file.  
+**Trigger**: User enters fullscreen, moves widgets, and hides controls. 
+**Preconditions**: Application is open and UI is instanced.  
+**Postconditions (success scenario)**: Application remains open and media and sfx controls have been hidden.
 **Steps (success scenario)**:
-1. User enters the edit view.
-2. User selects start and end points to trim.
-3. User applies the edit and previews the result.
-4. User saves the edited video to their desired location.
+1. User navigates to the options tab.
+2. User selects Go Fullscreen.
+3. User selects and drags the top of the media controls up and/or down.
+4. User navigates back to options and selects hide media controls.
+5. User repeats the previous step but instead selects hide sfx controls.
 
 **Extensions**:
-- User cancels the editing process.
-- User performs additional edits (e.g., cropping or adding effects).
+- 
 
 **Exceptions**:
-- Video fails to save.
-- The application crashes during editing.
+
 
 ## Software Architecture
 
